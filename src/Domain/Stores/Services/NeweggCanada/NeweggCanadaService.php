@@ -1,20 +1,18 @@
 <?php
 
-namespace Domain\Stores\Services\BestBuyCanada;
+namespace Domain\Stores\Services\NeweggCanada;
 
 use Domain\Stores\DTOs\StockData;
 use Domain\Stores\DTOs\StockSearchData;
-use Domain\Stores\Services\BestBuyCanada\Mappers\ProductMapper;
-use Domain\Stores\Services\BestBuyCanada\Mappers\SearchMapper;
-use GuzzleHttp\Psr7\Uri;
-use Illuminate\Support\Facades\File;
+use Domain\Stores\Services\NeweggCanada\Mappers\ProductMapper;
+use Domain\Stores\Services\NeweggCanada\Mappers\SearchMapper;
 use Psr\Http\Message\UriInterface;
 use Spatie\Browsershot\Browsershot;
 use Support\Contracts\StoreContract;
 use Symfony\Component\DomCrawler\Crawler;
 use Webmozart\Assert\Assert;
 
-class BestBuyCanadaService implements StoreContract
+class NeweggCanadaService implements StoreContract
 {
     public function __construct(
         private readonly BrowserShot $client,
@@ -25,7 +23,7 @@ class BestBuyCanadaService implements StoreContract
 
     public function product(UriInterface $uri): StockData
     {
-        Assert::contains($uri->getHost(), 'bestbuy.ca');
+        Assert::contains($uri->getHost(), 'newegg.ca');
         $link = (string) $uri;
         $browserShot = $this->client->setUrl($link);
         $screenshot = $browserShot->screenshot();
@@ -36,7 +34,7 @@ class BestBuyCanadaService implements StoreContract
 
     public function search(UriInterface $uri): StockSearchData
     {
-        Assert::contains($uri->getHost(), 'bestbuy.ca');
+        Assert::contains($uri->getHost(), 'newegg.ca');
         $link = (string) $uri;
         $browserShot = $this->client->setUrl($link);
         $screenshot = $browserShot->fullPage()->screenshot();

@@ -9,5 +9,5 @@ use Psr\Http\Message\UriInterface;
 interface StoreContract
 {
     public function product(UriInterface $uri): StockData;
-    public function search(string $term): StockSearchData;
+    public function search(UriInterface $uri): StockSearchData;
 }

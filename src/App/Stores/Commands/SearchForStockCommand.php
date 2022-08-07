@@ -5,6 +5,7 @@ namespace App\Stores\Commands;
 use Domain\Stores\DTOs\StockData;
 use Domain\Stores\Enums\Store;
 use Domain\Stores\Services\AmazonCanada\AmazonCanadaService;
+use GuzzleHttp\Psr7\Uri;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
@@ -15,7 +16,7 @@ use Support\Contracts\StoreContract;
 
 class SearchForStockCommand extends Command
 {
-    protected $signature = 'stock:search {store} {--term=}';
+    protected $signature = 'stock:search {store} {--link=}';
 
     protected $description = 'Command description';
 
@@ -26,8 +27,8 @@ class SearchForStockCommand extends Command
         /** @var StoreContract $service */
         $service = app($store->serviceFqcn());
 
-        $this->info("Searching for {$this->option('term')} on {$this->argument('store')}");
-        $searchData = $service->search($this->option('term'));
+        $this->info("Searching on {$this->argument('store')}");
+        $searchData = $service->search(new Uri($this->option('link')));
 
         $path = storage_path();
         $path .= '/';

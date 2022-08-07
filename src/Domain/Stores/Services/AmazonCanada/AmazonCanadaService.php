@@ -40,10 +40,11 @@ class AmazonCanadaService implements StoreContract
         return $this->productMapper->map($html, $uri, $screenshot);
     }
 
-    public function search(string $term): StockSearchData
+    public function search(UriInterface $uri): StockSearchData
     {
-        $uri = new Uri("https://www.amazon.ca/s?k={$term}");
-        $browserShot = $this->client->setUrl((string) $uri);
+        Assert::contains($uri->getHost(), 'amazon.ca');
+        $link = (string) $uri;
+        $browserShot = $this->client->setUrl($link);
         $screenshot = $browserShot->fullPage()->screenshot();
         $html = new Crawler($browserShot->bodyHtml());
 
@@ -51,7 +52,6 @@ class AmazonCanadaService implements StoreContract
 
         return new StockSearchData(
             $uri,
-            $term,
             $stockDataCollection,
             $screenshot
         );

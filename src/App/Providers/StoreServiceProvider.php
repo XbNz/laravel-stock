@@ -11,6 +11,7 @@ use Domain\Stores\Services\AmazonCanada\AmazonCanadaService;
 use Domain\Stores\Services\AmazonCanada\Mappers\ProductMapper;
 use Domain\Stores\Services\AmazonCanada\Mappers\SearchMapper;
 use Domain\Stores\Services\BestBuyCanada\BestBuyCanadaService;
+use Domain\Stores\Services\NeweggCanada\NeweggCanadaService;
 use Illuminate\Support\ServiceProvider;
 
 class StoreServiceProvider extends ServiceProvider
@@ -27,6 +28,12 @@ class StoreServiceProvider extends ServiceProvider
             $app->make(BrowserShotFactory::class)->for(BestBuyCanadaService::class),
             $app->make(\Domain\Stores\Services\BestBuyCanada\Mappers\ProductMapper::class),
             $app->make(\Domain\Stores\Services\BestBuyCanada\Mappers\SearchMapper::class),
+        ));
+
+        $this->app->bind(NeweggCanadaService::class, fn (Application $app) => new NeweggCanadaService(
+            $app->make(BrowserShotFactory::class)->for(NeweggCanadaService::class),
+            $app->make(\Domain\Stores\Services\NeweggCanada\Mappers\ProductMapper::class),
+            $app->make(\Domain\Stores\Services\NeweggCanada\Mappers\SearchMapper::class),
         ));
 
         $this->commands([

@@ -15,7 +15,6 @@ class StockSearchData implements MappableContract
      */
     public function __construct(
         public readonly Uri $uri,
-        public readonly string $term,
         public readonly StockDataCollection $stocks,
         public readonly ?string $image = null,
     ) {

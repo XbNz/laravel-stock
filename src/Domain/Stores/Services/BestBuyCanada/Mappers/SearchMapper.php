@@ -23,7 +23,6 @@ class SearchMapper implements MapperContract
             ->filterXPath('//div[contains(@class, "productsRow")]')
             ->filterXPath('//div[contains(@class, "productLine")]');
 
-        dump($allResults->count());
         $collection = StockDataCollection::make();
 
         $allResults
