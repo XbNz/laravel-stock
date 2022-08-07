@@ -1,6 +1,6 @@
 <?php
 
-namespace Domain\Stores\Services\Amazon\Mappers;
+namespace Domain\Stores\Services\AmazonCanada\Mappers;
 
 use Domain\Stores\Collections\StockDataCollection;
 use Domain\Stores\DTOs\StockData;

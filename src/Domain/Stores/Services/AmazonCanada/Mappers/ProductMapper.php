@@ -1,6 +1,6 @@
 <?php
 
-namespace Domain\Stores\Services\Amazon\Mappers;
+namespace Domain\Stores\Services\AmazonCanada\Mappers;
 
 use Domain\Stores\DTOs\StockData;
 use Domain\Stores\Enums\Currency;

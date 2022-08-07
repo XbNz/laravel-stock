@@ -4,7 +4,7 @@ namespace App\Stores\Commands;
 
 use Domain\Stores\DTOs\StockData;
 use Domain\Stores\Enums\Store;
-use Domain\Stores\Services\Amazon\AmazonService;
+use Domain\Stores\Services\AmazonCanada\AmazonCanadaService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
@@ -18,12 +18,12 @@ class SearchForStockCommand extends Command
 
     protected $description = 'Command description';
 
-    public function handle(AmazonService $amazonService)
+    public function handle(AmazonCanadaService $amazonService)
     {
         $store = Store::from($this->argument('store'));
         $this->info("Searching for {$this->option('term')} on {$this->argument('store')}");
         $searchData = $amazonService->search($this->option('term'));
-        $path = storage_path(Str::random(10)  . '.' . Config::get('store.' . AmazonService::class . '.image_format'));
+        $path = storage_path(Str::random(10)  . '.' . Config::get('store.' . AmazonCanadaService::class . '.image_format'));
         File::put($path, $searchData->image, 'w+');
 
         $stocksToDisplay = $searchData->stocks

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Domain\Stores\Factories;
 
 use Domain\Stores\Exceptions\StoreNotFoundException;
-use Domain\Stores\Services\Amazon\AmazonService;
+use Domain\Stores\Services\AmazonCanada\AmazonCanadaService;
 use Illuminate\Support\Arr;
 use Spatie\Browsershot\Browsershot;
 use Spatie\Image\Manipulations;
@@ -26,31 +26,31 @@ class BrowserShotFactory
     public function for(string $storeServiceClass): Browsershot
     {
         return match ($storeServiceClass) {
-            AmazonService::class => $this->amazon(),
+            AmazonCanadaService::class => $this->amazonCanada(),
             default => new StoreNotFoundException("{$storeServiceClass} is not a valid store service FQCN")
         };
     }
 
-    private function amazon(): Browsershot
+    private function amazonCanada(): Browsershot
     {
         $manipulations = new Manipulations();
         $manipulations->quality(
-            $this->config->get('store.' . AmazonService::class . '.image_quality', 20)
+            $this->config->get('store.' . AmazonCanadaService::class . '.image_quality', 20)
         )->format(
-            $this->config->get('store.' . AmazonService::class . '.image_format', Manipulations::FORMAT_JPG)
+            $this->config->get('store.' . AmazonCanadaService::class . '.image_format', Manipulations::FORMAT_JPG)
         );
 
         $client = $this->client
             ->windowSize(
-                $this->config->get('store.' . AmazonService::class . '.screenshot_width', 1920),
-                $this->config->get('store.' . AmazonService::class . '.screenshot_height', 1080)
+                $this->config->get('store.' . AmazonCanadaService::class . '.screenshot_width', 1920),
+                $this->config->get('store.' . AmazonCanadaService::class . '.screenshot_height', 1080)
             )
             ->userAgent(
-                $this->config->get('store.' . AmazonService::class . '.user_agent')
+                $this->config->get('store.' . AmazonCanadaService::class . '.user_agent')
             )
             ->mergeManipulations($manipulations);
 
-        if ($this->config->get('store.' . AmazonService::class . '.proxy')) {
+        if ($this->config->get('store.' . AmazonCanadaService::class . '.proxy')) {
             $client->setProxyServer(Arr::random($this->config->get('proxy.proxies')));
         }
 
