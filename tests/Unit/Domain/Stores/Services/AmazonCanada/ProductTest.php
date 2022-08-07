@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Domain\Stores\Services\Amazon;
+namespace Tests\Unit\Domain\Stores\Services\AmazonCanada;
 
 use Domain\Stores\Services\AmazonCanada\AmazonCanadaService;
 use GuzzleHttp\Psr7\Uri;
@@ -23,4 +23,8 @@ class ProductTest extends TestCase
             $amazonService->search('3080')
         );
     }
+
+    // TODO: Command to create a snapshot of the page html and image every week and save it into a directory
+    // TODO: Test will run a partial mock of spatie/browsershot using those snapshots to save time
+    // TODO: Testing controllers and commands will then rely on a full mock/stub of the service class since testing it again will eb redundant
 }

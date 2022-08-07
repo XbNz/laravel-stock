@@ -3,6 +3,7 @@
 namespace Domain\Stores\Enums;
 
 use Exception;
+use InvalidArgumentException;
 
 enum Currency: string
 {
@@ -16,7 +17,7 @@ enum Currency: string
         return match ($this) {
             self::USD, self::GBP, self::CAD => '.',
             self::EUR => ',',
-            default => throw new Exception('Unexpected match value'),
+            default => throw new InvalidArgumentException('Unexpected match value'),
         };
     }
 }

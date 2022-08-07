@@ -59,9 +59,9 @@ class SearchMapper implements MapperContract
                     $itemName,
                     new Uri("https://www.amazon.ca/dp/{$trimmedSku}"),
                     Store::AmazonCanada,
-                    $availability ?? false,
                     $priceObject ?? null,
-                    sku: $trimmedSku
+                    $availability ?? false,
+                    $trimmedSku,
                 )
             );
         });

@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Support\Contracts\StoreContract;
 
 class SearchForStockCommand extends Command
 {
@@ -18,16 +19,29 @@ class SearchForStockCommand extends Command
 
     protected $description = 'Command description';
 
-    public function handle(AmazonCanadaService $amazonService)
+    public function handle()
     {
         $store = Store::from($this->argument('store'));
+
+        /** @var StoreContract $service */
+        $service = app($store->serviceFqcn());
+
         $this->info("Searching for {$this->option('term')} on {$this->argument('store')}");
-        $searchData = $amazonService->search($this->option('term'));
-        $path = storage_path(Str::random(10)  . '.' . Config::get('store.' . AmazonCanadaService::class . '.image_format'));
+        $searchData = $service->search($this->option('term'));
+
+        $path = storage_path();
+        $path .= '/';
+        $path .= Config::get('store.' . $store->serviceFqcn() . '.image_prefix');
+        $path .= Str::random(10);
+        $path .= '.';
+        $path .= Config::get('store.' . $store->serviceFqcn() . '.image_format');
+
+
         File::put($path, $searchData->image, 'w+');
 
         $stocksToDisplay = $searchData->stocks
             ->take(10)
+            ->sortBy('price')
             ->map(fn(StockData $stock) => (array) $stock)
             ->map(function (array $stock) {
                 return array_merge($stock, [

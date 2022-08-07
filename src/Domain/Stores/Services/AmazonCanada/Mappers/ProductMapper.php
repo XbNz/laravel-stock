@@ -38,7 +38,6 @@ class ProductMapper implements MapperContract
             $trimmedItemName,
             $searchUri,
             Store::AmazonCanada,
-            $image,
             new Price(
                 (int) $priceWholeNumericOnly,
                 Currency::CAD,
@@ -46,6 +45,7 @@ class ProductMapper implements MapperContract
             ),
             $availabilityBoolean,
             $sku,
+            $image,
         );
     }
 }

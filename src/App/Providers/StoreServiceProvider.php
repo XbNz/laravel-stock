@@ -3,12 +3,14 @@
 namespace App\Providers;
 
 use App\Application;
+use App\Stores\Commands\LoadProductInfoCommand;
 use App\Stores\Commands\SearchForStockCommand;
 use App\Stores\GetProductInfoCommand;
 use Domain\Stores\Factories\BrowserShotFactory;
 use Domain\Stores\Services\AmazonCanada\AmazonCanadaService;
 use Domain\Stores\Services\AmazonCanada\Mappers\ProductMapper;
 use Domain\Stores\Services\AmazonCanada\Mappers\SearchMapper;
+use Domain\Stores\Services\BestBuyCanada\BestBuyCanadaService;
 use Illuminate\Support\ServiceProvider;
 
 class StoreServiceProvider extends ServiceProvider
@@ -21,8 +23,15 @@ class StoreServiceProvider extends ServiceProvider
             $app->make(SearchMapper::class),
         ));
 
+        $this->app->bind(BestBuyCanadaService::class, fn (Application $app) => new BestBuyCanadaService(
+            $app->make(BrowserShotFactory::class)->for(BestBuyCanadaService::class),
+            $app->make(\Domain\Stores\Services\BestBuyCanada\Mappers\ProductMapper::class),
+            $app->make(\Domain\Stores\Services\BestBuyCanada\Mappers\SearchMapper::class),
+        ));
+
         $this->commands([
             SearchForStockCommand::class,
+            LoadProductInfoCommand::class,
         ]);
     }
 
