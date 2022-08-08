@@ -18,9 +18,28 @@ class ProductMapper implements MapperContract
 {
     public function map(Crawler $html, UriInterface $searchUri, string $image): StockData
     {
+        $html = $html->filterXPath('//div[contains(@id, "ppd")]');
         $itemName = $html->filterXPath('//span[contains(@id, "productTitle")]')->text();
-        $priceWhole = $html->filterXPath('//span[contains(@class, "price-whole")]')->text();
-        $priceFraction = $html->filterXPath('//span[contains(@class, "price-fraction")]')->text();
+        $priceWhole = rescue(
+            fn() => $html->filterXPath('//span[contains(@class, "price-whole")]')->text(),
+            fn() => null,
+        );
+        $priceFraction = rescue(
+            fn() => $html->filterXPath('//span[contains(@class, "price-fraction")]')->text(),
+            fn() => null,
+        );
+
+
+        if (!is_null($priceWhole)) {
+            $priceWholeNumericOnly = preg_replace('/\D/', '', trim($priceWhole));
+            $trimmedPriceFraction = trim($priceFraction);
+            $priceObject = new Price(
+                (int) $priceWholeNumericOnly,
+                Currency::CAD,
+                (int) $trimmedPriceFraction,
+            );
+        }
+
         $availability = $html->filterXPath(
             '//div[contains(@id, "availability")]/span[contains(@class, "medium")]'
         )->text();
@@ -32,17 +51,13 @@ class ProductMapper implements MapperContract
         $trimmedItemName = trim($itemName);
         $priceWholeNumericOnly = preg_replace('/\D/', '', trim($priceWhole));
         $trimmedPriceFraction = trim($priceFraction);
-        $availabilityBoolean = Str::of(rtrim($availability))->lower()->value() === 'in stock.';
+        $availabilityBoolean = Str::of(rtrim($availability))->length() > 4;
 
         return new StockData(
             $trimmedItemName,
             $searchUri,
             Store::AmazonCanada,
-            new Price(
-                (int) $priceWholeNumericOnly,
-                Currency::CAD,
-                (int) $trimmedPriceFraction,
-            ),
+            $priceObject ?? null,
             $availabilityBoolean,
             $sku,
             $image,
