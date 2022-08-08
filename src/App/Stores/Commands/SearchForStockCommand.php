@@ -1,16 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Stores\Commands;
 
 use Domain\Stores\DTOs\StockData;
 use Domain\Stores\Enums\Store;
-use Domain\Stores\Services\AmazonCanada\AmazonCanadaService;
 use GuzzleHttp\Psr7\Uri;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Support\Contracts\StoreContract;
 
@@ -37,19 +37,18 @@ class SearchForStockCommand extends Command
         $path .= '.';
         $path .= Config::get('store.' . $store->serviceFqcn() . '.image_format');
 
-
         File::put($path, $searchData->image, 'w+');
 
         $stocksToDisplay = $searchData->stocks
             ->take(10)
             ->sortBy('price')
-            ->map(fn(StockData $stock) => (array) $stock)
+            ->map(fn (StockData $stock) => (array) $stock)
             ->map(function (array $stock) {
                 return array_merge($stock, [
-                    'title' => $stock['title'] = Str::limit($stock['title'], 30)
+                    'title' => $stock['title'] = Str::limit($stock['title'], 30),
                 ]);
             })
-            ->map(fn(array $stock) => Arr::only($stock, ['title', 'price', 'sku', 'link']));
+            ->map(fn (array $stock) => Arr::only($stock, ['title', 'price', 'sku', 'link']));
 
         $this->table(['Title', 'Link', 'Price', 'SKU'], $stocksToDisplay->toArray());
         $this->info("Found {$searchData->stocks->count()} results");

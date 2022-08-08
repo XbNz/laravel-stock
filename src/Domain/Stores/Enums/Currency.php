@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Domain\Stores\Enums;
 
-use Exception;
 use InvalidArgumentException;
 
 enum Currency: string

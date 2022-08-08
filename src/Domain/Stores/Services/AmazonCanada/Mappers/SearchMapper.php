@@ -1,17 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Domain\Stores\Services\AmazonCanada\Mappers;
 
 use Domain\Stores\Collections\StockDataCollection;
 use Domain\Stores\DTOs\StockData;
-use Domain\Stores\DTOs\StockSearchData;
 use Domain\Stores\Enums\Currency;
 use Domain\Stores\Enums\Store;
 use Domain\Stores\ValueObjects\Price;
 use GuzzleHttp\Psr7\Uri;
-use Illuminate\Support\Collection;
 use Psr\Http\Message\UriInterface;
-use Support\Contracts\MappableContract;
 use Support\Contracts\MapperContract;
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -29,19 +28,19 @@ class SearchMapper implements MapperContract
                 ->text();
 
             $priceWhole = rescue(
-                fn() => $crawler->filterXPath('//span[contains(@class, "price-whole")]')->text(),
-                fn() => null,
+                fn () => $crawler->filterXPath('//span[contains(@class, "price-whole")]')->text(),
+                fn () => null,
             );
             $priceFraction = rescue(
-                fn() => $crawler->filterXPath('//span[contains(@class, "price-fraction")]')->text(),
-                fn() => null,
+                fn () => $crawler->filterXPath('//span[contains(@class, "price-fraction")]')->text(),
+                fn () => null,
             );
 
             $sku = $crawler->filterXPath('//div[contains(@data-asin, "")]')->attr('data-asin');
 
             $trimmedItemName = trim($itemName);
 
-            if (!is_null($priceWhole)) {
+            if ($priceWhole !== null) {
                 $priceWholeNumericOnly = preg_replace('/\D/', '', trim($priceWhole));
                 $trimmedPriceFraction = trim($priceFraction);
                 $availability = true;

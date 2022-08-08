@@ -8,11 +8,11 @@ use Domain\Stores\Exceptions\StoreNotFoundException;
 use Domain\Stores\Services\AmazonCanada\AmazonCanadaService;
 use Domain\Stores\Services\BestBuyCanada\BestBuyCanadaService;
 use Domain\Stores\Services\NeweggCanada\NeweggCanadaService;
+use Illuminate\Config\Repository as Config;
 use Illuminate\Support\Arr;
 use Spatie\Browsershot\Browsershot;
 use Spatie\Image\Manipulations;
 use Support\Contracts\StoreContract;
-use Illuminate\Config\Repository as Config;
 
 class BrowserShotFactory
 {

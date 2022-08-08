@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Domain\Stores\Services\NeweggCanada;
 
 use Domain\Stores\DTOs\StockData;

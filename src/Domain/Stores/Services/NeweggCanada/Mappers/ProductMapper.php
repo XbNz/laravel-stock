@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Domain\Stores\Services\NeweggCanada\Mappers;
 
 use Domain\Stores\DTOs\StockData;
@@ -11,7 +13,6 @@ use Illuminate\Support\Str;
 use Psr\Http\Message\UriInterface;
 use Support\Contracts\MapperContract;
 use Symfony\Component\DomCrawler\Crawler;
-use Webmozart\Assert\Assert;
 
 class ProductMapper implements MapperContract
 {

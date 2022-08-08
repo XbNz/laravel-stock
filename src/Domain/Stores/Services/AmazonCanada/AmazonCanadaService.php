@@ -6,16 +6,10 @@ namespace Domain\Stores\Services\AmazonCanada;
 
 use Domain\Stores\DTOs\StockData;
 use Domain\Stores\DTOs\StockSearchData;
-use Domain\Stores\Enums\Currency;
 use Domain\Stores\Services\AmazonCanada\Mappers\ProductMapper;
 use Domain\Stores\Services\AmazonCanada\Mappers\SearchMapper;
-use Domain\Stores\ValueObjects\Price;
-use GuzzleHttp\Psr7\Uri;
-use Illuminate\Support\Facades\Cache;
 use Psr\Http\Message\UriInterface;
 use Spatie\Browsershot\Browsershot;
-use Spatie\Image\Image;
-use Spatie\Image\Manipulations;
 use Support\Contracts\StoreContract;
 use Symfony\Component\DomCrawler\Crawler;
 use Webmozart\Assert\Assert;

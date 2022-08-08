@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Domain\Stores\Services\NeweggCanada\Mappers;
 
 use Domain\Stores\Collections\StockDataCollection;
@@ -25,7 +27,6 @@ class SearchMapper implements MapperContract
 
         $allResults
             ->each(function (Crawler $crawler) use ($collection) {
-
                 $title = $crawler->filterXPath('//a[contains(@class, "item-title")]')->text();
                 $priceContainer = $crawler->filterXPath('//ul[contains(@class, "price")]')
                     ->filterXPath('//li[contains(@class, "price-current")]');

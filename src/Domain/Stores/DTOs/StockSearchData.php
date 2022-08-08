@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Domain\Stores\DTOs;
 
 use Domain\Stores\Collections\StockDataCollection;
 use GuzzleHttp\Psr7\Uri;
-use Illuminate\Support\Collection;
 use Support\Contracts\MappableContract;
 use Webmozart\Assert\Assert;
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Domain\Stores\Enums;
 
 use Domain\Stores\Services\AmazonCanada\AmazonCanadaService;

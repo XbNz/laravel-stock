@@ -1,13 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Domain\Stores\Services\BestBuyCanada;
 
 use Domain\Stores\DTOs\StockData;
 use Domain\Stores\DTOs\StockSearchData;
 use Domain\Stores\Services\BestBuyCanada\Mappers\ProductMapper;
 use Domain\Stores\Services\BestBuyCanada\Mappers\SearchMapper;
-use GuzzleHttp\Psr7\Uri;
-use Illuminate\Support\Facades\File;
 use Psr\Http\Message\UriInterface;
 use Spatie\Browsershot\Browsershot;
 use Support\Contracts\StoreContract;
