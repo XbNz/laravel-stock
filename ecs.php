@@ -1,0 +1,31 @@
+<?php
+
+use ECSPrefix202207\Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use PhpCsFixer\Fixer\ArrayNotation\ArraySyntaxFixer;
+use Symplify\EasyCodingStandard\ValueObject\Option;
+use Symplify\EasyCodingStandard\ValueObject\Set\SetList;
+
+return static function (ContainerConfigurator $containerConfigurator): void {
+    $parameters = $containerConfigurator->parameters();
+
+    $parameters->set(Option::PATHS, [
+        __DIR__ . '/src',
+        __DIR__ . '/tests',
+        __DIR__ . '/database',
+        __DIR__ . '/routes',
+    ]);
+
+    $parameters->set(Option::PARALLEL, true);
+
+    $containerConfigurator->import(SetList::PSR_12);
+    $containerConfigurator->import(SetList::COMMON);
+    $containerConfigurator->import(SetList::STRICT);
+    $containerConfigurator->import(SetList::CLEAN_CODE);
+
+    $services = $containerConfigurator->services();
+
+    $services->set(ArraySyntaxFixer::class)
+        ->call('configure', [[
+            'syntax' => 'short',
+        ]]);
+};
