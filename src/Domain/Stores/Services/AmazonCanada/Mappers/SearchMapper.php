@@ -24,50 +24,21 @@ class SearchMapper implements MapperContract
         $collection = StockDataCollection::make();
 
         $allResults->each(function (Crawler $crawler) use ($collection) {
-            $itemName = $crawler->filterXPath('//div[contains(@class, "s-title-instructions-style")]')
-                ->filterXPath('//span[contains(@class, "a-text-normal")]')
-                ->text();
+            $price = $this->price($crawler);
+            $itemName = $this->itemName($crawler);
 
-            $priceWhole = rescue(
-                fn () => $crawler->filterXPath('//span[contains(@class, "price-whole")]')->text(),
-                fn () => null,
-            );
-
-            $priceFraction = rescue(
-                fn () => $crawler->filterXPath('//span[contains(@class, "price-fraction")]')->text(),
-                fn () => null,
-            );
-
-            if ($priceWhole !== null) {
-                $priceWholeNumericOnly = preg_replace('/\D/', '', trim($priceWhole));
-                Assert::integerish($priceWholeNumericOnly);
-            }
-
-            if ($priceFraction !== null) {
-                $priceFractionNumericOnly = preg_replace('/\D/', '', trim($priceFraction));
-                Assert::integerish($priceFractionNumericOnly);
-            }
-
-            if ($priceWhole !== null) {
+            if ($price instanceof Price) {
                 $availability = true;
-                $priceObject = new Price(
-                    (int) $priceWholeNumericOnly,
-                    Currency::CAD,
-                    isset($priceFractionNumericOnly) ? (int) $priceFractionNumericOnly : null,
-                );
             }
 
-            $asin = $crawler->filterXPath('//div[contains(@data-asin, "")]')->attr('data-asin');
-            Assert::string($asin);
-            Assert::minLength($asin, 2);
-            $sku = trim($asin);
+            $sku = $this->sku($crawler);
 
             $collection->push(
                 new StockData(
-                    trim($itemName),
+                    $itemName,
                     new Uri("https://www.amazon.ca/dp/{$sku}"),
                     Store::AmazonCanada,
-                    $priceObject ?? null,
+                    $price,
                     $availability ?? false,
                     $sku,
                 )
@@ -75,5 +46,56 @@ class SearchMapper implements MapperContract
         });
 
         return $collection;
+    }
+
+    private function price(Crawler $rootHtml): ?Price
+    {
+        $priceWhole = rescue(
+            static fn () => $rootHtml->filterXPath('//span[contains(@class, "price-whole")]')->text(),
+            static fn () => null,
+        );
+
+        $priceFraction = rescue(
+            static fn () => $rootHtml->filterXPath('//span[contains(@class, "price-fraction")]')->text(),
+            static fn () => null,
+        );
+
+        if ($priceWhole !== null) {
+            $priceWholeNumericOnly = preg_replace('/\D/', '', trim($priceWhole));
+            Assert::integerish($priceWholeNumericOnly);
+        }
+
+        if ($priceFraction !== null) {
+            $priceFractionNumericOnly = preg_replace('/\D/', '', trim($priceFraction));
+            Assert::integerish($priceFractionNumericOnly);
+        }
+
+        if ($priceWhole !== null) {
+            $priceObject = new Price(
+                (int) $priceWholeNumericOnly,
+                Currency::CAD,
+                isset($priceFractionNumericOnly) ? (int) $priceFractionNumericOnly : null,
+            );
+        }
+
+        return $priceObject ?? null;
+    }
+
+    private function itemName(Crawler $rootHtml): string
+    {
+        $itemName = $rootHtml->filterXPath('//div[contains(@class, "s-title-instructions-style")]')
+            ->filterXPath('//span[contains(@class, "a-text-normal")]')
+            ->text();
+
+        Assert::minLength($itemName, 2);
+        return $itemName;
+    }
+
+    private function sku(Crawler $rootHtml): string
+    {
+        $asin = $rootHtml->filterXPath('//div[contains(@data-asin, "")]')->attr('data-asin');
+        Assert::string($asin);
+        Assert::minLength($asin, 2);
+        return trim($asin);
     }
 }

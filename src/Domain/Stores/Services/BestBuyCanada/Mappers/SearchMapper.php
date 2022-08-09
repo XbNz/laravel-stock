@@ -15,6 +15,7 @@ use Illuminate\Support\Str;
 use Psr\Http\Message\UriInterface;
 use Support\Contracts\MapperContract;
 use Symfony\Component\DomCrawler\Crawler;
+use Webmozart\Assert\Assert;
 
 class SearchMapper implements MapperContract
 {
@@ -34,43 +35,68 @@ class SearchMapper implements MapperContract
                     ->count() === 1;
             })
             ->each(function (Crawler $crawler) use ($collection) {
-                $href = $crawler->filterXPath('//a[contains(@class, "link")]/@href')->text();
 
-                $sku = Collection::make(explode('/', $href))
-                    ->filter(fn (string $segment) => is_numeric($segment) && Str::of($segment)->length() === 8)
-                    ->sole();
-
-                $stockUri = new Uri("https://www.bestbuy.ca/en-ca/product/{$sku}");
-
-                $crawler = $crawler->filterXPath('//div[contains(@class, "productItemTextContainer")]');
-
-                $price = $crawler->filterXPath('//div[contains(@class, "productPricingContainer")]')
-                    ->filterXPath('//span[contains(@class, "screenReaderOnly")]')
-                    ->text();
-
-                [$basePrice, $fractionalPrice] = explode('.', Str::of($price)->replaceMatches('/[^0-9.]/', '')->value());
-
-                $itemName = $crawler->filterXPath('//div[contains(@class, "productItemName")]')->text();
-
-                $availability = $crawler->filterXPath('//p[contains(@class, "shippingAvailability")]')->text();
-                $availabilityBoolean = Str::of($availability)->lower()->contains('available');
+                $price = $this->price($crawler);
+                $itemName = $this->itemName($crawler);
+                $sku = $this->sku($crawler);
+                $availability = $this->availability($crawler);
 
                 $collection->push(
                     new StockData(
                         $itemName,
-                        $stockUri,
+                        new Uri("https://www.bestbuy.ca/en-ca/product/{$sku}"),
                         Store::BestBuyCanada,
-                        new Price(
-                            (int) $basePrice,
-                            Currency::CAD,
-                            (int) $fractionalPrice
-                        ),
-                        $availabilityBoolean,
+                        $price,
+                        $availability ?? false,
                         $sku,
                     )
                 );
             });
 
         return $collection;
+    }
+
+    private function price(Crawler $rootHtml): Price
+    {
+        $price = $rootHtml->filterXPath('//div[contains(@class, "productPricingContainer")]')
+            ->filterXPath('//span[contains(@class, "screenReaderOnly")]')
+            ->text();
+
+        [$basePrice, $fractionalPrice] = explode('.', Str::of($price)->replaceMatches('/[^0-9.]/', '')->value());
+
+        Assert::integerish($basePrice);
+        Assert::integerish($fractionalPrice);
+
+        return new Price(
+            (int) $basePrice,
+            Currency::CAD,
+            (int) $fractionalPrice,
+        );
+    }
+
+    private function itemName(Crawler $rootHtml): string
+    {
+        $itemName = $rootHtml->filterXPath('//div[contains(@class, "productItemName")]')->text();
+
+        Assert::minLength(trim($itemName), 2);
+
+        return trim($itemName);
+    }
+
+    private function availability(Crawler $rootHtml): bool
+    {
+        $availability = $rootHtml->filterXPath('//div[contains(@class, "productItemTextContainer")]')
+            ->filterXPath('//p[contains(@class, "shippingAvailability")]')->text();
+
+        return Str::of($availability)->lower()->contains('available');
+    }
+
+    private function sku(Crawler $rootHtml): string
+    {
+        $href = $rootHtml->filterXPath('//a[contains(@class, "link")]/@href')->text();
+
+        return Collection::make(explode('/', $href))
+            ->filter(fn (string $segment) => is_numeric($segment) && Str::of($segment)->length() === 8)
+            ->sole();
     }
 }

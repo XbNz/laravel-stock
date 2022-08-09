@@ -28,52 +28,87 @@ class SearchMapper implements MapperContract
 
         $allResults
             ->each(function (Crawler $crawler) use ($collection) {
-                $title = $crawler->filterXPath('//a[contains(@class, "item-title")]')->text();
-                $priceContainer = $crawler->filterXPath('//ul[contains(@class, "price")]')
-                    ->filterXPath('//li[contains(@class, "price-current")]');
 
-                $priceBase = $priceContainer->filterXPath('//strong')->text();
-                $priceFractional = $priceContainer->filterXPath('//sup')->text();
+                $price = $this->price($crawler);
+                $title = $this->itemName($crawler);
+                $sku = $this->sku($crawler);
+                $availability = $this->availability($crawler);
 
-                $priceBaseStripped = Str::of($priceBase)->replaceMatches('/[^0-9.]/', '')->value();
-                $priceFractionalStripped = Str::of($priceFractional)->replaceMatches('/\D/', '')->value();
-
-                $uri = new Uri($crawler->filterXPath('//a[contains(@class, "item-img")]/@href')->text());
-
-                $path = Collection::make(
-                    explode(
-                        '/',
-                        $uri->getPath()
-                    )
-                );
-
-                $promoSection = $crawler->filterXPath('//p[contains(@class, "item-promo")]');
-
-                if ($promoSection->count() > 0) {
-                    $availability = $crawler->filterXPath('//p[contains(@class, "item-promo")]')->text();
-                    $availabilityBoolean = Str::of($availability)->lower()->contains('out of stock');
-                }
-
-                $skuPath = $path->search('p', true);
-                Assert::integer($skuPath);
-                $sku = $path[$skuPath + 1];
 
                 $collection->push(
                     new StockData(
-                        trim($title),
-                        $uri,
+                        $title,
+                        new Uri("https://www.newegg.ca/p/{$sku}"),
                         Store::NeweggCanada,
-                        new Price(
-                            (int) $priceBaseStripped,
-                            Currency::CAD,
-                            (int) $priceFractionalStripped,
-                        ),
-                        $availabilityBoolean ?? true,
-                        trim($sku),
+                        $price,
+                        $availability,
+                        $sku
                     ),
                 );
             });
 
         return $collection;
+    }
+
+    private function price(Crawler $rootHtml): Price
+    {
+        $priceContainer = $rootHtml->filterXPath('//ul[contains(@class, "price")]')
+            ->filterXPath('//li[contains(@class, "price-current")]');
+
+        $priceBase = $priceContainer->filterXPath('//strong')->text();
+        $priceFractional = $priceContainer->filterXPath('//sup')->text();
+
+        $priceBaseStripped = Str::of($priceBase)->replaceMatches('/[^0-9.]/', '')->value();
+        $priceFractionalStripped = Str::of($priceFractional)->replaceMatches('/\D/', '')->value();
+
+        Assert::integerish($priceBaseStripped);
+        Assert::integerish($priceFractionalStripped);
+
+        return new Price(
+            (int) $priceBaseStripped,
+            Currency::CAD,
+            (int) $priceFractionalStripped,
+        );
+    }
+
+    private function itemName(Crawler $rootHtml): string
+    {
+        $itemName = $rootHtml->filterXPath('//a[contains(@class, "item-title")]')->text();
+        Assert::minLength(trim($itemName), 2);
+
+        return trim($itemName);
+    }
+
+    private function availability(Crawler $rootHtml): bool
+    {
+        $promoSection = $rootHtml->filterXPath('//p[contains(@class, "item-promo")]');
+
+        if ($promoSection->count() > 0) {
+            $availability = $rootHtml->filterXPath('//p[contains(@class, "item-promo")]')->text();
+            $availabilityBoolean = Str::of($availability)->lower()->contains('out of stock');
+        }
+
+        return $availabilityBoolean ?? true;
+    }
+
+    private function sku(Crawler $rootHtml): string
+    {
+        $link = $rootHtml->filterXPath('//a[contains(@class, "item-img")]/@href')->text();
+        $uri = new Uri($link);
+
+        $path = Collection::make(
+            explode(
+                '/',
+                $uri->getPath()
+            )
+        );
+
+        $skuPath = $path->search('p', true);
+        Assert::integer($skuPath);
+        $sku = $path[$skuPath + 1];
+
+        Assert::minLength($sku, 2);
+
+        return $sku;
     }
 }

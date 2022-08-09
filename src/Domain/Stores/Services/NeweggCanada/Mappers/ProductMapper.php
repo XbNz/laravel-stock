@@ -19,37 +19,71 @@ class ProductMapper implements MapperContract
 {
     public function map(Crawler $html, UriInterface $searchUri, string $image): StockData
     {
-        $price = $html->filterXPath('//ul[contains(@class, "price")]')
+        $price = $this->price($html);
+        $title = $this->itemName($html);
+        $availability = $this->availability($html);
+        $sku = $this->sku($searchUri);
+
+        return new StockData(
+            $title,
+            $searchUri,
+            Store::NeweggCanada,
+            $price,
+            $availability,
+            $sku,
+            $image,
+        );
+    }
+
+    private function price(Crawler $rootHtml): Price
+    {
+        $price = $rootHtml->filterXPath('//ul[contains(@class, "price")]')
             ->filterXPath('//li[contains(@class, "price-current")]')
             ->text();
 
-        $title = $html->filterXPath('//h1[contains(@class, "product-title")]')->text();
+        [$priceBase, $priceFractional] = explode('.', Str::of($price)->replaceMatches('/[^0-9.]/', '')->value());
 
-        $availability = $html->filterXPath('//div[contains(@class, "product-inventory")]')
+        Assert::integerish($priceBase);
+        Assert::integerish($priceFractional);
+
+        return new Price(
+            (int) $priceBase,
+            Currency::CAD,
+            (int) $priceFractional,
+        );
+    }
+
+    private function itemName(Crawler $rootHtml): string
+    {
+        $productFrame = $rootHtml->filterXPath('//div[contains(@class, "row-body")]');
+
+        $title = $productFrame->filterXPath('//h1[contains(@class, "product-title")]')->text();
+
+        Assert::minLength(trim($title), 2);
+
+        return trim($title);
+    }
+
+    private function availability(Crawler $rootHtml): bool
+    {
+        $productFrame = $rootHtml->filterXPath('//div[contains(@class, "row-body")]');
+
+        $availability = $productFrame->filterXPath('//div[contains(@class, "product-inventory")]')
             ->filterXPath('//strong')
             ->text();
 
-        $availabilityBoolean = Str::of($availability)->lower()->contains('in stock');
+        return Str::of($availability)->lower()->contains('in stock');
+    }
 
-        [$priceBase, $priceFractional] = explode('.', Str::of($price)->replaceMatches('/[^0-9.]/', '')->value());
-
+    private function sku(UriInterface $searchUri): string
+    {
         $path = explode('/', $searchUri->getPath());
         $positionOfSkuPath = Collection::make($path)->search('p', true);
         Assert::integer($positionOfSkuPath);
         $sku = $path[$positionOfSkuPath + 1];
 
-        return new StockData(
-            trim($title),
-            $searchUri,
-            Store::NeweggCanada,
-            new Price(
-                (int) $priceBase,
-                Currency::CAD,
-                (int) $priceFractional,
-            ),
-            $availabilityBoolean,
-            $sku,
-            $image,
-        );
+        Assert::minLength($sku, 2);
+
+        return $sku;
     }
 }
