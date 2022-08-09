@@ -28,12 +28,10 @@ class SearchMapper implements MapperContract
 
         $allResults
             ->each(function (Crawler $crawler) use ($collection) {
-
                 $price = $this->price($crawler);
                 $title = $this->itemName($crawler);
                 $sku = $this->sku($crawler);
                 $availability = $this->availability($crawler);
-
 
                 $collection->push(
                     new StockData(
@@ -107,6 +105,7 @@ class SearchMapper implements MapperContract
         Assert::integer($skuPath);
         $sku = $path[$skuPath + 1];
 
+        Assert::notNull($sku);
         Assert::minLength($sku, 2);
 
         return $sku;

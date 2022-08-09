@@ -35,7 +35,6 @@ class SearchMapper implements MapperContract
                     ->count() === 1;
             })
             ->each(function (Crawler $crawler) use ($collection) {
-
                 $price = $this->price($crawler);
                 $itemName = $this->itemName($crawler);
                 $sku = $this->sku($crawler);
@@ -47,7 +46,7 @@ class SearchMapper implements MapperContract
                         new Uri("https://www.bestbuy.ca/en-ca/product/{$sku}"),
                         Store::BestBuyCanada,
                         $price,
-                        $availability ?? false,
+                        $availability,
                         $sku,
                     )
                 );

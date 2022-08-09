@@ -24,7 +24,6 @@ class ProductMapper implements MapperContract
         $itemName = $this->itemName($html);
         $availability = $this->availability($html);
 
-
         return new StockData(
             $itemName,
             $searchUri,

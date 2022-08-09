@@ -8,7 +8,6 @@ use Domain\Stores\DTOs\StockData;
 use Domain\Stores\Enums\Currency;
 use Domain\Stores\Enums\Store;
 use Domain\Stores\ValueObjects\Price;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Psr\Http\Message\UriInterface;
 use Support\Contracts\MapperContract;
