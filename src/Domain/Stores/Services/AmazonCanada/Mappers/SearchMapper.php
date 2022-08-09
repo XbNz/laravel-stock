@@ -59,7 +59,7 @@ class SearchMapper implements MapperContract
 
             $asin = $crawler->filterXPath('//div[contains(@data-asin, "")]')->attr('data-asin');
             Assert::string($asin);
-            Assert::length($asin, 2);
+            Assert::minLength($asin, 2);
             $sku = trim($asin);
 
             $collection->push(
