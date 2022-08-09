@@ -13,6 +13,7 @@ use GuzzleHttp\Psr7\Uri;
 use Psr\Http\Message\UriInterface;
 use Support\Contracts\MapperContract;
 use Symfony\Component\DomCrawler\Crawler;
+use Webmozart\Assert\Assert;
 
 class SearchMapper implements MapperContract
 {
@@ -31,36 +32,44 @@ class SearchMapper implements MapperContract
                 fn () => $crawler->filterXPath('//span[contains(@class, "price-whole")]')->text(),
                 fn () => null,
             );
+
             $priceFraction = rescue(
                 fn () => $crawler->filterXPath('//span[contains(@class, "price-fraction")]')->text(),
                 fn () => null,
             );
 
-            $sku = $crawler->filterXPath('//div[contains(@data-asin, "")]')->attr('data-asin');
-
-            $trimmedItemName = trim($itemName);
-
             if ($priceWhole !== null) {
                 $priceWholeNumericOnly = preg_replace('/\D/', '', trim($priceWhole));
-                $trimmedPriceFraction = trim($priceFraction);
+                Assert::integerish($priceWholeNumericOnly);
+            }
+
+            if ($priceFraction !== null) {
+                $priceFractionNumericOnly = preg_replace('/\D/', '', trim($priceFraction));
+                Assert::integerish($priceFractionNumericOnly);
+            }
+
+            if ($priceWhole !== null) {
                 $availability = true;
                 $priceObject = new Price(
                     (int) $priceWholeNumericOnly,
                     Currency::CAD,
-                    (int) $trimmedPriceFraction,
+                    isset($priceFractionNumericOnly) ? (int) $priceFractionNumericOnly : null,
                 );
             }
 
-            $trimmedSku = trim($sku);
+            $asin = $crawler->filterXPath('//div[contains(@data-asin, "")]')->attr('data-asin');
+            Assert::string($asin);
+            Assert::length($asin, 2);
+            $sku = trim($asin);
 
             $collection->push(
                 new StockData(
-                    $itemName,
-                    new Uri("https://www.amazon.ca/dp/{$trimmedSku}"),
+                    trim($itemName),
+                    new Uri("https://www.amazon.ca/dp/{$sku}"),
                     Store::AmazonCanada,
                     $priceObject ?? null,
                     $availability ?? false,
-                    $trimmedSku,
+                    $sku,
                 )
             );
         });

@@ -13,6 +13,7 @@ use Illuminate\Support\Str;
 use Psr\Http\Message\UriInterface;
 use Support\Contracts\MapperContract;
 use Symfony\Component\DomCrawler\Crawler;
+use Webmozart\Assert\Assert;
 
 class ProductMapper implements MapperContract
 {
@@ -20,10 +21,12 @@ class ProductMapper implements MapperContract
     {
         $html = $html->filterXPath('//div[contains(@id, "ppd")]');
         $itemName = $html->filterXPath('//span[contains(@id, "productTitle")]')->text();
+
         $priceWhole = rescue(
             fn () => $html->filterXPath('//span[contains(@class, "price-whole")]')->text(),
             fn () => null,
         );
+
         $priceFraction = rescue(
             fn () => $html->filterXPath('//span[contains(@class, "price-fraction")]')->text(),
             fn () => null,
@@ -31,11 +34,19 @@ class ProductMapper implements MapperContract
 
         if ($priceWhole !== null) {
             $priceWholeNumericOnly = preg_replace('/\D/', '', trim($priceWhole));
-            $trimmedPriceFraction = trim($priceFraction);
+            Assert::integerish($priceWholeNumericOnly);
+        }
+
+        if ($priceFraction !== null) {
+            $priceFractionNumericOnly = preg_replace('/\D/', '', trim($priceFraction));
+            Assert::integerish($priceFractionNumericOnly);
+        }
+
+        if ($priceWhole !== null) {
             $priceObject = new Price(
                 (int) $priceWholeNumericOnly,
                 Currency::CAD,
-                (int) $trimmedPriceFraction,
+                isset($priceFractionNumericOnly) ? (int) $priceFractionNumericOnly : null,
             );
         }
 
@@ -45,11 +56,10 @@ class ProductMapper implements MapperContract
 
         $path = explode('/', $searchUri->getPath());
         $positionOfSkuPath = Collection::make($path)->search('dp', true);
+        Assert::integer($positionOfSkuPath);
         $sku = $path[$positionOfSkuPath + 1];
 
         $trimmedItemName = trim($itemName);
-        $priceWholeNumericOnly = preg_replace('/\D/', '', trim($priceWhole));
-        $trimmedPriceFraction = trim($priceFraction);
         $availabilityBoolean = Str::of(rtrim($availability))->length() > 4;
 
         return new StockData(

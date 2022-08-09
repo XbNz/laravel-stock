@@ -15,6 +15,7 @@ use Illuminate\Support\Str;
 use Psr\Http\Message\UriInterface;
 use Support\Contracts\MapperContract;
 use Symfony\Component\DomCrawler\Crawler;
+use Webmozart\Assert\Assert;
 
 class SearchMapper implements MapperContract
 {
@@ -38,6 +39,7 @@ class SearchMapper implements MapperContract
                 $priceFractionalStripped = Str::of($priceFractional)->replaceMatches('/\D/', '')->value();
 
                 $uri = new Uri($crawler->filterXPath('//a[contains(@class, "item-img")]/@href')->text());
+
                 $path = Collection::make(
                     explode(
                         '/',
@@ -53,6 +55,7 @@ class SearchMapper implements MapperContract
                 }
 
                 $skuPath = $path->search('p', true);
+                Assert::integer($skuPath);
                 $sku = $path[$skuPath + 1];
 
                 $collection->push(

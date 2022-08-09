@@ -13,6 +13,7 @@ use Illuminate\Support\Str;
 use Psr\Http\Message\UriInterface;
 use Support\Contracts\MapperContract;
 use Symfony\Component\DomCrawler\Crawler;
+use Webmozart\Assert\Assert;
 
 class ProductMapper implements MapperContract
 {
@@ -34,6 +35,7 @@ class ProductMapper implements MapperContract
 
         $path = explode('/', $searchUri->getPath());
         $positionOfSkuPath = Collection::make($path)->search('p', true);
+        Assert::integer($positionOfSkuPath);
         $sku = $path[$positionOfSkuPath + 1];
 
         return new StockData(

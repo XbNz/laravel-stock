@@ -13,6 +13,7 @@ use Illuminate\Support\Arr;
 use Spatie\Browsershot\Browsershot;
 use Spatie\Image\Manipulations;
 use Support\Contracts\StoreContract;
+use Webmozart\Assert\Assert;
 
 class BrowserShotFactory
 {
@@ -31,32 +32,36 @@ class BrowserShotFactory
             AmazonCanadaService::class => $this->amazonCanada(),
             BestBuyCanadaService::class => $this->bestBuyCanada(),
             NeweggCanadaService::class => $this->neweggCanada(),
-            default => new StoreNotFoundException("{$storeServiceClass} is not a valid store service FQCN")
+            default => throw new StoreNotFoundException("{$storeServiceClass} is not a valid store service FQCN")
         };
     }
 
     private function amazonCanada(): Browsershot
     {
+        $quality = $this->getConfigOptionForService(AmazonCanadaService::class, 'image_quality');
+        Assert::integerish($quality);
+        $format = $this->getConfigOptionForService(AmazonCanadaService::class, 'image_format');
+        Assert::string($format);
+        $width = $this->getConfigOptionForService(AmazonCanadaService::class, 'screenshot_width');
+        Assert::integerish($width);
+        $height = $this->getConfigOptionForService(AmazonCanadaService::class, 'screenshot_height');
+        Assert::integerish($height);
+        $userAgent = $this->getConfigOptionForService(AmazonCanadaService::class, 'user_agent');
+        Assert::string($userAgent);
+        $shouldUseProxies = $this->getConfigOptionForService(AmazonCanadaService::class, 'proxy');
+        Assert::boolean($shouldUseProxies);
+
         $manipulations = new Manipulations();
-        $manipulations->quality(
-            $this->config->get('store.' . AmazonCanadaService::class . '.image_quality', 20)
-        )->format(
-            $this->config->get('store.' . AmazonCanadaService::class . '.image_format', Manipulations::FORMAT_JPG)
-        );
+        $manipulations->quality((int) $quality)->format($format);
 
         $client = $this->client
-            ->windowSize(
-                $this->config->get('store.' . AmazonCanadaService::class . '.screenshot_width', 1920),
-                $this->config->get('store.' . AmazonCanadaService::class . '.screenshot_height', 1080)
-            )
-            ->userAgent(
-                $this->config->get('store.' . AmazonCanadaService::class . '.user_agent')
-            )
+            ->windowSize((int) $width, (int) $height)
+            ->userAgent($userAgent)
             ->waitUntilNetworkIdle()
             ->mergeManipulations($manipulations);
 
-        if ($this->config->get('store.' . AmazonCanadaService::class . '.proxy')) {
-            $client->setProxyServer(Arr::random($this->config->get('proxy.proxies')));
+        if ($shouldUseProxies) {
+            $client->setProxyServer($this->getRandomProxy());
         }
 
         return $client;
@@ -64,26 +69,30 @@ class BrowserShotFactory
 
     private function bestBuyCanada(): Browsershot
     {
+        $quality = $this->getConfigOptionForService(BestBuyCanadaService::class, 'image_quality');
+        Assert::integerish($quality);
+        $format = $this->getConfigOptionForService(BestBuyCanadaService::class, 'image_format');
+        Assert::string($format);
+        $width = $this->getConfigOptionForService(BestBuyCanadaService::class, 'screenshot_width');
+        Assert::integerish($width);
+        $height = $this->getConfigOptionForService(BestBuyCanadaService::class, 'screenshot_height');
+        Assert::integerish($height);
+        $userAgent = $this->getConfigOptionForService(BestBuyCanadaService::class, 'user_agent');
+        Assert::string($userAgent);
+        $shouldUseProxies = $this->getConfigOptionForService(BestBuyCanadaService::class, 'proxy');
+        Assert::boolean($shouldUseProxies);
+
         $manipulations = new Manipulations();
-        $manipulations->quality(
-            $this->config->get('store.' . BestBuyCanadaService::class . '.image_quality', 20)
-        )->format(
-            $this->config->get('store.' . BestBuyCanadaService::class . '.image_format', Manipulations::FORMAT_JPG)
-        );
+        $manipulations->quality((int) $quality)->format($format);
 
         $client = $this->client
-            ->windowSize(
-                $this->config->get('store.' . BestBuyCanadaService::class . '.screenshot_width', 1920),
-                $this->config->get('store.' . BestBuyCanadaService::class . '.screenshot_height', 1080)
-            )
-            ->userAgent(
-                $this->config->get('store.' . BestBuyCanadaService::class . '.user_agent')
-            )
+            ->windowSize((int) $width, (int) $height)
+            ->userAgent($userAgent)
             ->waitUntilNetworkIdle()
             ->mergeManipulations($manipulations);
 
-        if ($this->config->get('store.' . BestBuyCanadaService::class . '.proxy')) {
-            $client->setProxyServer(Arr::random($this->config->get('proxy.proxies')));
+        if ($shouldUseProxies) {
+            $client->setProxyServer($this->getRandomProxy());
         }
 
         return $client;
@@ -91,28 +100,50 @@ class BrowserShotFactory
 
     private function neweggCanada(): Browsershot
     {
+        $quality = $this->getConfigOptionForService(NeweggCanadaService::class, 'image_quality');
+        Assert::integerish($quality);
+        $format = $this->getConfigOptionForService(NeweggCanadaService::class, 'image_format');
+        Assert::string($format);
+        $width = $this->getConfigOptionForService(NeweggCanadaService::class, 'screenshot_width');
+        Assert::integerish($width);
+        $height = $this->getConfigOptionForService(NeweggCanadaService::class, 'screenshot_height');
+        Assert::integerish($height);
+        $userAgent = $this->getConfigOptionForService(NeweggCanadaService::class, 'user_agent');
+        Assert::string($userAgent);
+        $shouldUseProxies = $this->getConfigOptionForService(NeweggCanadaService::class, 'proxy');
+        Assert::boolean($shouldUseProxies);
+
         $manipulations = new Manipulations();
-        $manipulations->quality(
-            $this->config->get('store.' . NeweggCanadaService::class . '.image_quality', 20)
-        )->format(
-            $this->config->get('store.' . NeweggCanadaService::class . '.image_format', Manipulations::FORMAT_JPG)
-        );
+        $manipulations->quality((int) $quality)->format($format);
 
         $client = $this->client
-            ->windowSize(
-                $this->config->get('store.' . NeweggCanadaService::class . '.screenshot_width', 1920),
-                $this->config->get('store.' . NeweggCanadaService::class . '.screenshot_height', 1080)
-            )
-            ->userAgent(
-                $this->config->get('store.' . NeweggCanadaService::class . '.user_agent')
-            )
+            ->windowSize((int) $width, (int) $height)
+            ->userAgent($userAgent)
             ->waitUntilNetworkIdle()
             ->mergeManipulations($manipulations);
 
-        if ($this->config->get('store.' . NeweggCanadaService::class . '.proxy')) {
-            $client->setProxyServer(Arr::random($this->config->get('proxy.proxies')));
+        if ($shouldUseProxies) {
+            $client->setProxyServer($this->getRandomProxy());
         }
 
         return $client;
+    }
+
+    private function getRandomProxy(): string
+    {
+        $proxies = $this->config->get('proxy.proxies');
+        Assert::isArray($proxies);
+        Assert::minCount($proxies, 1);
+        $random = Arr::random($proxies);
+        Assert::string($random);
+        return $random;
+    }
+
+    /**
+     * @param class-string<StoreContract> $service
+     */
+    private function getConfigOptionForService(string $service, string $configOption): mixed
+    {
+        return $this->config->get('store.' . $service . ".{$configOption}");
     }
 }
