@@ -85,9 +85,13 @@ class ProductMapper implements MapperContract
 
         $availability = $productFrame->filterXPath(
             '//div[contains(@id, "availability")]/span[contains(@class, "medium")]'
-        )->text();
+        );
 
-        return Str::of(trim($availability))->length() > 4;
+        if ($availability->count() === 0) {
+            return false;
+        }
+
+        return Str::of(trim($availability->text()))->length() > 4;
     }
 
     private function sku(UriInterface $searchUri): string

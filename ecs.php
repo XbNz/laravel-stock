@@ -2,6 +2,9 @@
 
 use ECSPrefix202207\Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use PhpCsFixer\Fixer\ArrayNotation\ArraySyntaxFixer;
+use PhpCsFixer\Fixer\Phpdoc\PhpdocLineSpanFixer;
+use PhpCsFixer\Fixer\PhpUnit\PhpUnitMethodCasingFixer;
+use PhpCsFixer\Fixer\PhpUnit\PhpUnitTestAnnotationFixer;
 use Symplify\EasyCodingStandard\ValueObject\Option;
 use Symplify\EasyCodingStandard\ValueObject\Set\SetList;
 
@@ -28,4 +31,9 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         ->call('configure', [[
             'syntax' => 'short',
         ]]);
+
+    $services->remove(PhpUnitMethodCasingFixer::class);
+    $services->remove(PhpUnitTestAnnotationFixer::class);
+    $services->remove(PhpdocLineSpanFixer::class);
+
 };

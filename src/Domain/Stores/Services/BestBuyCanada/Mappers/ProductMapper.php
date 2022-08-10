@@ -42,15 +42,20 @@ class ProductMapper implements MapperContract
             ->filterXPath('//span[contains(@class, "screenReaderOnly")]')
             ->text();
 
-        [$basePrice, $fractionalPrice] = explode('.', Str::of($price)->replaceMatches('/[^0-9.]/', '')->value());
 
+        $exploded = explode('.', Str::of($price)->replaceMatches('/[^0-9.]/', '')->value());
+        $basePrice = $exploded[0];
         Assert::integerish($basePrice);
-        Assert::integerish($fractionalPrice);
+
+        if (count($exploded) === 2) {
+            $fractionalPrice = $exploded[1];
+            Assert::integerish($fractionalPrice);
+        }
 
         return new Price(
             (int) $basePrice,
             Currency::CAD,
-            (int) $fractionalPrice,
+            isset($fractionalPrice) ? (int) $fractionalPrice : null,
         );
     }
 

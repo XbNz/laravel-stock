@@ -27,6 +27,13 @@ class SearchMapper implements MapperContract
         $collection = StockDataCollection::make();
 
         $allResults
+            ->reduce(function (Crawler $crawler) {
+                $price = $crawler->filterXPath('//ul[contains(@class, "price")]')
+                    ->filterXPath('//li[contains(@class, "price-current")]')
+                    ->text();
+
+                return Str::of($price)->trim()->length() > 2;
+            })
             ->each(function (Crawler $crawler) use ($collection) {
                 $price = $this->price($crawler);
                 $title = $this->itemName($crawler);
