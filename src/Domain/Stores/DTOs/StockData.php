@@ -6,6 +6,9 @@ namespace Domain\Stores\DTOs;
 
 use Domain\Stores\Enums\Store;
 use Domain\Stores\ValueObjects\Price;
+use Exception;
+use Illuminate\Support\Facades\File;
+use JetBrains\PhpStorm\Internal\LanguageLevelTypeAware;
 use Psr\Http\Message\UriInterface;
 use Support\Contracts\MappableContract;
 use Webmozart\Assert\Assert;
@@ -24,7 +27,9 @@ class StockData implements MappableContract
         Assert::minLength($title, 2);
         Assert::minLength($sku, 2);
         if ($image !== null) {
-            Assert::isArray(getimagesizefromstring($image));
+            Assert::fileExists($image);
+            Assert::isArray(getimagesizefromstring(File::get($image)));
         }
     }
+
 }

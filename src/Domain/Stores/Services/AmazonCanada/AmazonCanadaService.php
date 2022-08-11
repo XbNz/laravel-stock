@@ -10,6 +10,8 @@ use Domain\Stores\Exceptions\MapperException;
 use Domain\Stores\Services\AmazonCanada\Mappers\ProductMapper;
 use Domain\Stores\Services\AmazonCanada\Mappers\SearchMapper;
 use Exception;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Str;
 use Psr\Http\Message\UriInterface;
 use Spatie\Browsershot\Browsershot;
 use Support\Contracts\StoreContract;
@@ -30,7 +32,10 @@ class AmazonCanadaService implements StoreContract
         Assert::contains($uri->getHost(), 'amazon.ca');
         $link = (string) $uri;
         $browserShot = $this->client->setUrl($link);
-        $screenshot = $browserShot->screenshot();
+        $prefix = Config::get('store.Domain\Stores\Services\AmazonCanada\AmazonCanadaService.image_prefix');
+        $extension = Config::get('store.Domain\Stores\Services\AmazonCanada\AmazonCanadaService.image_format');
+        $screenshot = storage_path('app/tmp/' . $prefix . Str::random(10) . '.' . $extension);
+        $browserShot->save($screenshot);
         $html = new Crawler($browserShot->bodyHtml());
 
         try {
@@ -50,7 +55,10 @@ class AmazonCanadaService implements StoreContract
         Assert::contains($uri->getHost(), 'amazon.ca');
         $link = (string) $uri;
         $browserShot = $this->client->setUrl($link);
-        $screenshot = $browserShot->fullPage()->screenshot();
+        $prefix = Config::get('store.Domain\Stores\Services\AmazonCanada\AmazonCanadaService.image_prefix');
+        $extension = Config::get('store.Domain\Stores\Services\AmazonCanada\AmazonCanadaService.image_format');
+        $screenshot = storage_path('app/tmp/' . $prefix . Str::random(10) . '.' . $extension);
+        $browserShot->fullPage()->save($screenshot);
         $html = new Crawler($browserShot->bodyHtml());
 
         try {

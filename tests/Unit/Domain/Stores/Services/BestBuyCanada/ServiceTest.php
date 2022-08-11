@@ -32,7 +32,7 @@ class ServiceTest extends TestCase
             new Uri('https://www.bestbuy.ca/en-ca/search?search=laptop'),
             new Uri('https://www.bestbuy.ca/en-ca/search?search=graphics card'),
             new Uri('https://www.bestbuy.ca/en-ca/search?search=monitor'),
-            new Uri('https://www.bestbuy.ca/en-ca/search?search=mouse'),
+            new Uri('https://www.bestbuy.ca/en-ca/search?search=fan'),
             new Uri('https://www.bestbuy.ca/en-ca/search?search=tablet'),
         ])->random();
     }

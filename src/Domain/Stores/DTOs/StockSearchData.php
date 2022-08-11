@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Domain\Stores\DTOs;
 
 use Domain\Stores\Collections\StockDataCollection;
+use Illuminate\Support\Facades\File;
 use Psr\Http\Message\UriInterface;
 use Support\Contracts\MappableContract;
 use Webmozart\Assert\Assert;
@@ -21,7 +22,8 @@ class StockSearchData implements MappableContract
     ) {
         Assert::minCount($stocks, 1);
         if ($image !== null) {
-            Assert::isArray(getimagesizefromstring($image));
+            Assert::fileExists($image);
+            Assert::isArray(getimagesizefromstring(File::get($image)));
         }
     }
 }
