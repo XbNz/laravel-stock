@@ -20,10 +20,11 @@ class StockSearchData implements MappableContract
         public readonly StockDataCollection $stocks,
         public readonly ?string $image = null,
     ) {
-        Assert::minCount($stocks, 1);
         if ($image !== null) {
             Assert::fileExists($image);
             Assert::isArray(getimagesizefromstring(File::get($image)));
         }
+
+        Assert::minCount($stocks, 1, "Zero stocks found for {$uri}. Image stored in {$image}");
     }
 }
