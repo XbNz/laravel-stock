@@ -10,6 +10,7 @@ use Domain\Stores\Services\BestBuyCanada\BestBuyCanadaService;
 use Domain\Stores\Services\NeweggCanada\NeweggCanadaService;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Http;
 use Spatie\Browsershot\Browsershot;
 use Spatie\Image\Manipulations;
 use Support\Contracts\StoreContract;
@@ -57,7 +58,7 @@ class BrowserShotFactory
         $client = $this->client
             ->windowSize((int) $width, (int) $height)
             ->userAgent($userAgent)
-            ->waitUntilNetworkIdle()
+            ->setOption('waitUntil', 'networkidle2')
             ->mergeManipulations($manipulations);
 
         if ($shouldUseProxies) {
@@ -88,7 +89,7 @@ class BrowserShotFactory
         $client = $this->client
             ->windowSize((int) $width, (int) $height)
             ->userAgent($userAgent)
-            ->waitUntilNetworkIdle()
+            ->setOption('waitUntil', 'networkidle2')
             ->mergeManipulations($manipulations);
 
         if ($shouldUseProxies) {
@@ -119,7 +120,7 @@ class BrowserShotFactory
         $client = $this->client
             ->windowSize((int) $width, (int) $height)
             ->userAgent($userAgent)
-            ->waitUntilNetworkIdle()
+            ->setOption('waitUntil', 'networkidle2')
             ->mergeManipulations($manipulations);
 
         if ($shouldUseProxies) {
