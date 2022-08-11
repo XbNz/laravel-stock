@@ -51,14 +51,18 @@ class BrowserShotFactory
         Assert::string($userAgent);
         $shouldUseProxies = $this->getConfigOptionForService(AmazonCanadaService::class, 'proxy');
         Assert::boolean($shouldUseProxies);
+        $timeout = $this->getConfigOptionForService(AmazonCanadaService::class, 'timeout');
+        Assert::integerish($timeout);
 
         $manipulations = new Manipulations();
         $manipulations->quality((int) $quality)->format($format);
 
         $client = $this->client
+            ->timeout((int) $timeout)
             ->windowSize((int) $width, (int) $height)
             ->userAgent($userAgent)
-            ->setOption('waitUntil', 'networkidle2')
+            ->disableJavascript()
+            ->waitUntilNetworkIdle()
             ->mergeManipulations($manipulations);
 
         if ($shouldUseProxies) {
@@ -82,14 +86,17 @@ class BrowserShotFactory
         Assert::string($userAgent);
         $shouldUseProxies = $this->getConfigOptionForService(BestBuyCanadaService::class, 'proxy');
         Assert::boolean($shouldUseProxies);
+        $timeout = $this->getConfigOptionForService(BestBuyCanadaService::class, 'timeout');
+        Assert::integerish($timeout);
 
         $manipulations = new Manipulations();
         $manipulations->quality((int) $quality)->format($format);
 
         $client = $this->client
+            ->timeout((int) $timeout)
             ->windowSize((int) $width, (int) $height)
             ->userAgent($userAgent)
-            ->setOption('waitUntil', 'networkidle2')
+            ->waitUntilNetworkIdle()
             ->mergeManipulations($manipulations);
 
         if ($shouldUseProxies) {
@@ -113,14 +120,18 @@ class BrowserShotFactory
         Assert::string($userAgent);
         $shouldUseProxies = $this->getConfigOptionForService(NeweggCanadaService::class, 'proxy');
         Assert::boolean($shouldUseProxies);
+        $timeout = $this->getConfigOptionForService(NeweggCanadaService::class, 'timeout');
+        Assert::integerish($timeout);
 
         $manipulations = new Manipulations();
         $manipulations->quality((int) $quality)->format($format);
 
         $client = $this->client
+            ->timeout((int) $timeout)
             ->windowSize((int) $width, (int) $height)
             ->userAgent($userAgent)
-            ->setOption('waitUntil', 'networkidle2')
+            ->disableJavascript()
+            ->waitUntilNetworkIdle()
             ->mergeManipulations($manipulations);
 
         if ($shouldUseProxies) {

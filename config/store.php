@@ -13,6 +13,7 @@ return [
         'image_quality' => 20,
         'image_format' => Manipulations::FORMAT_JPG,
         'image_prefix' => 'amazon_',
+        'timeout' => 30,
         'proxy' => false,
     ],
     BestBuyCanadaService::class => [
@@ -22,6 +23,7 @@ return [
         'image_quality' => 20,
         'image_format' => Manipulations::FORMAT_JPG,
         'image_prefix' => 'bestbuy_',
+        'timeout' => 100,
         'proxy' => false,
     ],
     NeweggCanadaService::class => [
@@ -31,6 +33,7 @@ return [
         'image_quality' => 20,
         'image_format' => Manipulations::FORMAT_JPG,
         'image_prefix' => 'newegg_',
+        'timeout' => 30,
         'proxy' => false,
     ],
 ];

@@ -12,6 +12,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
+use Spatie\Browsershot\Browsershot;
 use Support\Contracts\StoreContract;
 
 class SearchForStockCommand extends Command
