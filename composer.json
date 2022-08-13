@@ -9,6 +9,7 @@
         "guzzlehttp/guzzle": "^7.2",
         "larabug/larabug": "^2.5",
         "laravel/framework": "^9.19",
+        "laravel/horizon": "^5.9",
         "laravel/sanctum": "^3.0",
         "laravel/tinker": "^2.7",
         "league/flysystem-aws-s3-v3": "^3.2",
@@ -17,6 +18,7 @@
         "symfony/dom-crawler": "^6.1"
     },
     "require-dev": {
+        "barryvdh/laravel-debugbar": "^3.7",
         "barryvdh/laravel-ide-helper": "^2.12",
         "fakerphp/faker": "^1.9.1",
         "laravel/pint": "^1.0",
