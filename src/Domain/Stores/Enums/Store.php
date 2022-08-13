@@ -28,4 +28,14 @@ enum Store: string
             default => throw new InvalidArgumentException('Unknown store'),
         };
     }
+
+    public function storeBaseUri(): string
+    {
+        return match ($this) {
+            self::AmazonCanada => 'https://www.amazon.ca',
+            self::BestBuyCanada => 'https://www.bestbuy.ca',
+            self::NeweggCanada => 'https://www.newegg.ca',
+            default => throw new InvalidArgumentException('Unknown store'),
+        };
+    }
 }

@@ -2,20 +2,19 @@
 
 declare(strict_types=1);
 
+use App\Api\Stocks\Controllers\StockController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
-
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::name('stock.')->group(function () {
+        Route::get('stock/', [StockController::class, 'index'])->name('index');
+        Route::get('stock/{stock:uuid}', [StockController::class, 'show'])->name('show');
+        Route::put('stock/{stock:uuid}', [StockController::class, 'update'])->name('update');
+        Route::delete('stock/{stock:uuid}', [StockController::class, 'destroy']);
+    });
 });
