@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Stocks\StockController;
 
-use Domain\User\Models\User;
+use Domain\Users\Models\User;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 

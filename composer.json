@@ -10,9 +10,11 @@
         "larabug/larabug": "^2.5",
         "laravel/framework": "^9.19",
         "laravel/horizon": "^5.9",
+        "laravel/jetstream": "^2.11",
         "laravel/sanctum": "^3.0",
         "laravel/tinker": "^2.7",
         "league/flysystem-aws-s3-v3": "^3.2",
+        "livewire/livewire": "^2.5",
         "spatie/browsershot": "^3.57.1",
         "spatie/fork": "^1.1",
         "symfony/dom-crawler": "^6.1"
