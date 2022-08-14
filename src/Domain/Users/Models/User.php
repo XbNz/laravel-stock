@@ -25,12 +25,6 @@ class User extends Authenticatable
     use Notifiable;
     use TwoFactorAuthenticatable;
 
-
-    protected static function newFactory(): UserFactory
-    {
-        return UserFactory::new();
-    }
-
     /**
      * @var array<string, string>
      */
@@ -38,12 +32,23 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    /**
+     * @var array<int, string>
+     */
     protected $appends = [
         'profile_photo_url',
     ];
 
+    /**
+     * @return HasMany<Stock>
+     */
     public function stocks(): HasMany
     {
         return $this->hasMany(Stock::class);
+    }
+
+    protected static function newFactory(): UserFactory
+    {
+        return UserFactory::new();
     }
 }

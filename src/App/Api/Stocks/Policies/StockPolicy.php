@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Api\Stocks\Policies;
 
 use Domain\Stocks\Models\Stock;
@@ -14,21 +16,21 @@ class StockPolicy
 
     public function view(User $user, Stock $stock): Response
     {
-        return $stock->user->is($user)
+        return $stock->user()->is($user)
             ? Response::allow()
             : Response::deny(code: SymfonyResponse::HTTP_NOT_FOUND);
     }
 
     public function update(User $user, Stock $stock): Response
     {
-        return $stock->user->is($user)
+        return $stock->user()->is($user)
             ? Response::allow()
             : Response::deny(code: SymfonyResponse::HTTP_NOT_FOUND);
     }
 
     public function delete(User $user, Stock $stock): Response
     {
-        return $stock->user->is($user)
+        return $stock->user()->is($user)
             ? Response::allow()
             : Response::deny(code: SymfonyResponse::HTTP_NOT_FOUND);
     }

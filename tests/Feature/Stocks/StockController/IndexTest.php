@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature\Stocks\StockController;
 
 use Domain\Stocks\Models\Stock;
@@ -18,20 +20,30 @@ class IndexTest extends TestCase
     {
         // Arrange
         $userA = User::factory()->create();
-        $stocksA = Stock::factory()->for($userA)->count(5)->create(['price' => 1000]);
+        $stocksA = Stock::factory()->for($userA)->count(5)->create([
+            'price' => 1000,
+        ]);
         $userB = User::factory()->create();
-        $stocksB = Stock::factory()->for($userB)->count(5)->create(['price' => 2000]);
+        $stocksB = Stock::factory()->for($userB)->count(5)->create([
+            'price' => 2000,
+        ]);
 
         Sanctum::actingAs($userA);
 
         // Act
-        $response = $this->json('GET', route('stock.index', ['user' => $userA->uuid]));
+        $response = $this->json('GET', route('stock.index', [
+            'user' => $userA->uuid,
+        ]));
 
         // Assert
 
         $response->assertJsonCount(5, 'data');
-        $response->assertJsonFragment(['price' => 1000]);
-        $response->assertJsonMissing(['price' => 2000]);
+        $response->assertJsonFragment([
+            'price' => 1000,
+        ]);
+        $response->assertJsonMissing([
+            'price' => 2000,
+        ]);
 
         $response->assertJsonStructure([
             'data' => [

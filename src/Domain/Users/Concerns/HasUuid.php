@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Domain\Users\Concerns;
 
 use Illuminate\Database\Eloquent\Model;
@@ -9,7 +11,8 @@ trait HasUuid
 {
     public static function bootHasUuid(): void
     {
-        static::creating(static fn(Model $model) =>
+        static::creating(
+            static fn (Model $model) =>
             $model->uuid = Str::uuid()->toString()
         );
     }

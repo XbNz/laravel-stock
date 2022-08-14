@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Domain\Stocks\DTOs;
 
 use App\Api\Stocks\Requests\UpdateStockRequest;
@@ -15,7 +17,9 @@ class UpdateStockData
 
     public static function fromUpdateRequest(UpdateStockRequest $request): self
     {
+        Assert::true($request->has('update_interval'));
         return new self(
+            /** @phpstan-ignore-next-line  */
             $request->get('update_interval')
         );
     }

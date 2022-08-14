@@ -42,7 +42,6 @@ class ProductMapper implements MapperContract
             ->filterXPath('//span[contains(@class, "screenReaderOnly")]')
             ->text();
 
-
         $exploded = explode('.', Str::of($price)->replaceMatches('/[^0-9.]/', '')->value());
         $basePrice = $exploded[0];
         Assert::integerish($basePrice);

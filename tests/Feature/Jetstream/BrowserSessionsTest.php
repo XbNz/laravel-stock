@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature\Jetstream;
 
 use Domain\Users\Models\User;
@@ -17,7 +19,7 @@ class BrowserSessionsTest extends TestCase
         $this->actingAs($user = User::factory()->create());
 
         Livewire::test(LogoutOtherBrowserSessionsForm::class)
-                ->set('password', 'password')
-                ->call('logoutOtherBrowserSessions');
+            ->set('password', 'password')
+            ->call('logoutOtherBrowserSessions');
     }
 }

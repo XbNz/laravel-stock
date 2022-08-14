@@ -7,7 +7,6 @@ namespace Support\Contracts;
 use Domain\Stores\DTOs\StockData;
 use Domain\Stores\DTOs\StockSearchData;
 use Psr\Http\Message\UriInterface;
-use Spatie\Browsershot\Browsershot;
 
 interface StoreContract
 {

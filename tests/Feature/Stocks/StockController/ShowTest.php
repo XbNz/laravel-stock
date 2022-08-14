@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature\Stocks\StockController;
 
 use Domain\Stocks\Models\Stock;
@@ -24,14 +26,17 @@ class ShowTest extends TestCase
         Sanctum::actingAs($userA);
 
         // Act
-        $responseA = $this->json('GET', route('stock.show', ['stock' => $stockA->uuid]));
-        $responseB = $this->json('GET', route('stock.show', ['stock' => $stockB->uuid]));
+        $responseA = $this->json('GET', route('stock.show', [
+            'stock' => $stockA->uuid,
+        ]));
+        $responseB = $this->json('GET', route('stock.show', [
+            'stock' => $stockB->uuid,
+        ]));
 
         // Assert
 
         $responseA->assertOk();
         $responseB->assertNotFound();
-
 
         $responseA->assertJson([
             'data' => [
@@ -44,7 +49,7 @@ class ShowTest extends TestCase
                 'image' => $stockA->image,
                 'created_at' => $stockA->created_at->format('Y-m-d H:i:s'),
                 'updated_at' => $stockA->updated_at->format('Y-m-d H:i:s'),
-            ]
+            ],
         ]);
     }
 

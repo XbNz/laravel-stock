@@ -44,7 +44,6 @@ class LoadProductInfoCommand extends Command
             ->concurrent(10)
             ->run(...$functions);
 
-
         foreach ($stockData as $stockDatum) {
             $stockDatum = unserialize($stockDatum);
 
@@ -60,8 +59,5 @@ class LoadProductInfoCommand extends Command
 
             $this->info("Saving image to {$stockDatum->image}");
         }
-
-
-
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Domain\Stocks\Models;
 
 use Database\Factories\StockFactory;
@@ -10,6 +12,7 @@ use Domain\Users\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Query\Builder;
 
 class Stock extends Model
 {
@@ -17,21 +20,26 @@ class Stock extends Model
     use HasUuid;
 
     protected $casts = [
-        'store' => Store::class
+        'store' => Store::class,
     ];
 
-    protected static function newFactory(): StockFactory
-    {
-        return StockFactory::new();
-    }
-
+    /**
+     * @param Builder $query
+     * @return StockQueryBuilder<Stock>
+     */
     public function newEloquentBuilder($query): StockQueryBuilder
     {
         return new StockQueryBuilder($query);
     }
 
+    /** @return BelongsTo<User, Stock> */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    protected static function newFactory(): StockFactory
+    {
+        return StockFactory::new();
     }
 }

@@ -1,11 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Api\Stocks\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateStockRequest extends FormRequest
 {
+    /**
+     * @return array<string, array<int, string>>
+     */
     public function rules(): array
     {
         return [

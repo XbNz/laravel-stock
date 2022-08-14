@@ -10,7 +10,6 @@ use Domain\Stores\Services\BestBuyCanada\BestBuyCanadaService;
 use Domain\Stores\Services\NeweggCanada\NeweggCanadaService;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Http;
 use Spatie\Browsershot\Browsershot;
 use Spatie\Image\Manipulations;
 use Support\Contracts\StoreContract;

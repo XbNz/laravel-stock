@@ -1,20 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit\Domain\Stores\Services;
 
-use Domain\Stores\Collections\StockDataCollection;
 use Domain\Stores\DTOs\StockData;
 use Domain\Stores\DTOs\StockSearchData;
-use Domain\Stores\Enums\Store;
 use Domain\Stores\Factories\BrowserShotFactory;
-use GuzzleHttp\Psr7\Uri;
-use Illuminate\Support\Collection;
 use Psr\Http\Message\UriInterface;
 use Support\Contracts\StoreContract;
 
 trait StoreContractTests
 {
     abstract public function getStoreImplementation(): string;
+
     abstract public function randomSearchLinkForStore(): UriInterface;
 
     /** @test **/
@@ -36,7 +35,7 @@ trait StoreContractTests
 
         // Act
         $randomUri = $this->randomProductUri();
-        $result = retry(5, fn() => $service->product($randomUri), 1000);
+        $result = retry(5, fn () => $service->product($randomUri), 1000);
 
         // Assert
         $this->assertInstanceOf(StockData::class, $result);
@@ -66,7 +65,7 @@ trait StoreContractTests
         /** @var StoreContract $service */
         $service = app($this->getStoreImplementation());
 
-        $products = retry(5, fn() => $service->search($this->randomSearchLinkForStore()), 1000);
+        $products = retry(5, fn () => $service->search($this->randomSearchLinkForStore()), 1000);
 
         return $products->stocks->random()->link;
     }

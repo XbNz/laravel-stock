@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature\Stocks\StockController;
 
 use Domain\Stocks\Models\Stock;
@@ -12,23 +14,34 @@ class UpdateTest extends TestCase
 {
     use RefreshDatabase;
 
+    // TODO: Run static analysis and style checker
+    // Stocks may only be created by the system, find a way to fulfill URL requests.
+
     /** @test **/
     public function a_user_can_only_update_their_own_stocks(): void
     {
         // Arrange
         $userA = User::factory()->create();
-        $stockA = Stock::factory()->for($userA)->create(['update_interval' => 1000]);
+        $stockA = Stock::factory()->for($userA)->create([
+            'update_interval' => 1000,
+        ]);
         $userB = User::factory()->create();
-        $stockB = Stock::factory()->for($userB)->create(['update_interval' => 2000]);
+        $stockB = Stock::factory()->for($userB)->create([
+            'update_interval' => 2000,
+        ]);
 
         Sanctum::actingAs($userA);
 
         // Act
-        $responseA = $this->json('PUT', route('stock.update', ['stock' => $stockA->uuid]), [
+        $responseA = $this->json('PUT', route('stock.update', [
+            'stock' => $stockA->uuid,
+        ]), [
             'update_interval' => 5000,
         ]);
 
-        $responseB = $this->json('PUT', route('stock.update', ['stock' => $stockB->uuid]), [
+        $responseB = $this->json('PUT', route('stock.update', [
+            'stock' => $stockB->uuid,
+        ]), [
             'update_interval' => 5000,
         ]);
 

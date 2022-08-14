@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Domain\Stocks\Actions;
 
 use Domain\Stocks\DTOs\UpdateStockData;
@@ -10,9 +12,9 @@ class UpdateStockAction
     public function __invoke(Stock $stock, UpdateStockData $newData): Stock
     {
         $stock->update([
-            'update_interval' => $newData->updateInterval
+            'update_interval' => $newData->updateInterval,
         ]);
 
-        return $stock->fresh();
+        return $stock;
     }
 }

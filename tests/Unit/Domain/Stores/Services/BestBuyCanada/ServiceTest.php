@@ -4,14 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Domain\Stores\Services\BestBuyCanada;
 
-use Domain\Stores\DTOs\StockData;
-use Domain\Stores\Enums\Store;
-use Domain\Stores\Services\AmazonCanada\AmazonCanadaService;
 use Domain\Stores\Services\BestBuyCanada\BestBuyCanadaService;
 use GuzzleHttp\Psr7\Uri;
 use Illuminate\Support\Collection;
 use Psr\Http\Message\UriInterface;
-use Support\Contracts\StoreContract;
 use Tests\TestCase;
 use Tests\Unit\Domain\Stores\Services\StoreContractTests;
 
