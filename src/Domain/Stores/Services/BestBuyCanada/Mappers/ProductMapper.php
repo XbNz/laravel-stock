@@ -9,6 +9,7 @@ use Domain\Stores\Enums\Currency;
 use Domain\Stores\Enums\Store;
 use Domain\Stores\ValueObjects\Price;
 use Illuminate\Support\Str;
+use InvalidArgumentException;
 use Psr\Http\Message\UriInterface;
 use Support\Contracts\MapperContract;
 use Symfony\Component\DomCrawler\Crawler;
@@ -72,13 +73,20 @@ class ProductMapper implements MapperContract
     {
         $productFrame = $rootHtml->filterXPath('//div[contains(@class, "x-product-detail-page")]');
 
-        $onlineAvailability = $productFrame->filterXPath('//div[contains(@class, "onlineAvailabilityContainer")]')
-            ->filterXPath('//span[contains(@class, "availabilityMessage")]')
-            ->text();
+        try {
 
-        Assert::minLength($onlineAvailability, 2);
+            $onlineAvailability = $productFrame->filterXPath('//div[contains(@class, "onlineAvailabilityContainer")]')
+                ->filterXPath('//span[contains(@class, "availabilityMessage")]')
+                ->text();
 
-        return Str::of($onlineAvailability)->lower()->contains('available');
+            Assert::minLength($onlineAvailability, 2);
+
+            return Str::of($onlineAvailability)->lower()->contains('available');
+
+        } catch (InvalidArgumentException $e) {
+            return $this->fallBackToSecondaryAvailabilityDetectionMethod($rootHtml);
+        }
+
     }
 
     private function sku(Crawler $rootHtml): string
@@ -89,5 +97,15 @@ class ProductMapper implements MapperContract
         Assert::length($sku, 8);
 
         return $sku;
+    }
+
+    private function fallBackToSecondaryAvailabilityDetectionMethod(Crawler $rootHtml): bool
+    {
+        $productFrame = $rootHtml->filterXPath('//div[contains(@class, "x-product-detail-page")]');
+
+        $addToCartContainer = $productFrame->filterXPath('//div[contains(@class, "addToCartContainer")]');
+        $disabledButton = $addToCartContainer->filterXPath('//button[@disabled]');
+
+        return $disabledButton->count() === 0;
     }
 }
