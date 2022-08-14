@@ -7,8 +7,13 @@ namespace Domain\Users\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Domain\Stocks\Models\Stock;
+use Domain\Stocks\QueryBuilders\StockQueryBuilder;
+use Domain\TrackingRequests\Models\TrackingRequest;
 use Domain\Users\Concerns\HasUuid;
+use Domain\Users\QueryBuilder\UserQueryBuilder;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -40,15 +45,28 @@ class User extends Authenticatable
     ];
 
     /**
-     * @return HasMany<Stock>
+     * @param Builder $query
+     * @return UserQueryBuilder<User>
      */
-    public function stocks(): HasMany
+    public function newEloquentBuilder($query): UserQueryBuilder
     {
-        return $this->hasMany(Stock::class);
+        return new UserQueryBuilder($query);
     }
 
     protected static function newFactory(): UserFactory
     {
         return UserFactory::new();
     }
+
+    public function stocks(): BelongsToMany
+    {
+        return $this->belongsToMany(Stock::class);
+    }
+
+    public function trackingRequests(): HasMany
+    {
+        return $this->hasMany(TrackingRequest::class);
+    }
+
+
 }

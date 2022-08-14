@@ -18,10 +18,14 @@ class ShowTest extends TestCase
     public function a_user_can_only_view_their_own_stocks(): void
     {
         // Arrange
-        $userA = User::factory()->create();
-        $userB = User::factory()->create();
-        $stockA = Stock::factory()->for($userA)->create();
-        $stockB = Stock::factory()->for($userB)->create();
+        $stockA = Stock::factory(state: ['price' => 1000]);
+        $userA = User::factory()->has($stockA)->create();
+
+        $stockB = Stock::factory(state: ['price' => 2000]);
+        $userB = User::factory()->has($stockB)->create();
+
+        $stockA = $userA->stocks->sole();
+        $stockB = $userB->stocks->sole();
 
         Sanctum::actingAs($userA);
 
@@ -38,29 +42,19 @@ class ShowTest extends TestCase
         $responseA->assertOk();
         $responseB->assertNotFound();
 
+
         $responseA->assertJson([
             'data' => [
                 'uuid' => $stockA->uuid,
                 'url' => $stockA->url,
                 'store' => $stockA->store->value,
                 'price' => $stockA->price,
-                'update_interval' => $stockA->update_interval,
                 'sku' => $stockA->sku,
                 'image' => $stockA->image,
                 'created_at' => $stockA->created_at->format('Y-m-d H:i:s'),
                 'updated_at' => $stockA->updated_at->format('Y-m-d H:i:s'),
             ],
         ]);
-    }
-
-    /** @test **/
-    public function a_response_that_was_last_updated_by_a_search_request_will_include_the_search(): void
-    {
-        // Arrange
-
-        // Act
-
-        // Assert
     }
 
     /** @test **/

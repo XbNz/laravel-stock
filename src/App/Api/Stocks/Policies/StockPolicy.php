@@ -16,22 +16,9 @@ class StockPolicy
 
     public function view(User $user, Stock $stock): Response
     {
-        return $stock->user()->is($user)
+        return User::query()->whereHasStock($stock)->get()->contains($user)
             ? Response::allow()
             : Response::deny(code: SymfonyResponse::HTTP_NOT_FOUND);
     }
 
-    public function update(User $user, Stock $stock): Response
-    {
-        return $stock->user()->is($user)
-            ? Response::allow()
-            : Response::deny(code: SymfonyResponse::HTTP_NOT_FOUND);
-    }
-
-    public function delete(User $user, Stock $stock): Response
-    {
-        return $stock->user()->is($user)
-            ? Response::allow()
-            : Response::deny(code: SymfonyResponse::HTTP_NOT_FOUND);
-    }
 }

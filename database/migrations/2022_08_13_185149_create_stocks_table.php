@@ -12,17 +12,14 @@ return new class() extends Migration {
         Schema::create('stocks', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();
-            $table->foreignId('user_id')->references('id')->on('users')->cascadeOnDelete();
-            $table->foreignId('search_id')->nullable()->references('id')->on('searches');
             $table->string('url');
             $table->string('store')->index();
             $table->integer('price');
             $table->string('sku');
             $table->string('image');
-            $table->integer('update_interval');
             $table->timestamps();
 
-            $table->index(['user_id', 'store', 'sku']);
+            $table->index(['store', 'sku']);
         });
     }
 

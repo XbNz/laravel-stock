@@ -7,13 +7,14 @@ namespace App\Api\Stocks\Controllers;
 use App\Api\Stocks\Requests\UpdateStockRequest;
 use App\Api\Stocks\Resources\StockResource;
 use App\Controller;
-use Domain\Stocks\Actions\UpdateStockAction;
 use Domain\Stocks\DTOs\UpdateStockData;
 use Domain\Stocks\Models\Stock;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Response;
 use Spatie\QueryBuilder\QueryBuilder;
+use Symfony\Component\HttpFoundation\Response as SynfonyResponse;
 use Webmozart\Assert\Assert;
 
 class StockController extends Controller
@@ -44,17 +45,10 @@ class StockController extends Controller
         return StockResource::make($stock);
     }
 
-    public function update(UpdateStockRequest $request, Stock $stock, UpdateStockAction $updateStock): JsonResource
+    public function destroy(Stock $stock, Request $request): \Illuminate\Http\Response
     {
-        $gate = $this->gate->inspect('view', $stock);
+        $stock->users()->detach($request->user());
 
-        if ($gate->denied()) {
-            Assert::integer($gate->code());
-            abort($gate->code());
-        }
-
-        return StockResource::make(
-            ($updateStock)($stock, UpdateStockData::fromUpdateRequest($request))
-        );
+        return Response::noContent(SynfonyResponse::HTTP_NO_CONTENT);
     }
 }

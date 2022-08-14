@@ -32,9 +32,9 @@ enum Store: string
     public function storeBaseUri(): string
     {
         return match ($this) {
-            self::AmazonCanada => 'https://www.amazon.ca',
-            self::BestBuyCanada => 'https://www.bestbuy.ca',
-            self::NeweggCanada => 'https://www.newegg.ca',
+            self::AmazonCanada => 'amazon.ca',
+            self::BestBuyCanada => 'bestbuy.ca',
+            self::NeweggCanada => 'newegg.ca',
             default => throw new InvalidArgumentException('Unknown store'),
         };
     }
