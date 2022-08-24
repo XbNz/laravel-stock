@@ -16,6 +16,10 @@ class TrackingRequest extends Model
     use HasUuid;
     use HasFactory;
 
+    protected $casts = [
+        'tracking_type' => \Domain\TrackingRequests\Enums\TrackingRequest::class
+    ];
+
     protected static function newFactory(): TrackingRequestFactory
     {
         return TrackingRequestFactory::new();

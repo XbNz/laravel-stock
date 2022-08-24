@@ -2,6 +2,9 @@
 
 declare(strict_types=1);
 
+use App\Api\Alerts\Controllers\AlertChannelController;
+use App\Api\Alerts\Controllers\SendVerificationUrlToAlertChannelController;
+use App\Api\Alerts\Controllers\VerifyAlertChannelController;
 use App\Api\Stocks\Controllers\StockController;
 use App\Api\TrackingRequests\Controllers\TrackingRequestController;
 use Illuminate\Http\Request;
@@ -21,6 +24,18 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::name('trackingRequest.')->group(function () {
         Route::get('tracking-request/', [TrackingRequestController::class, 'index'])->name('index');
         Route::post('tracking-request/', [TrackingRequestController::class, 'store'])->name('store');
+    });
+
+    Route::name('alertChannel.')->group(function () {
+
+        Route::get('alert-channel/', [AlertChannelController::class, 'index'])->name('index');
+        Route::post('alert-channel/', [AlertChannelController::class, 'store'])->name('store');
+        Route::post('alert-channel/{alertChannel:uuid}', SendVerificationUrlToAlertChannelController::class)
+            ->name('sendVerification');
 
     });
 });
+
+Route::get('alert-channel/verify/{alertChannel:uuid}', VerifyAlertChannelController::class)
+    ->middleware('signed')
+    ->name('alertChannel.verify');

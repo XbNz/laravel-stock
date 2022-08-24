@@ -23,7 +23,7 @@ class StockFactory extends Factory
 
         return [
             'url' => $randomStore->storeBaseUri(),
-            'store' => $randomStore->value,
+            'store' => $randomStore,
             'price' => $this->faker->numberBetween(1000, 250000),
             'sku' => $this->faker->ean8(),
             'image' => $this->faker->filePath(),

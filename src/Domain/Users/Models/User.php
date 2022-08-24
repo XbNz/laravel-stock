@@ -6,6 +6,7 @@ namespace Domain\Users\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
+use Domain\Alerts\Models\AlertChannel;
 use Domain\Stocks\Models\Stock;
 use Domain\Stocks\QueryBuilders\StockQueryBuilder;
 use Domain\TrackingRequests\Models\TrackingRequest;
@@ -61,6 +62,11 @@ class User extends Authenticatable
     public function stocks(): BelongsToMany
     {
         return $this->belongsToMany(Stock::class);
+    }
+
+    public function alertChannels(): HasMany
+    {
+        return $this->hasMany(AlertChannel::class);
     }
 
     public function trackingRequests(): HasMany

@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Api\TrackingRequests\Resources;
+namespace App\Api\Alerts\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-/** @mixin \Domain\TrackingRequests\Models\TrackingRequest */
-class TrackingRequestResource extends JsonResource
+/** @mixin \Domain\Alerts\Models\AlertChannel */
+class AlertChannelResource extends JsonResource
 {
     /**
      * @param Request $request
@@ -16,11 +16,9 @@ class TrackingRequestResource extends JsonResource
     {
         return [
             'uuid' => $this->uuid,
-            'url' => $this->url,
-            // TODO: Include any attached alerts
-            'store' => $this->store,
-            'tracking_type' => $this->tracking_type,
-            'update_interval' => $this->update_interval,
+            'type' => $this->type,
+            'value' => $this->value,
+            'verified_at' => $this->verified_at?->format('Y-m-d H:i:s'),
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),
             'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
         ];
