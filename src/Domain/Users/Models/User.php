@@ -4,18 +4,16 @@ declare(strict_types=1);
 
 namespace Domain\Users\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Domain\Alerts\Models\AlertChannel;
 use Domain\Stocks\Models\Stock;
-use Domain\Stocks\QueryBuilders\StockQueryBuilder;
 use Domain\TrackingRequests\Models\TrackingRequest;
 use Domain\Users\Concerns\HasUuid;
 use Domain\Users\QueryBuilder\UserQueryBuilder;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
@@ -54,25 +52,32 @@ class User extends Authenticatable
         return new UserQueryBuilder($query);
     }
 
-    protected static function newFactory(): UserFactory
-    {
-        return UserFactory::new();
-    }
-
+    /**
+     * @return BelongsToMany<Stock>
+     */
     public function stocks(): BelongsToMany
     {
         return $this->belongsToMany(Stock::class);
     }
 
+    /**
+     * @return HasMany<AlertChannel>
+     */
     public function alertChannels(): HasMany
     {
         return $this->hasMany(AlertChannel::class);
     }
 
+    /**
+     * @return HasMany<TrackingRequest>
+     */
     public function trackingRequests(): HasMany
     {
         return $this->hasMany(TrackingRequest::class);
     }
 
-
+    protected static function newFactory(): UserFactory
+    {
+        return UserFactory::new();
+    }
 }

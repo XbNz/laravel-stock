@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Api\TrackingRequests\Controllers;
 
 use App\Api\TrackingRequests\Resources\TrackingRequestResource;
@@ -19,8 +21,7 @@ class TrackingRequestController
         return TrackingRequestResource::collection($trackingRequests);
     }
 
-    public function create()
+    public function create(): JsonResource
     {
-
     }
 }

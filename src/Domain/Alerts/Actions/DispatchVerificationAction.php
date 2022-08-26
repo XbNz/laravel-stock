@@ -1,15 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Domain\Alerts\Actions;
 
-use Domain\Alerts\AlertChannel\AlertChannelContract;
 use Domain\Alerts\Exceptions\ChannelNotVerifiableException;
 use Domain\Alerts\Models\AlertChannel;
 use Domain\Alerts\Notifications\VerifyAlertChannelNotification;
-use Illuminate\Contracts\Notifications\Factory;
-use Illuminate\Notifications\ChannelManager;
-use Illuminate\Support\Collection;
-use Spatie\QueueableAction\QueueableAction;
 
 class DispatchVerificationAction
 {
@@ -29,5 +26,4 @@ class DispatchVerificationAction
             ($this->generateSignedUrl)($alertChannel),
         ));
     }
-
 }

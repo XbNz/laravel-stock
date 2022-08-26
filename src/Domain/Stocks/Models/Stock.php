@@ -12,7 +12,6 @@ use Domain\Users\Concerns\HasUuid;
 use Domain\Users\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Query\Builder;
 
@@ -34,20 +33,24 @@ class Stock extends Model
         return new StockQueryBuilder($query);
     }
 
-    protected static function newFactory(): StockFactory
-    {
-        return StockFactory::new();
-    }
-
+    /**
+     * @return BelongsToMany<User>
+     */
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class);
     }
 
+    /**
+     * @return BelongsToMany<TrackingRequest>
+     */
     public function trackingRequests(): BelongsToMany
     {
         return $this->belongsToMany(TrackingRequest::class);
     }
 
-
+    protected static function newFactory(): StockFactory
+    {
+        return StockFactory::new();
+    }
 }

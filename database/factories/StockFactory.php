@@ -6,7 +6,6 @@ namespace Database\Factories;
 
 use Domain\Stocks\Models\Stock;
 use Domain\Stores\Enums\Store;
-use Domain\Users\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Arr;
 

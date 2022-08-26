@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Domain\Alerts\Rules;
 
 use Domain\Alerts\Enums\AlertChannel;
@@ -7,10 +9,8 @@ use Exception;
 use GuzzleHttp\Psr7\Uri;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use Illuminate\Validation\Rule;
-use Propaganistas\LaravelPhone\Exceptions\NumberFormatException;
-use Webmozart\Assert\Assert;
 use Propaganistas\LaravelPhone\PhoneNumber;
+use Webmozart\Assert\Assert;
 
 class ValueChannelRule implements \Illuminate\Contracts\Validation\Rule
 {
@@ -40,6 +40,7 @@ class ValueChannelRule implements \Illuminate\Contracts\Validation\Rule
 
     private function isAcceptableDiscordWebhook(mixed $value): bool
     {
+        Assert::string($value);
         if (! preg_match('/^(http|https):\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(:[0-9]{1,5})?(\/\S*)?$/', $value)) {
             return false;
         }
@@ -55,8 +56,10 @@ class ValueChannelRule implements \Illuminate\Contracts\Validation\Rule
 
     private function isAcceptableEmail(mixed $value): bool
     {
-        $validator = Validator::make(['email' => $value], [
-            'email' => ['email:rfc,dns,filter,spoof']
+        $validator = Validator::make([
+            'email' => $value,
+        ], [
+            'email' => ['email:rfc,dns,filter,spoof'],
         ]);
 
         return $validator->passes();
@@ -64,8 +67,11 @@ class ValueChannelRule implements \Illuminate\Contracts\Validation\Rule
 
     private function isAcceptableSms(mixed $value): bool
     {
-        $validator = Validator::make(['sms' => $value], [
-            'sms' => ['phone:AUTO,mobile']
+        Assert::string($value);
+        $validator = Validator::make([
+            'sms' => $value,
+        ], [
+            'sms' => ['phone:AUTO,mobile'],
         ]);
 
         try {
@@ -73,7 +79,6 @@ class ValueChannelRule implements \Illuminate\Contracts\Validation\Rule
         } catch (Exception) {
             return false;
         }
-
 
         return $validator->passes();
     }

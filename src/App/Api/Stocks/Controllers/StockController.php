@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace App\Api\Stocks\Controllers;
 
-use App\Api\Stocks\Requests\UpdateStockRequest;
 use App\Api\Stocks\Resources\StockResource;
 use App\Controller;
-use Domain\Stocks\DTOs\UpdateStockData;
 use Domain\Stocks\Models\Stock;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Http\Request;
@@ -48,6 +46,7 @@ class StockController extends Controller
     public function destroy(Stock $stock, Request $request): \Illuminate\Http\Response
     {
         $stock->users()->detach($request->user());
+        // TODO: Garbage collector should delete the stock if it has no users.
 
         return Response::noContent(SynfonyResponse::HTTP_NO_CONTENT);
     }

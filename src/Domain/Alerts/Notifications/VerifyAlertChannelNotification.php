@@ -1,16 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Domain\Alerts\Notifications;
 
-use Awssat\Notifications\Messages\DiscordEmbed;
-use Awssat\Notifications\Messages\DiscordMessage;
-use Domain\Alerts\Enums\AlertChannel as AlertChannelEnum;
 use Domain\Alerts\Models\AlertChannel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Config;
-use PragmaRX\Google2FA\Exceptions\InvalidAlgorithmException;
 use Webmozart\Assert\Assert;
 
 class VerifyAlertChannelNotification extends Notification
@@ -22,6 +20,9 @@ class VerifyAlertChannelNotification extends Notification
     ) {
     }
 
+    /**
+     * @return array<int, string>
+     */
     public function via(AlertChannel $alertChannel): array
     {
         $mappings = Config::get('alert.mappings');
@@ -31,22 +32,17 @@ class VerifyAlertChannelNotification extends Notification
         return $channels;
     }
 
-    public function shouldSend(AlertChannel $alertChannel, string $channel)
+    public function shouldSend(AlertChannel $alertChannel, string $channel): bool
     {
         return $alertChannel->verified_at === null && $alertChannel->type->requiresVerification();
     }
 
     public function toMail(): MailMessage
     {
-        return (new MailMessage)
+        return (new MailMessage())
             ->subject('Verify your alert channel')
             ->line('Verification required to start receiving alerts.')
             ->action('Verify now', $this->signedUrl)
             ->line('Thank you!');
-    }
-
-    public function toArray($notifiable): array
-    {
-        return [];
     }
 }

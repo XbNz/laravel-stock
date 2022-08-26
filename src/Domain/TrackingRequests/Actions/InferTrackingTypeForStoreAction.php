@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Domain\TrackingRequests\Actions;
 
 use Domain\Stores\Enums\Store;
@@ -55,5 +57,4 @@ class InferTrackingTypeForStoreAction
 
         return TrackingRequest::SingleProduct;
     }
-
 }

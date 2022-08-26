@@ -27,12 +27,12 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::name('alertChannel.')->group(function () {
-
         Route::get('alert-channel/', [AlertChannelController::class, 'index'])->name('index');
         Route::post('alert-channel/', [AlertChannelController::class, 'store'])->name('store');
+        Route::get('alert-channel/{alertChannel:uuid}', [AlertChannelController::class, 'show'])->name('show');
+        Route::delete('alert-channel/{alertChannel:uuid}', [AlertChannelController::class, 'destroy'])->name('destroy');
         Route::post('alert-channel/{alertChannel:uuid}', SendVerificationUrlToAlertChannelController::class)
             ->name('sendVerification');
-
     });
 });
 

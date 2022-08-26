@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature\AlertChannels\VerifyAlertChannelController;
 
 use Domain\Alerts\Actions\SignedUrlForChannelVerificationAction;
@@ -70,7 +72,9 @@ class InvokeTest extends TestCase
         $date = now();
         $alertChannel = AlertChannel::factory()
             ->verificationRequiredChannel()
-            ->create(['verified_at' => $date]);
+            ->create([
+                'verified_at' => $date,
+            ]);
 
         $signedUrlAction = app(SignedUrlForChannelVerificationAction::class);
         $signedUrl = ($signedUrlAction)($alertChannel);

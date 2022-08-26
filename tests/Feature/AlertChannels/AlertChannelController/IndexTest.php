@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature\AlertChannels\AlertChannelController;
 
 use Domain\Alerts\Models\AlertChannel;
@@ -16,10 +18,16 @@ class IndexTest extends TestCase
     public function a_user_may_retrieve_only_their_own_alert_channels(): void
     {
         // Arrange
-        $channelA = AlertChannel::factory(1, ['type' => 'email', 'value' => '::anything::']);
+        $channelA = AlertChannel::factory(1, [
+            'type' => 'email',
+            'value' => '::anything::',
+        ]);
         $userA = User::factory()->has($channelA)->create();
 
-        $channelB = AlertChannel::factory(1, ['type' => 'email', 'value' => '::anythingelse::']);
+        $channelB = AlertChannel::factory(1, [
+            'type' => 'email',
+            'value' => '::anythingelse::',
+        ]);
         $userB = User::factory()->has($channelB)->create();
 
         Sanctum::actingAs($userA);

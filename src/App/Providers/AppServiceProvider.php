@@ -4,10 +4,6 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
-use Domain\Alerts\Actions\DispatchVerificationAction;
-use Domain\Alerts\AlertChannel\AlertChannelContract;
-use Domain\Alerts\AlertChannel\EmailAlertChannel;
-use Domain\Alerts\AlertChannel\SmsAlertChannel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
@@ -19,7 +15,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-
     }
 
     /**

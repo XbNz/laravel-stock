@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use Domain\Alerts\Enums\AlertChannel as AlertChannelEnum;
@@ -26,7 +28,7 @@ class AlertChannelFactory extends Factory
         ];
     }
 
-    public function verificationRequiredChannel(): AlertChannelFactory
+    public function verificationRequiredChannel(): self
     {
         return $this->state(function (array $attributes) {
             $type = Collection::make(AlertChannelEnum::cases())
@@ -42,7 +44,7 @@ class AlertChannelFactory extends Factory
         });
     }
 
-    public function verificationNotRequiredChannel(): AlertChannelFactory
+    public function verificationNotRequiredChannel(): self
     {
         return $this->state(function (array $attributes) {
             $type = Collection::make(AlertChannelEnum::cases())
@@ -66,6 +68,4 @@ class AlertChannelFactory extends Factory
             AlertChannelEnum::Discord => $this->faker->url(),
         };
     }
-
-
 }

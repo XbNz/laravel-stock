@@ -1,11 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Api\TrackingRequests\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreateTrackingRequestRequest extends FormRequest
 {
+    /**
+     * @return array<string, array<int, mixed>>
+     */
     public function rules(): array
     {
         return [

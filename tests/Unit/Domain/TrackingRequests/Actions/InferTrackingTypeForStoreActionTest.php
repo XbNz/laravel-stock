@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit\Domain\TrackingRequests\Actions;
 
 use Domain\Stores\Enums\Store;
@@ -8,7 +10,6 @@ use Domain\TrackingRequests\Enums\TrackingRequest;
 use Generator;
 use GuzzleHttp\Psr7\Uri;
 use PHPUnit\Framework\TestCase;
-use function MongoDB\BSON\fromJSON;
 
 class InferTrackingTypeForStoreActionTest extends TestCase
 {

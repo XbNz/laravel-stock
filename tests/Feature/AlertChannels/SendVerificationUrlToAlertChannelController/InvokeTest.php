@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature\AlertChannels\SendVerificationUrlToAlertChannelController;
 
 use Domain\Alerts\Models\AlertChannel;
@@ -24,8 +26,9 @@ class InvokeTest extends TestCase
 
         // Act
         $response = $this->json(
-            'POST', route('alertChannel.sendVerification', [
-                'alertChannel' => $alertChannel->uuid
+            'POST',
+            route('alertChannel.sendVerification', [
+                'alertChannel' => $alertChannel->uuid,
             ])
         );
 
@@ -49,8 +52,9 @@ class InvokeTest extends TestCase
 
         // Act
         $response = $this->json(
-            'POST', route('alertChannel.sendVerification', [
-                'alertChannel' => $alertChannel->uuid
+            'POST',
+            route('alertChannel.sendVerification', [
+                'alertChannel' => $alertChannel->uuid,
             ])
         );
 
@@ -64,13 +68,16 @@ class InvokeTest extends TestCase
     {
         // Arrange
         Notification::fake();
-        $alertChannel = AlertChannel::factory()->verificationRequiredChannel()->create(['verified_at' => now()]);
+        $alertChannel = AlertChannel::factory()->verificationRequiredChannel()->create([
+            'verified_at' => now(),
+        ]);
         Sanctum::actingAs($alertChannel->user);
 
         // Act
         $response = $this->json(
-            'POST', route('alertChannel.sendVerification', [
-                'alertChannel' => $alertChannel->uuid
+            'POST',
+            route('alertChannel.sendVerification', [
+                'alertChannel' => $alertChannel->uuid,
             ])
         );
 
@@ -84,5 +91,4 @@ class InvokeTest extends TestCase
     {
         $this->assertRouteUsesMiddleware('alertChannel.sendVerification', ['auth:sanctum']);
     }
-
 }

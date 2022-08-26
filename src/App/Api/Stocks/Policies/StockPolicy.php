@@ -20,5 +20,4 @@ class StockPolicy
             ? Response::allow()
             : Response::deny(code: SymfonyResponse::HTTP_NOT_FOUND);
     }
-
 }

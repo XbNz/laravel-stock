@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Domain\Alerts\Actions;
 
 use Domain\Alerts\Models\AlertChannel;

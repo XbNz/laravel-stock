@@ -18,10 +18,14 @@ class ShowTest extends TestCase
     public function a_user_can_only_view_their_own_stocks(): void
     {
         // Arrange
-        $stockA = Stock::factory(state: ['price' => 1000]);
+        $stockA = Stock::factory(state: [
+            'price' => 1000,
+        ]);
         $userA = User::factory()->has($stockA)->create();
 
-        $stockB = Stock::factory(state: ['price' => 2000]);
+        $stockB = Stock::factory(state: [
+            'price' => 2000,
+        ]);
         $userB = User::factory()->has($stockB)->create();
 
         $stockA = $userA->stocks->sole();
@@ -41,7 +45,6 @@ class ShowTest extends TestCase
 
         $responseA->assertOk();
         $responseB->assertNotFound();
-
 
         $responseA->assertJson([
             'data' => [

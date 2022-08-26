@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature\TrackingRequests\TrackingRequestController;
 
 use Domain\Stores\Enums\Store;
@@ -18,13 +20,15 @@ class IndexTest extends TestCase
     {
         // Arrange
 
-        $trackingRequestA = TrackingRequest::factory(5, ['update_interval' => 10]);
+        $trackingRequestA = TrackingRequest::factory(5, [
+            'update_interval' => 10,
+        ]);
         $userA = User::factory()->has($trackingRequestA)->create();
 
-        $trackingRequestB = TrackingRequest::factory(5, ['update_interval' => 20]);
+        $trackingRequestB = TrackingRequest::factory(5, [
+            'update_interval' => 20,
+        ]);
         $userB = User::factory()->has($trackingRequestB)->create();
-
-
 
         Sanctum::actingAs($userA);
 

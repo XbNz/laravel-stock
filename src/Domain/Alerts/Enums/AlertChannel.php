@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Domain\Alerts\Enums;
 
 enum AlertChannel: string
@@ -15,5 +17,4 @@ enum AlertChannel: string
             default => false,
         };
     }
-
 }

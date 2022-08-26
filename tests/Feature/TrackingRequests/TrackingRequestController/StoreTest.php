@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature\TrackingRequests\TrackingRequestController;
 
 use Domain\Stores\Enums\Store;
@@ -21,7 +23,7 @@ class StoreTest extends TestCase
         $user = User::factory()->create();
         Sanctum::actingAs($user);
 
-        $randomStoreUrl = Arr::random(Store::cases();
+        $randomStoreUrl = Arr::random(Store::cases());
 
         // Act
         $response = $this->json('POST', route('trackingRequest.store'), [

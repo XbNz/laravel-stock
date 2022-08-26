@@ -13,7 +13,7 @@ use Webmozart\Assert\Assert;
 class StockSearchData implements MappableContract
 {
     /**
-     * @param StockDataCollection<StockData> $stocks
+     * @param StockDataCollection<int, StockData> $stocks
      */
     public function __construct(
         public readonly UriInterface $uri,

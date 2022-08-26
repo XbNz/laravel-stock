@@ -74,7 +74,6 @@ class ProductMapper implements MapperContract
         $productFrame = $rootHtml->filterXPath('//div[contains(@class, "x-product-detail-page")]');
 
         try {
-
             $onlineAvailability = $productFrame->filterXPath('//div[contains(@class, "onlineAvailabilityContainer")]')
                 ->filterXPath('//span[contains(@class, "availabilityMessage")]')
                 ->text();
@@ -82,11 +81,9 @@ class ProductMapper implements MapperContract
             Assert::minLength($onlineAvailability, 2);
 
             return Str::of($onlineAvailability)->lower()->contains('available');
-
         } catch (InvalidArgumentException $e) {
             return $this->fallBackToSecondaryAvailabilityDetectionMethod($rootHtml);
         }
-
     }
 
     private function sku(Crawler $rootHtml): string

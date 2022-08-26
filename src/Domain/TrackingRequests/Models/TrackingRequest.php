@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Domain\TrackingRequests\Models;
 
 use Database\Factories\TrackingRequestFactory;
@@ -17,21 +19,27 @@ class TrackingRequest extends Model
     use HasFactory;
 
     protected $casts = [
-        'tracking_type' => \Domain\TrackingRequests\Enums\TrackingRequest::class
+        'tracking_type' => \Domain\TrackingRequests\Enums\TrackingRequest::class,
     ];
 
-    protected static function newFactory(): TrackingRequestFactory
-    {
-        return TrackingRequestFactory::new();
-    }
-
+    /**
+     * @return BelongsTo<User, TrackingRequest>
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * @return BelongsToMany<Stock>
+     */
     public function stocks(): BelongsToMany
     {
         return $this->belongsToMany(Stock::class);
+    }
+
+    protected static function newFactory(): TrackingRequestFactory
+    {
+        return TrackingRequestFactory::new();
     }
 }

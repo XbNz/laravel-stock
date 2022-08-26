@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit\Domain\Users\QueryBuilders;
 
-use Database\Factories\StockFactory;
 use Domain\Stocks\Models\Stock;
 use Domain\Users\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -17,10 +18,14 @@ class UserQueryBuilderTest extends TestCase
     {
         // Arrange
 
-        $stockA = Stock::factory(state: ['price' => 1000]);
+        $stockA = Stock::factory(state: [
+            'price' => 1000,
+        ]);
         $userA = User::factory()->has($stockA)->create();
 
-        $stockB = Stock::factory(state: ['price' => 2000]);
+        $stockB = Stock::factory(state: [
+            'price' => 2000,
+        ]);
         $userB = User::factory()->has($stockB)->create();
 
         $stockA = $userA->stocks()->sole();

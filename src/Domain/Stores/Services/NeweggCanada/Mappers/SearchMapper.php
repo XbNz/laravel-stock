@@ -19,6 +19,9 @@ use Webmozart\Assert\Assert;
 
 class SearchMapper implements MapperContract
 {
+    /**
+     * @return StockDataCollection<int, StockData>
+     */
     public function map(Crawler $html, UriInterface $searchUri, string $image): StockDataCollection
     {
         $allResults = $html

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Domain\Alerts\Models;
 
 use Database\Factories\AlertChannelFactory;
@@ -29,6 +31,9 @@ class AlertChannel extends Model
         return $this->value;
     }
 
+    /**
+     * @return Attribute<string, string>
+     */
     public function value(): Attribute
     {
         return Attribute::make(
@@ -41,6 +46,9 @@ class AlertChannel extends Model
         return AlertChannelFactory::new();
     }
 
+    /**
+     * @return BelongsTo<User, AlertChannel>
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

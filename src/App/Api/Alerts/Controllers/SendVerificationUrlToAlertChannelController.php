@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Api\Alerts\Controllers;
 
 use Domain\Alerts\Actions\DispatchVerificationAction;

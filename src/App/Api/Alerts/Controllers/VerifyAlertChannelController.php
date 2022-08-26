@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Api\Alerts\Controllers;
+declare(strict_types=1);
 
+namespace App\Api\Alerts\Controllers;
 
 use App\Api\Alerts\Resources\AlertChannelResource;
 use Domain\Alerts\Models\AlertChannel;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Response;
 
 class VerifyAlertChannelController
 {
@@ -23,7 +23,6 @@ class VerifyAlertChannelController
 
         $alertChannel->verified_at = now();
         $alertChannel->save();
-
 
         return AlertChannelResource::make($alertChannel);
     }

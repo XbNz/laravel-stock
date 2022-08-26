@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature\AlertChannels\AlertChannelController;
 
 use Domain\Alerts\Enums\AlertChannel;
@@ -7,7 +9,6 @@ use Domain\Users\Models\User;
 use Generator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\Sanctum;
 use Propaganistas\LaravelPhone\PhoneNumber;
@@ -38,7 +39,7 @@ class StoreTest extends TestCase
             'data' => [
                 'type' => AlertChannel::SMS->value,
                 'value' => PhoneNumber::make('+1 4164164166')->formatE164(),
-            ]
+            ],
         ]);
 
         $this->assertDatabaseCount('alert_channels', 1);
@@ -68,8 +69,8 @@ class StoreTest extends TestCase
         $response->assertJson([
             'data' => [
                 'type' => AlertChannel::Email->value,
-                'value' => 'valid@gmail.com'
-            ]
+                'value' => 'valid@gmail.com',
+            ],
         ]);
 
         $this->assertDatabaseCount('alert_channels', 1);
@@ -100,7 +101,7 @@ class StoreTest extends TestCase
             'data' => [
                 'type' => AlertChannel::Discord->value,
                 'value' => 'https://discord.com/api/webhooks/1010582812/5wwQgwQav6C-g4yfpG6Sz6kfde',
-            ]
+            ],
         ]);
 
         $this->assertDatabaseCount('alert_channels', 1);
@@ -194,6 +195,4 @@ class StoreTest extends TestCase
             ],
         ];
     }
-
-
 }

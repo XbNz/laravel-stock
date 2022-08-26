@@ -19,10 +19,14 @@ class IndexTest extends TestCase
     public function an_authenticated_user_may_retrieve_only_stocks_that_they_have_been_associated_with(): void
     {
         // Arrange
-        $stocksA = Stock::factory(5, ['price' => 1000]);
+        $stocksA = Stock::factory(5, [
+            'price' => 1000,
+        ]);
         $userA = User::factory()->has($stocksA)->create();
 
-        $stocksB = Stock::factory(5, ['price' => 2000]);
+        $stocksB = Stock::factory(5, [
+            'price' => 2000,
+        ]);
         $userB = User::factory()->has($stocksB)->create();
 
         Sanctum::actingAs($userA);
