@@ -21,7 +21,7 @@ class TrackingRequestController
         return TrackingRequestResource::collection($trackingRequests);
     }
 
-    public function create(): JsonResource
+    public function store(): JsonResource
     {
     }
 }

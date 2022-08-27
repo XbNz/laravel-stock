@@ -6,8 +6,10 @@ namespace App\Providers;
 
 // use Illuminate\Support\Facades\Gate;
 use App\Api\Alerts\Policies\AlertChannelPolicy;
+use App\Api\Alerts\Policies\TrackingAlertPolicy;
 use App\Api\Stocks\Policies\StockPolicy;
 use Domain\Alerts\Models\AlertChannel;
+use Domain\Alerts\Models\TrackingAlert;
 use Domain\Stocks\Models\Stock;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
@@ -21,6 +23,7 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         Stock::class => StockPolicy::class,
         AlertChannel::class => AlertChannelPolicy::class,
+        TrackingAlert::class => TrackingAlertPolicy::class
     ];
 
     /**

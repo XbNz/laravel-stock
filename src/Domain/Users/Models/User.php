@@ -6,6 +6,7 @@ namespace Domain\Users\Models;
 
 use Database\Factories\UserFactory;
 use Domain\Alerts\Models\AlertChannel;
+use Domain\Alerts\Models\TrackingAlert;
 use Domain\Stocks\Models\Stock;
 use Domain\TrackingRequests\Models\TrackingRequest;
 use Domain\Users\Concerns\HasUuid;
@@ -66,6 +67,14 @@ class User extends Authenticatable
     public function alertChannels(): HasMany
     {
         return $this->hasMany(AlertChannel::class);
+    }
+
+    /**
+     * @return HasMany<TrackingAlert>
+     */
+    public function trackingAlerts(): HasMany
+    {
+        return $this->hasMany(TrackingAlert::class);
     }
 
     /**

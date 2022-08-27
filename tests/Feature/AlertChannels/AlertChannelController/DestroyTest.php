@@ -10,7 +10,7 @@ use Laravel\Sanctum\Sanctum;
 use Symfony\Component\HttpFoundation\Response;
 use Tests\TestCase;
 
-class DeleteTest extends TestCase
+class DestroyTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -42,5 +42,11 @@ class DeleteTest extends TestCase
         $this->assertDatabaseMissing('alert_channels', [
             'uuid' => $alertChannelA->uuid,
         ]);
+    }
+
+    /** @test **/
+    public function sanctum_middleware_attached(): void
+    {
+        $this->assertRouteUsesMiddleware('alertChannel.destroy', ['auth:sanctum']);
     }
 }

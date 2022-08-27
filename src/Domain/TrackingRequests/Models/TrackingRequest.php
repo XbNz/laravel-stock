@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Domain\TrackingRequests\Models;
 
 use Database\Factories\TrackingRequestFactory;
+use Domain\Alerts\Models\TrackingAlert;
 use Domain\Stocks\Models\Stock;
+use Domain\TrackingRequests\Enums\TrackingRequest as TrackingRequestEnum;
 use Domain\Users\Concerns\HasUuid;
 use Domain\Users\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -19,7 +21,7 @@ class TrackingRequest extends Model
     use HasFactory;
 
     protected $casts = [
-        'tracking_type' => \Domain\TrackingRequests\Enums\TrackingRequest::class,
+        'tracking_type' => TrackingRequestEnum::class,
     ];
 
     /**
@@ -36,6 +38,14 @@ class TrackingRequest extends Model
     public function stocks(): BelongsToMany
     {
         return $this->belongsToMany(Stock::class);
+    }
+
+    /**
+     * @return BelongsToMany<TrackingAlert>
+     */
+    public function trackingAlerts(): BelongsToMany
+    {
+        return $this->belongsToMany(TrackingAlert::class);
     }
 
     protected static function newFactory(): TrackingRequestFactory

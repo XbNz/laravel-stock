@@ -61,4 +61,10 @@ class IndexTest extends TestCase
             'meta',
         ]);
     }
+
+    /** @test **/
+    public function sanctum_middleware_attached(): void
+    {
+        $this->assertRouteUsesMiddleware('alertChannel.index', ['auth:sanctum']);
+    }
 }

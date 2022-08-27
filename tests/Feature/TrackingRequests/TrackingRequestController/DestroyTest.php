@@ -20,4 +20,10 @@ class DestroyTest extends TestCase
 
         // Assert
     }
+
+    /** @test **/
+    public function sanctum_middleware_attached(): void
+    {
+        $this->assertRouteUsesMiddleware('trackingRequest.destroy', ['auth:sanctum']);
+    }
 }

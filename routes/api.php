@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Api\Alerts\Controllers\AlertChannelController;
 use App\Api\Alerts\Controllers\SendVerificationUrlToAlertChannelController;
+use App\Api\Alerts\Controllers\TrackingAlertController;
 use App\Api\Alerts\Controllers\VerifyAlertChannelController;
 use App\Api\Stocks\Controllers\StockController;
 use App\Api\TrackingRequests\Controllers\TrackingRequestController;
@@ -25,6 +26,16 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('tracking-request/', [TrackingRequestController::class, 'index'])->name('index');
         Route::post('tracking-request/', [TrackingRequestController::class, 'store'])->name('store');
     });
+
+    Route::name('trackingAlert.')->group(function () {
+        Route::get('tracking-alert/', [TrackingAlertController::class, 'index'])->name('index');
+        Route::get('tracking-alert/{trackingAlert:uuid}', [TrackingAlertController::class, 'show'])->name('show');
+        Route::post('tracking-alert/', [TrackingAlertController::class, 'store'])->name('store');
+        Route::put('tracking-alert/{trackingAlert:uuid}', [TrackingAlertController::class, 'update'])->name('update');
+        Route::delete('tracking-alert/{trackingAlert:uuid}', [TrackingAlertController::class, 'destroy'])->name('destroy');
+
+    });
+
 
     Route::name('alertChannel.')->group(function () {
         Route::get('alert-channel/', [AlertChannelController::class, 'index'])->name('index');

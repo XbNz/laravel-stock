@@ -53,4 +53,9 @@ class AlertChannel extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function isVerified(): bool
+    {
+        return $this->verified_at !== null;
+    }
 }

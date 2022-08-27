@@ -135,6 +135,12 @@ class StoreTest extends TestCase
         $responseB->assertJsonValidationErrorFor('type');
     }
 
+    /** @test **/
+    public function sanctum_middleware_attached(): void
+    {
+        $this->assertRouteUsesMiddleware('alertChannel.store', ['auth:sanctum']);
+    }
+
     /** @test
      * @dataProvider validationProvider
      **/

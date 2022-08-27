@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Tests\Feature\TrackingRequests\TrackingRequestController;
 
 use Domain\Stores\Enums\Store;
+use Domain\TrackingRequests\Enums\TrackingRequest;
 use Domain\Users\Models\User;
+use Generator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Arr;
 use Laravel\Sanctum\Sanctum;
@@ -27,7 +29,7 @@ class StoreTest extends TestCase
 
         // Act
         $response = $this->json('POST', route('trackingRequest.store'), [
-            'url' => "https://{$randomStoreUrl->getBaseUrl()}",
+            'url' => "https://{$randomStoreUrl->storeBaseUri()}",
             'update_interval' => 35,
         ]);
 
@@ -42,6 +44,12 @@ class StoreTest extends TestCase
             'user_id' => $user->id,
             'update_interval' => 35,
         ]);
+    }
+
+    /** @test **/
+    public function sanctum_middleware_attached(): void
+    {
+        $this->assertRouteUsesMiddleware('trackingRequest.store', ['auth:sanctum']);
     }
 
     /** @test **/
@@ -73,6 +81,8 @@ class StoreTest extends TestCase
 
         // Assert
     }
+
+
 
     /** @test **/
     public function validation_tests(): void

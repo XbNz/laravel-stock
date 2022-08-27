@@ -16,7 +16,7 @@ class CreateTrackingRequestRequest extends FormRequest
         return [
             'url' => ['required', 'active_url', 'unique:tracking_requests,url'],
             'update_interval' => ['required', 'integer', 'min:30'],
-            'alert_uuid' => ['required', 'uuid', 'exists:alerts,uuid'],
+            'alert_uuid' => ['uuid', 'exists:alerts,uuid'],
         ];
     }
 
