@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Api\Alerts\Policies;
+namespace Domain\Alerts\Policies;
 
 use Domain\Alerts\Models\AlertChannel;
 use Domain\Users\Models\User;

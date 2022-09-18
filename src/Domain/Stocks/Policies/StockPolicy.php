@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Api\Stocks\Policies;
+namespace Domain\Stocks\Policies;
 
 use Domain\Stocks\Models\Stock;
 use Domain\Users\Models\User;

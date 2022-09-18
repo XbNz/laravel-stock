@@ -5,12 +5,14 @@ namespace Tests\Feature\AlertChannels\TrackingAlertController;
 use Domain\Alerts\Models\TrackingAlert;
 use Domain\TrackingRequests\Models\TrackingRequest;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class ShowTest extends TestCase
 {
     use RefreshDatabase;
+    use WithFaker;
 
     /** @test **/
     public function a_user_can_only_retrieve_their_own_tracking_alerts(): void

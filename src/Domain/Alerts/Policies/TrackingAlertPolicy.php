@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Api\Alerts\Policies;
+namespace Domain\Alerts\Policies;
 
 use Domain\Alerts\Models\TrackingAlert;
 use Domain\Users\Models\User;

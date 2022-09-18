@@ -22,7 +22,7 @@ class TrackingRequestFactory extends Factory
 
         return [
             'user_id' => User::factory(),
-            'url' => $randomStore->storeBaseUri(),
+            'url' => $randomStore->storeBaseUri() . '/' . $this->faker->slug(),
             'store' => $randomStore->value,
             'tracking_type' => $randomTrackingType->value,
             'update_interval' => $this->faker->numberBetween(30, 3600),

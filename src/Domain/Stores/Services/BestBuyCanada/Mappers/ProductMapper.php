@@ -37,7 +37,7 @@ class ProductMapper implements MapperContract
 
     private function price(Crawler $rootHtml): Price
     {
-        $productFrame = $rootHtml->filterXPath('//div[contains(@class, "x-product-detail-page")]');
+        $productFrame = $rootHtml->filterXPath('//div[contains(@class, "x-page-content")]');
 
         $price = $productFrame->filterXPath('//span[contains(@data-automation, "product-price")]')
             ->filterXPath('//span[contains(@class, "screenReaderOnly")]')

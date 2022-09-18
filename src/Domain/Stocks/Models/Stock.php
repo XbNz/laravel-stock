@@ -49,6 +49,7 @@ class Stock extends Model
         return $this->belongsToMany(TrackingRequest::class);
     }
 
+
     protected static function newFactory(): StockFactory
     {
         return StockFactory::new();
