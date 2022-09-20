@@ -24,7 +24,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::name('trackingRequest.')->group(function () {
         Route::get('tracking-request/', [TrackingRequestController::class, 'index'])->name('index');
+        Route::get('tracking-request/{trackingRequest:uuid}', [TrackingRequestController::class, 'show'])->name('show');
         Route::post('tracking-request/', [TrackingRequestController::class, 'store'])->name('store');
+        Route::put('tracking-request/{trackingRequest:uuid}', [TrackingRequestController::class, 'update'])->name('update');
         Route::delete('tracking-request/{trackingRequest:uuid}', [TrackingRequestController::class, 'destroy'])->name('destroy');
     });
 

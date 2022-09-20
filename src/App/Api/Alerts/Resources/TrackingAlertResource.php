@@ -17,7 +17,7 @@ class TrackingAlertResource extends JsonResource
     {
         return [
             'uuid' => $this->uuid,
-            'alert_channel' => AlertchannelResource::make($this->alertChannel),
+            'alert_channel' => AlertchannelResource::make($this->alertChannel()->sole()),
             'tracking_requests' => TrackingRequestResource::collection(
                 $this->whenLoaded(
                     'trackingRequests',

@@ -13,12 +13,18 @@ class TrackingRequestPolicy
     use HandlesAuthorization;
 
 
-    public function view(User $user, TrackingRequest $trackingRequest): bool
+    public function view(User $user, TrackingRequest $trackingRequest): Response
     {
+        return $trackingRequest->user->is($user)
+            ? Response::allow()
+            : Response::deny(code: SymfonyResponse::HTTP_NOT_FOUND);
     }
 
-    public function update(User $user, TrackingRequest $trackingRequest): bool
+    public function update(User $user, TrackingRequest $trackingRequest): Response
     {
+        return $trackingRequest->user->is($user)
+            ? Response::allow()
+            : Response::deny(code: SymfonyResponse::HTTP_NOT_FOUND);
     }
 
     public function delete(User $user, TrackingRequest $trackingRequest): Response

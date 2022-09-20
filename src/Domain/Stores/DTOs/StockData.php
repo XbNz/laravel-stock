@@ -20,13 +20,13 @@ class StockData implements MappableContract
         public readonly ?Price $price,
         public readonly bool $available,
         public readonly string $sku,
-        public readonly ?string $image = null,
+        public readonly ?string $imagePath = null,
     ) {
         Assert::minLength($title, 2);
         Assert::minLength($sku, 2);
-        if ($image !== null) {
-            Assert::fileExists($image);
-            Assert::isArray(getimagesizefromstring(File::get($image)));
+        if ($imagePath !== null) {
+            Assert::fileExists($imagePath);
+            Assert::isArray(getimagesizefromstring(File::get($imagePath)));
         }
     }
 }

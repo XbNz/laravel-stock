@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Api\TrackingRequests\Controllers;
 
 use App\Api\TrackingRequests\Requests\CreateTrackingRequestRequest;
+use App\Api\TrackingRequests\Requests\UpdateTrackingRequestRequest;
 use App\Api\TrackingRequests\Resources\TrackingRequestResource;
 use Domain\TrackingRequests\Actions\CreateTrackingRequestAction;
 use Domain\TrackingRequests\Actions\DestroyTrackingRequestAction;
@@ -39,6 +40,18 @@ class TrackingRequestController
         return TrackingRequestResource::collection($trackingRequests);
     }
 
+    public function show(TrackingRequest $trackingRequest): JsonResource
+    {
+        $gate = $this->gate->inspect('view', $trackingRequest);
+
+        if ($gate->denied()) {
+            Assert::integer($gate->code());
+            abort($gate->code());
+        }
+
+        return TrackingRequestResource::make($trackingRequest->load('trackingAlerts'));
+    }
+
     public function store(
         CreateTrackingRequestRequest $request,
         CreateTrackingRequestAction $trackingRequestAction
@@ -60,9 +73,27 @@ class TrackingRequestController
             ], SymfonyResponse::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        //TODO: Continue with the show and update endpoints. Then move on to attaching tracking alert to the tracking request.
+        //TODO: Attaching/detaching tracking alert on tracking request.
 
         return TrackingRequestResource::make($trackingRequest);
+    }
+
+    public function update(
+        TrackingRequest $trackingRequest,
+        UpdateTrackingRequestRequest $request,
+    ): JsonResource {
+        $gate = $this->gate->inspect('update', $trackingRequest);
+
+        if ($gate->denied()) {
+            Assert::integer($gate->code());
+            abort($gate->code());
+        }
+
+        $trackingRequest->update([
+            'update_interval' => $request->get('update_interval'),
+        ]);
+
+        return TrackingRequestResource::make($trackingRequest->fresh());
     }
 
     public function destroy(
