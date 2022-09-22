@@ -2,6 +2,7 @@
 
 namespace Domain\TrackingRequests\Policies;
 
+use Domain\Alerts\Models\TrackingAlert;
 use Domain\TrackingRequests\Models\TrackingRequest;
 use Domain\Users\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;

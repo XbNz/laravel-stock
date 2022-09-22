@@ -7,6 +7,8 @@ use App\Api\Alerts\Controllers\SendVerificationUrlToAlertChannelController;
 use App\Api\Alerts\Controllers\TrackingAlertController;
 use App\Api\Alerts\Controllers\VerifyAlertChannelController;
 use App\Api\Stocks\Controllers\StockController;
+use App\Api\TrackingRequests\Controllers\AttachAlertController;
+use App\Api\TrackingRequests\Controllers\DetachAlertController;
 use App\Api\TrackingRequests\Controllers\TrackingRequestController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -28,6 +30,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('tracking-request/', [TrackingRequestController::class, 'store'])->name('store');
         Route::put('tracking-request/{trackingRequest:uuid}', [TrackingRequestController::class, 'update'])->name('update');
         Route::delete('tracking-request/{trackingRequest:uuid}', [TrackingRequestController::class, 'destroy'])->name('destroy');
+
+        Route::post('tracking-request/{trackingRequest:uuid}/tracking-alert/{trackingAlert:uuid}/attach', AttachAlertController::class)->name('attachAlert');
+
+//        Route::post('tracking-request/{trackingRequest:uuid}/tracking-alert/{trackingAlert:uuid}/detach', DetachAlertController::class)->name('detachAlert');
     });
 
     Route::name('trackingAlert.')->group(function () {
@@ -45,8 +51,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('alert-channel/', [AlertChannelController::class, 'store'])->name('store');
         Route::get('alert-channel/{alertChannel:uuid}', [AlertChannelController::class, 'show'])->name('show');
         Route::delete('alert-channel/{alertChannel:uuid}', [AlertChannelController::class, 'destroy'])->name('destroy');
-        Route::post('alert-channel/{alertChannel:uuid}', SendVerificationUrlToAlertChannelController::class)
-            ->name('sendVerification');
+        Route::post('alert-channel/{alertChannel:uuid}', SendVerificationUrlToAlertChannelController::class)->name('sendVerification');
     });
 });
 
