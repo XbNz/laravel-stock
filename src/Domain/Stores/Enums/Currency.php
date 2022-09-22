@@ -13,11 +13,30 @@ enum Currency: string
     case GBP = 'gbp';
     case CAD = 'cad';
 
-    public function fractionNotation(): string
+    public function decimalSeparator(): string
     {
         return match ($this) {
             self::USD, self::GBP, self::CAD => '.',
             self::EUR => ',',
+            default => throw new InvalidArgumentException('Unexpected match value'),
+        };
+    }
+
+    public function thousandSeparator(): string
+    {
+        return match ($this) {
+            self::USD, self::GBP, self::CAD => ',',
+            self::EUR => '.',
+            default => throw new InvalidArgumentException('Unexpected match value'),
+        };
+    }
+
+    public function symbol(): string
+    {
+        return match ($this) {
+            self::USD, self::CAD => '$',
+            self::EUR => '€',
+            self::GBP => '£',
             default => throw new InvalidArgumentException('Unexpected match value'),
         };
     }

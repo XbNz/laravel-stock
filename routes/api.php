@@ -7,6 +7,7 @@ use App\Api\Alerts\Controllers\SendVerificationUrlToAlertChannelController;
 use App\Api\Alerts\Controllers\TrackingAlertController;
 use App\Api\Alerts\Controllers\VerifyAlertChannelController;
 use App\Api\Stocks\Controllers\StockController;
+use App\Api\Stocks\Controllers\StockHistoryController;
 use App\Api\TrackingRequests\Controllers\ToggleTrackingRequestAlertRelationshipController;
 use App\Api\TrackingRequests\Controllers\DetachAlertController;
 use App\Api\TrackingRequests\Controllers\TrackingRequestController;
@@ -22,7 +23,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('stock/', [StockController::class, 'index'])->name('index');
         Route::get('stock/{stock:uuid}', [StockController::class, 'show'])->name('show');
         Route::delete('stock/{stock:uuid}', [StockController::class, 'destroy'])->name('destroy');
+
+        Route::get('stock/{stock:uuid}/history', StockHistoryController::class)->name('history');
     });
+
 
     Route::name('trackingRequest.')->group(function () {
         Route::get('tracking-request/', [TrackingRequestController::class, 'index'])->name('index');
@@ -40,9 +44,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('tracking-alert/', [TrackingAlertController::class, 'store'])->name('store');
         Route::put('tracking-alert/{trackingAlert:uuid}', [TrackingAlertController::class, 'update'])->name('update');
         Route::delete('tracking-alert/{trackingAlert:uuid}', [TrackingAlertController::class, 'destroy'])->name('destroy');
-
     });
-
 
     Route::name('alertChannel.')->group(function () {
         Route::get('alert-channel/', [AlertChannelController::class, 'index'])->name('index');

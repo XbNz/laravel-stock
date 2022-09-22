@@ -20,6 +20,6 @@ class Price
 
     public function __toString(): string
     {
-        return $this->currency->name . ' ' . $this->baseAmount . $this->currency->fractionNotation() . $this->fractionalAmount;
+        return $this->currency->name . ' ' . $this->baseAmount . $this->currency->decimalSeparator() . $this->fractionalAmount;
     }
 }

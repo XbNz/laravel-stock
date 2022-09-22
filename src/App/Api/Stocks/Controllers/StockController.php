@@ -46,7 +46,6 @@ class StockController extends Controller
     public function destroy(Stock $stock, Request $request): \Illuminate\Http\Response
     {
         $stock->users()->detach($request->user());
-        // TODO: Garbage collector should delete the stock if it has no users.
 
         return Response::noContent(SynfonyResponse::HTTP_NO_CONTENT);
     }

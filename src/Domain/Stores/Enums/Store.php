@@ -38,4 +38,12 @@ enum Store: string
             default => throw new InvalidArgumentException('Unknown store'),
         };
     }
+
+    public function currency(): Currency
+    {
+        return match ($this) {
+            self::AmazonCanada, self::BestBuyCanada, self::NeweggCanada => Currency::CAD,
+            default => throw new InvalidArgumentException('Unknown store'),
+        };
+    }
 }

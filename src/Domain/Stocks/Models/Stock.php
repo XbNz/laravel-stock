@@ -13,6 +13,7 @@ use Domain\Users\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Query\Builder;
 
 class Stock extends Model
@@ -49,6 +50,13 @@ class Stock extends Model
         return $this->belongsToMany(TrackingRequest::class);
     }
 
+    /**
+     * @return HasMany<StockHistory>
+     */
+    public function histories(): HasMany
+    {
+        return $this->hasMany(StockHistory::class);
+    }
 
     protected static function newFactory(): StockFactory
     {

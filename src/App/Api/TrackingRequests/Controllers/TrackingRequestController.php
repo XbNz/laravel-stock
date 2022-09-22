@@ -73,8 +73,6 @@ class TrackingRequestController
             ], SymfonyResponse::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        //TODO: Attaching/detaching tracking alert on tracking request.
-
         return TrackingRequestResource::make($trackingRequest);
     }
 
