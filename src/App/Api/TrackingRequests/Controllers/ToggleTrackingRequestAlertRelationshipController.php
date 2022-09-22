@@ -6,6 +6,7 @@ use App\Api\Alerts\Resources\TrackingAlertResource;
 use App\Api\TrackingRequests\Requests\AttachRequest;
 use App\Api\TrackingRequests\Resources\TrackingRequestResource;
 use Domain\Alerts\Models\TrackingAlert;
+use Domain\TrackingRequests\Actions\AttachTrackingRequestAndTrackingAlertAction;
 use Domain\TrackingRequests\Models\TrackingRequest;
 use Domain\TrackingRequests\Rules\AttachOnlyUniqueAlertRule;
 use Illuminate\Contracts\Auth\Access\Gate;
@@ -17,14 +18,16 @@ use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
 use Webmozart\Assert\Assert;
 
-class AttachAlertController
+class ToggleTrackingRequestAlertRelationshipController
 {
     public function __construct(private readonly Gate $gate)
     {
     }
 
-    public function __invoke(Request $request, TrackingRequest $trackingRequest, TrackingAlert $trackingAlert): JsonResource
-    {
+    public function __invoke(
+        TrackingRequest $trackingRequest,
+        TrackingAlert $trackingAlert,
+    ): JsonResource {
         $gateA = $this->gate->inspect('update', $trackingRequest);
         $gateB = $this->gate->inspect('update', $trackingAlert);
 
@@ -32,12 +35,8 @@ class AttachAlertController
             abort(Response::HTTP_NOT_FOUND);
         }
 
-        $validator = Validator::validate(
-            ['tracking_request' => '::value doesnt matter::'],
-            ['tracking_request' => new AttachOnlyUniqueAlertRule($trackingRequest, $trackingAlert)]
-        );
+        $trackingRequest->trackingAlerts()->toggle($trackingAlert);
 
-        $trackingRequest->trackingAlerts()->attach($trackingAlert);
         return TrackingRequestResource::make($trackingRequest->load('trackingAlerts'));
     }
 

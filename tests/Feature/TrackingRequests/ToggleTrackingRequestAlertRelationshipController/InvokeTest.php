@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\TrackingRequests\AttachAlertController;
+namespace Tests\Feature\TrackingRequests\ToggleTrackingRequestAlertRelationshipController;
 
 use Domain\Alerts\Models\TrackingAlert;
 use Domain\TrackingRequests\Models\TrackingRequest;
@@ -24,7 +24,7 @@ class InvokeTest extends TestCase
 
         // Act
         $this->assertDatabaseCount('tracking_alert_tracking_request', 0);
-        $response = $this->json('POST', route('trackingRequest.attachAlert', [
+        $response = $this->json('POST', route('trackingRequest.toggleAlert', [
             'trackingRequest' => $trackingRequest->uuid,
             'trackingAlert' => $trackingAlert->uuid,
         ]));
@@ -56,7 +56,7 @@ class InvokeTest extends TestCase
         Sanctum::actingAs($trackingRequest->user);
 
         // Act
-        $response = $this->json('POST', route('trackingRequest.attachAlert', [
+        $response = $this->json('POST', route('trackingRequest.toggleAlert', [
             'trackingRequest' => $trackingRequest->uuid,
             'trackingAlert' => $trackingAlert->uuid,
         ]));
@@ -75,7 +75,7 @@ class InvokeTest extends TestCase
         Sanctum::actingAs($trackingAlert->user);
 
         // Act
-        $response = $this->json('POST', route('trackingRequest.attachAlert', [
+        $response = $this->json('POST', route('trackingRequest.toggleAlert', [
             'trackingRequest' => $trackingRequest->uuid,
             'trackingAlert' => $trackingAlert->uuid,
         ]));
@@ -86,27 +86,7 @@ class InvokeTest extends TestCase
     }
 
     /** @test **/
-    public function reattaching_is_not_allowed(): void
-    {
-        // Arrange
-        $trackingRequest = TrackingRequest::factory()->create();
-        $trackingAlert = TrackingAlert::factory()->create(['user_id' => $trackingRequest->user_id]);
-        $trackingRequest->trackingAlerts()->attach($trackingAlert);
-        Sanctum::actingAs($trackingRequest->user);
-
-        // Act
-        $response = $this->json('POST', route('trackingRequest.attachAlert', [
-            'trackingRequest' => $trackingRequest->uuid,
-            'trackingAlert' => $trackingAlert->uuid,
-        ]));
-
-        // Assert
-        $response->assertJsonValidationErrorFor('tracking_request');
-        $this->assertDatabaseCount('tracking_alert_tracking_request', 1);
-    }
-
-    /** @test **/
-    public function a_second_tracking_alert_may_be_added_without_validation_failure(): void
+    public function a_second_tracking_alert_may_be_added(): void
     {
         // Arrange
         $trackingRequest = TrackingRequest::factory()->create();
@@ -116,7 +96,7 @@ class InvokeTest extends TestCase
         Sanctum::actingAs($trackingRequest->user);
 
         // Act
-        $response = $this->json('POST', route('trackingRequest.attachAlert', [
+        $response = $this->json('POST', route('trackingRequest.toggleAlert', [
             'trackingRequest' => $trackingRequest->uuid,
             'trackingAlert' => $trackingAlertB->uuid,
         ]));
