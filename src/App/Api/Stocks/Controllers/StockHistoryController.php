@@ -24,12 +24,6 @@ class StockHistoryController
             abort($gate->code());
         }
 
-        //TODO:
-        // Test pagination
-        // Test sorting (especially currency now with the symbols)
-        // Refactor StockController to use currency formatter as well
-        // Test StockController again once refactored
-
         /** @phpstan-ignore-next-line  */
         $stockHistories = QueryBuilder::for($stock->histories()->with('stock'))
             ->allowedSorts(['price', 'availability', 'created_at'])

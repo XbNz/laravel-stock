@@ -40,10 +40,10 @@ class IndexTest extends TestCase
 
         $response->assertJsonCount(5, 'data');
         $response->assertJsonFragment([
-            'price' => 1000,
+            'uuid' => $userA->stocks->first()->uuid,
         ]);
         $response->assertJsonMissing([
-            'price' => 2000,
+            'uuid' => $userB->stocks->first()->uuid,
         ]);
 
         $response->assertJsonStructure([

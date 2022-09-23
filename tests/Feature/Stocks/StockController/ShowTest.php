@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Stocks\StockController;
 
+use Domain\Stocks\Actions\FormatPriceAction;
 use Domain\Stocks\Models\Stock;
 use Domain\Users\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -58,6 +59,33 @@ class ShowTest extends TestCase
                 'updated_at' => $stockA->updated_at->format('Y-m-d H:i:s'),
             ],
         ]);
+    }
+
+    /** @test **/
+    public function price_is_displayed_with_correct_localization(): void
+    {
+        // Arrange
+        $userFactory = User::factory();
+        $stock = Stock::factory()->has($userFactory)->create();
+        $user = $stock->users()->sole();
+        Sanctum::actingAs($user);
+        $priceFormatter = app(FormatPriceAction::class);
+
+        // Act
+        $response = $this->json('GET', route('stock.show', [
+            'stock' => $stock->uuid,
+        ]));
+
+        // Assert
+        $response->assertOk();
+
+
+        $this->assertIsInt($stock->getRawOriginal('price'));
+
+        $this->assertSame(
+            $response->json('data.price'),
+            ($priceFormatter)($stock->getRawOriginal('price'), $stock->store->currency())
+        );
     }
 
     /** @test **/

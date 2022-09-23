@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace Domain\Stocks\Models;
 
 use Database\Factories\StockFactory;
+use Domain\Stocks\Actions\FormatPriceAction;
 use Domain\Stocks\QueryBuilders\StockQueryBuilder;
 use Domain\Stores\Enums\Store;
 use Domain\TrackingRequests\Models\TrackingRequest;
 use Domain\Users\Concerns\HasUuid;
 use Domain\Users\Models\User;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -24,6 +26,15 @@ class Stock extends Model
     protected $casts = [
         'store' => Store::class,
     ];
+
+    protected function price(): Attribute
+    {
+        $formatPriceAction = app(FormatPriceAction::class);
+
+        return Attribute::make(
+            get: fn (int $value) => ($formatPriceAction)($value, $this->store->currency()),
+        );
+    }
 
     /**
      * @param Builder $query
