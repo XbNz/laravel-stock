@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use Domain\Alerts\Models\TrackingAlert;
+use Domain\Browser\Browser;
+use Domain\Browser\PythonUndetectedChrome;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -18,6 +20,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        $this->app->bind(Browser::class, function (Application $app) {
+            return new PythonUndetectedChrome();
+        });
     }
 
     /**
