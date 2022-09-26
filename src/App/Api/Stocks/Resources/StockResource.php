@@ -19,9 +19,11 @@ class StockResource extends JsonResource
     {
         return [
             'uuid' => $this->uuid,
+            'title' => $this->title,
             'url' => $this->url,
             'store' => $this->store->value,
             'price' => $this->price,
+            'availability' => $this->availability,
             'sku' => $this->sku,
             'image' => $this->image,
             'created_at' => $this->created_at?->format('Y-m-d H:i:s'),

@@ -7,7 +7,10 @@ namespace Domain\TrackingRequests\Models;
 use Database\Factories\TrackingRequestFactory;
 use Domain\Alerts\Models\TrackingAlert;
 use Domain\Stocks\Models\Stock;
+use Domain\Stores\Enums\Store;
 use Domain\TrackingRequests\Enums\TrackingRequest as TrackingRequestEnum;
+use Domain\TrackingRequests\Events\TrackingRequestCreatedEvent;
+use Domain\TrackingRequests\Events\TrackingRequestUpdatedEvent;
 use Domain\TrackingRequests\QueryBuilders\TrackingRequestQueryBuilder;
 use Domain\Users\Concerns\HasUuid;
 use Domain\Users\Models\User;
@@ -22,8 +25,13 @@ class TrackingRequest extends Model
     use HasUuid;
     use HasFactory;
 
+    protected $dispatchesEvents = [
+        'updated' => TrackingRequestUpdatedEvent::class,
+    ];
+
     protected $casts = [
         'tracking_type' => TrackingRequestEnum::class,
+        'store' => Store::class,
     ];
 
     /**

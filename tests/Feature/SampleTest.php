@@ -3,20 +3,31 @@
 namespace Tests\Feature;
 
 use Domain\Stores\Services\AmazonCanada\AmazonCanadaService;
+use Domain\Stores\Services\BestBuyCanada\BestBuyCanadaService;
+use Domain\Users\Models\User;
 use GuzzleHttp\Psr7\Uri;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
 use PHPUnit\Util\PHP\AbstractPhpProcess;
 use Tests\TestCase;
 
 class SampleTest extends TestCase
 {
+    use RefreshDatabase;
+
     public function testBasic()
     {
-        $service = app(AmazonCanadaService::class);
+        $this->withoutExceptionHandling();
+        $user = User::factory()->create();
 
-        $t = $service->search([
-            new Uri('https://www.amazon.ca/s?k=iphone&i=electronics&crid=2CU5ICZOK15KX&sprefix=ipho%2Celectronics%2C385&ref=nb_sb_noss_2'),
+        Sanctum::actingAs($user);
+
+        $response = $this->json('POST', route('trackingRequest.store'), [
+            'url' => 'https://www.bestbuy.ca/en-ca/product/kalorik-pro-digital-air-fryer-3-3kg-3-5qt/16366443',
+            'update_interval' => 60,
         ]);
 
-        dd($t);
+        dd(\DB::table('stocks')->get());
+
     }
 }

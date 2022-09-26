@@ -25,6 +25,7 @@ class Stock extends Model
 
     protected $casts = [
         'store' => Store::class,
+        'availability' => 'boolean',
     ];
 
     protected function price(): Attribute

@@ -50,9 +50,11 @@ class ShowTest extends TestCase
         $responseA->assertJson([
             'data' => [
                 'uuid' => $stockA->uuid,
+                'title' => $stockA->title,
                 'url' => $stockA->url,
                 'store' => $stockA->store->value,
                 'price' => $stockA->price,
+                'availability' => $stockA->availability,
                 'sku' => $stockA->sku,
                 'image' => $stockA->image,
                 'created_at' => $stockA->created_at->format('Y-m-d H:i:s'),

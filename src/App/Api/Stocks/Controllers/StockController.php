@@ -26,6 +26,8 @@ class StockController extends Controller
         /** @phpstan-ignore-next-line  */
         $stocks = QueryBuilder::for($request->user()->stocks())
             ->allowedFilters(['store'])
+            // TODO: Add "availability" to the allowed filters. Add "availability" to allowed sorts.
+            // TODO: Do the same for stock histories
             ->cursorPaginate(20);
 
         return StockResource::collection($stocks);

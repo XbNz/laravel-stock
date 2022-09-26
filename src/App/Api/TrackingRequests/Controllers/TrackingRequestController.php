@@ -9,10 +9,12 @@ use App\Api\TrackingRequests\Requests\UpdateTrackingRequestRequest;
 use App\Api\TrackingRequests\Resources\TrackingRequestResource;
 use Domain\TrackingRequests\Actions\CreateTrackingRequestAction;
 use Domain\TrackingRequests\Actions\DestroyTrackingRequestAction;
+use Domain\TrackingRequests\Actions\FulfillTrackingRequestAction;
 use Domain\TrackingRequests\DTOs\CreateTrackingRequestData;
 use Domain\TrackingRequests\Models\TrackingRequest;
 use GuzzleHttp\Psr7\Uri;
 use Illuminate\Contracts\Auth\Access\Gate;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -56,7 +58,6 @@ class TrackingRequestController
         CreateTrackingRequestRequest $request,
         CreateTrackingRequestAction $trackingRequestAction
     ): JsonResponse|JsonResource {
-
         try {
             $trackingRequest = ($trackingRequestAction)(
                 new CreateTrackingRequestData(
@@ -72,6 +73,8 @@ class TrackingRequestController
                 ],
             ], SymfonyResponse::HTTP_UNPROCESSABLE_ENTITY);
         }
+
+        app(FulfillTrackingRequestAction::class)(Collection::make([$trackingRequest]));
 
         return TrackingRequestResource::make($trackingRequest);
     }

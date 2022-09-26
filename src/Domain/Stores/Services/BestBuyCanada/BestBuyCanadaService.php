@@ -4,12 +4,18 @@ declare(strict_types=1);
 
 namespace Domain\Stores\Services\BestBuyCanada;
 
+use Carbon\CarbonInterval;
+use Domain\Browser\Browser;
+use Domain\Browser\DTOs\BrowserSetupData;
+use Domain\Browser\DTOs\TargetData;
 use Domain\Stores\DTOs\StockData;
 use Domain\Stores\DTOs\StockSearchData;
+use Domain\Stores\Enums\Store;
 use Domain\Stores\Exceptions\MapperException;
 use Domain\Stores\Services\BestBuyCanada\Mappers\ProductMapper;
 use Domain\Stores\Services\BestBuyCanada\Mappers\SearchMapper;
 use Exception;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use Psr\Http\Message\UriInterface;
@@ -21,59 +27,117 @@ use Webmozart\Assert\Assert;
 class BestBuyCanadaService implements StoreContract
 {
     public function __construct(
-        private readonly BrowserShot $client,
+        private readonly Browser $client,
         private readonly ProductMapper $productMapper,
         private readonly SearchMapper $searchMapper,
     ) {
     }
 
-    public function product(UriInterface $uri): StockData
+    /**
+     * @param array<UriInterface> $uris
+     * @return array<StockData>
+     */
+    public function product(array $uris): array
     {
-        Assert::contains($uri->getHost(), 'bestbuy.ca');
-        $link = (string) $uri;
-        $browserShot = $this->client->setUrl($link);
+        Assert::allContains($uris, 'bestbuy.ca');
         $prefix = Config::get('store.Domain\Stores\Services\BestBuyCanada\BestBuyCanadaService.image_prefix');
         $extension = Config::get('store.Domain\Stores\Services\BestBuyCanada\BestBuyCanadaService.image_format');
-        $screenshot = storage_path('app/tmp/' . $prefix . Str::random(10) . '.' . $extension);
-        $browserShot->save($screenshot);
-        $html = new Crawler($browserShot->bodyHtml());
+        $timeout = Config::get('store.Domain\Stores\Services\BestBuyCanada\BestBuyCanadaService.timeout');
 
-        try {
-            $product = $this->productMapper->map($html, $uri, $screenshot);
-        } catch (Exception $e) {
-            throw new MapperException(
-                "Failed to map product info for {$uri}",
-                previous: $e,
-            );
-        }
+        $targets = Collection::make($uris)
+            ->map(function (UriInterface $uri) use ($prefix, $extension, $timeout): TargetData {
+                $screenshotPath = storage_path('app/tmp') . '/' . $prefix . Str::random(10) . '.' . $extension;
+                $htmlPath = storage_path('app/tmp') . '/' . $prefix . Str::random(10) . '.html';
 
-        return $product;
+                return new TargetData(
+                    $screenshotPath,
+                    $htmlPath,
+                    $uri,
+                    CarbonInterval::seconds($timeout),
+                );
+            })
+            ->toArray();
+
+        $browser = $this->client
+            ->setup(new BrowserSetupData(['--headless'], false))
+            ->addTargets($targets);
+
+        $browser->execute();
+
+        return Collection::make($targets)
+            ->map(function (TargetData $targetData) {
+                $crawler = new Crawler(file_get_contents($targetData->htmlFileName));
+
+                try {
+                    $product = $this->productMapper->map($crawler, $targetData->url, $targetData->screenShotFileName);
+                } catch (Exception $e) {
+                    throw new MapperException(
+                        "Failed to map product info for {$targetData->url}",
+                        previous: $e,
+                    );
+                }
+
+                return $product;
+
+            })->toArray();
     }
 
-    public function search(UriInterface $uri): StockSearchData
+    /**
+     * @param array<UriInterface> $uris
+     * @return array<StockSearchData>
+     */
+    public function search(array $uris): array
     {
-        Assert::contains($uri->getHost(), 'bestbuy.ca');
-        $link = (string) $uri;
-        $browserShot = $this->client->setUrl($link);
+        Assert::allContains($uris, 'bestbuy.ca');
         $prefix = Config::get('store.Domain\Stores\Services\BestBuyCanada\BestBuyCanadaService.image_prefix');
         $extension = Config::get('store.Domain\Stores\Services\BestBuyCanada\BestBuyCanadaService.image_format');
-        $screenshot = storage_path('app/tmp/' . $prefix . Str::random(10) . '.' . $extension);
-        $browserShot->fullPage()->save($screenshot);
-        $html = new Crawler($browserShot->bodyHtml());
+        $timeout = Config::get('store.Domain\Stores\Services\BestBuyCanada\BestBuyCanadaService.timeout');
 
-        try {
-            $stockDataCollection = $this->searchMapper->map($html, $uri, $screenshot);
-        } catch (Exception $e) {
-            throw new MapperException(
-                "Failed to map search results for {$uri}",
-                previous: $e,
-            );
-        }
+        $targets = Collection::make($uris)
+            ->map(function (UriInterface $uri) use ($prefix, $extension, $timeout): TargetData {
+                $screenshotPath = storage_path('app/tmp') . '/' . $prefix . Str::random(10) . '.' . $extension;
+                $htmlPath = storage_path('app/tmp') . '/' . $prefix . Str::random(10) . '.html';
 
-        return new StockSearchData(
-            $uri,
-            $stockDataCollection,
-            $screenshot
-        );
+                return new TargetData(
+                    $screenshotPath,
+                    $htmlPath,
+                    $uri,
+                    CarbonInterval::seconds($timeout),
+                '//*[contains(text(), "Available to ship") or contains(text(), "Available online only")]',
+                );
+            })
+            ->toArray();
+
+        $browser = $this->client
+            ->setup(new BrowserSetupData(['--headless'], true))
+            ->addTargets($targets);
+
+        $browser->execute();
+
+        return Collection::make($targets)
+            ->map(function (TargetData $targetData) {
+                $crawler = new Crawler(file_get_contents($targetData->htmlFileName));
+
+                try {
+                    $stockDataCollection = $this->searchMapper->map($crawler, $targetData->url, $targetData->screenShotFileName);
+                } catch (Exception $e) {
+                    throw new MapperException(
+                        "Failed to map search results for {$targetData->url}",
+                        previous: $e,
+                    );
+                }
+
+                return new StockSearchData(
+                    $targetData->url,
+                    $stockDataCollection,
+                    $targetData->screenShotFileName,
+                );
+
+            })->toArray();
+    }
+
+    public function supports(Store $store): bool
+    {
+        return $store === Store::BestBuyCanada;
     }
 }

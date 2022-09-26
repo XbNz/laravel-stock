@@ -12,9 +12,11 @@ return new class() extends Migration {
         Schema::create('stocks', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();
+            $table->string('title');
             $table->string('url');
             $table->string('store')->index();
-            $table->integer('price');
+            $table->integer('price')->nullable();
+            $table->boolean('availability')->nullable();
             $table->string('sku');
             $table->string('image');
             $table->timestamps();

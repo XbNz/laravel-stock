@@ -13,12 +13,23 @@ use Domain\Stores\Services\AmazonCanada\Mappers\ProductMapper;
 use Domain\Stores\Services\AmazonCanada\Mappers\SearchMapper;
 use Domain\Stores\Services\BestBuyCanada\BestBuyCanadaService;
 use Domain\Stores\Services\NeweggCanada\NeweggCanadaService;
+use Domain\TrackingRequests\Actions\FulfillTrackingRequestAction;
 use Illuminate\Support\ServiceProvider;
 
 class StoreServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        $this->app->tag([
+            AmazonCanadaService::class,
+            BestBuyCanadaService::class,
+            NeweggCanadaService::class,
+        ], 'stores');
+
+        $this->app->when(FulfillTrackingRequestAction::class)
+            ->needs('$storeServices')
+            ->giveTagged('stores');
+
         $this->commands([
             SearchForStockCommand::class,
             LoadProductInfoCommand::class,

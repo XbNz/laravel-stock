@@ -50,9 +50,11 @@ class IndexTest extends TestCase
             'data' => [
                 '*' => [
                     'uuid',
+                    'title',
                     'url',
                     'store',
                     'price',
+                    'availability',
                     'sku',
                     'image',
                     'created_at',

@@ -10,6 +10,7 @@ use Domain\Browser\DTOs\BrowserSetupData;
 use Domain\Browser\DTOs\TargetData;
 use Domain\Stores\DTOs\StockData;
 use Domain\Stores\DTOs\StockSearchData;
+use Domain\Stores\Enums\Store;
 use Domain\Stores\Exceptions\MapperException;
 use Domain\Stores\Services\AmazonCanada\Mappers\ProductMapper;
 use Domain\Stores\Services\AmazonCanada\Mappers\SearchMapper;
@@ -80,7 +81,6 @@ class AmazonCanadaService implements StoreContract
 
             })->toArray();
 
-        // TODO: Refactor bestbuy and newegg to this format then run tooling
     }
 
     /**
@@ -134,5 +134,10 @@ class AmazonCanadaService implements StoreContract
                 );
 
             })->toArray();
+    }
+
+    public function supports(Store $store): bool
+    {
+        return $store === Store::AmazonCanada;
     }
 }

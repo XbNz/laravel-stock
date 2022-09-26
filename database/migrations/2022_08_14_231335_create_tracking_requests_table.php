@@ -13,11 +13,12 @@ return new class() extends Migration {
             $table->id();
             $table->uuid('uuid')->unique();
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->string('url')->unique();
+            $table->string('url');
             $table->string('store');
             $table->string('tracking_type');
             $table->integer('update_interval')->nullable();
             $table->timestamps();
+            $table->unique(['user_id', 'url']);
         });
     }
 

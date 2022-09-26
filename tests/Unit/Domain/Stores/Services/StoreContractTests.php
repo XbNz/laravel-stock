@@ -24,7 +24,7 @@ trait StoreContractTests
 
         // Act
         $randomUri = $this->randomProductUri();
-        $result = retry(5, fn () => $service->product([$randomUri]), 1000);
+        $result = $service->product([$randomUri]);
 
         // Assert
         $this->assertContainsOnlyInstancesOf(StockData::class, $result);
@@ -53,8 +53,7 @@ trait StoreContractTests
     {
         /** @var StoreContract $service */
         $service = app($this->getStoreImplementation());
-
-        $products = retry(5, fn () => $service->search([$this->randomSearchLinkForStore()]), 1000);
+        $products = $service->search([$this->randomSearchLinkForStore()]);
 
         return $products[0]->stocks->random()->link;
     }

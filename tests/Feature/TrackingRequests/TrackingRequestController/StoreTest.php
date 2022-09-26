@@ -68,6 +68,62 @@ class StoreTest extends TestCase
     }
 
     /** @test **/
+    public function if_the_same_user_adds_a_duplicate_link_a_validation_error_is_thrown(): void
+    {
+        // Arrange
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+        $randomStore = Arr::random(Store::cases());
+        $randomTrackingType = Arr::random(TrackingRequest::cases());
+
+        $inferStoreMock = $this->mock(ParseStoreByLinkAction::class);
+        $inferStoreMock->shouldReceive('__invoke')->andReturn($randomStore);
+        $inferTrackingTypeMock = $this->mock(InferTrackingTypeForStoreAction::class);
+        $inferTrackingTypeMock->shouldReceive('__invoke')->andReturn($randomTrackingType);
+
+        // Act
+        $responseA = $this->json('POST', route('trackingRequest.store'), [
+            'url' => "https://www.anything.com/",
+            'update_interval' => 350,
+        ]);
+        $responseB = $this->json('POST', route('trackingRequest.store'), [
+            'url' => "https://www.anything.com/",
+            'update_interval' => 350,
+        ]);
+
+        // Assert
+
+        $responseA->assertStatus(Response::HTTP_CREATED);
+        $responseB->assertJsonValidationErrorFor('url');
+    }
+
+    /** @test **/
+    public function is_the_same_link_is_created_by_two_different_users_it_should_be_allowed(): void
+    {
+        // Arrange
+        $trackingRequest = \Domain\TrackingRequests\Models\TrackingRequest::factory()->create(['url' => "https://www.anything.com/"]);
+        $anotherUser = User::factory()->create();
+        Sanctum::actingAs($anotherUser);
+        $randomStore = Arr::random(Store::cases());
+        $randomTrackingType = Arr::random(TrackingRequest::cases());
+
+        $inferStoreMock = $this->mock(ParseStoreByLinkAction::class);
+        $inferStoreMock->shouldReceive('__invoke')->andReturn($randomStore);
+        $inferTrackingTypeMock = $this->mock(InferTrackingTypeForStoreAction::class);
+        $inferTrackingTypeMock->shouldReceive('__invoke')->andReturn($randomTrackingType);
+
+        // Act
+        $response = $this->json('POST', route('trackingRequest.store'), [
+            'url' => "https://www.anything.com/",
+            'update_interval' => 350,
+        ]);
+
+        // Assert
+
+        $response->assertStatus(Response::HTTP_CREATED);
+    }
+
+    /** @test **/
     public function sanctum_middleware_attached(): void
     {
         $this->assertRouteUsesMiddleware('trackingRequest.store', ['auth:sanctum']);
