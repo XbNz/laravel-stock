@@ -32,10 +32,12 @@ class ShowTest extends TestCase
             'data' => [
                 'uuid' => $trackingRequestA->uuid,
                 'url' => $trackingRequestA->url,
-                'store' => $trackingRequestA->store,
+                'store' => $trackingRequestA->store->value,
                 'tracking_alerts' => [],
                 'tracking_type' => $trackingRequestA->tracking_type->value,
                 'update_interval' => $trackingRequestA->update_interval,
+                'status' => $trackingRequestA->status->name(),
+                'color' => $trackingRequestA->status->color(),
                 'created_at' => $trackingRequestA->created_at->format('Y-m-d H:i:s'),
                 'updated_at' => $trackingRequestA->updated_at->format('Y-m-d H:i:s'),
             ]

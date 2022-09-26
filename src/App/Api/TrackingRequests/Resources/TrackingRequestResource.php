@@ -27,6 +27,8 @@ class TrackingRequestResource extends JsonResource
             'store' => $this->store,
             'tracking_type' => $this->tracking_type->value,
             'update_interval' => $this->update_interval,
+            'status' => $this->status->name(),
+            'color' => $this->status->color(),
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),
             'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
         ];

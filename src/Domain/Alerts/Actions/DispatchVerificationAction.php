@@ -22,8 +22,10 @@ class DispatchVerificationAction
             throw new ChannelNotVerifiableException("Channel {$alertChannel->uuid} does not require verification");
         }
 
-        $alertChannel->notify(new VerifyAlertChannelNotification(
-            ($this->generateSignedUrl)($alertChannel),
-        ));
+        $alertChannel->notify(
+            new VerifyAlertChannelNotification(
+                ($this->generateSignedUrl)($alertChannel),
+            )
+        );
     }
 }

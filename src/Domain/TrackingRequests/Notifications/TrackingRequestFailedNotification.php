@@ -1,27 +1,23 @@
 <?php
 
-declare(strict_types=1);
-
-namespace Domain\Alerts\Notifications;
+namespace Domain\TrackingRequests\Notifications;
 
 use Domain\Alerts\Models\AlertChannel;
+use Domain\TrackingRequests\Models\TrackingRequest;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Config;
 use Webmozart\Assert\Assert;
 
-class VerifyAlertChannelNotification extends Notification implements ShouldQueue
+class TrackingRequestFailedNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public function __construct(
-        private readonly string $signedUrl,
-    ) {
+    public function __construct(private readonly TrackingRequest $trackingRequest)
+    {
     }
-
 
     /**
      * @return array<int, string>
@@ -35,17 +31,18 @@ class VerifyAlertChannelNotification extends Notification implements ShouldQueue
         return $channels;
     }
 
-    public function shouldSend(AlertChannel $alertChannel, string $channel): bool
-    {
-        return $alertChannel->verified_at === null && $alertChannel->type->requiresVerification();
-    }
-
     public function toMail(): MailMessage
     {
         return (new MailMessage())
-            ->subject('Verify your alert channel')
-            ->line('Verification required to start receiving alerts.')
-            ->action('Verify now', $this->signedUrl)
+            ->subject('Your recent tracking request failed')
+            ->line('We were not able to find any items associated with your tracking request URL.')
+            ->line('The following tracking request will be queued for deletion in our system:')
+            ->line((string) $this->trackingRequest->url)
             ->line('Thank you!');
+    }
+
+    public function toArray($notifiable): array
+    {
+        return [];
     }
 }

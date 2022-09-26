@@ -74,8 +74,6 @@ class TrackingRequestController
             ], SymfonyResponse::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        app(FulfillTrackingRequestAction::class)(Collection::make([$trackingRequest]));
-
         return TrackingRequestResource::make($trackingRequest);
     }
 

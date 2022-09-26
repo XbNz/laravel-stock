@@ -7,10 +7,12 @@ namespace Domain\TrackingRequests\Actions;
 use Domain\Stores\DTOs\StockData;
 use Domain\Stores\DTOs\StockSearchData;
 use Domain\Stores\Enums\Store;
+use Domain\TrackingRequests\Jobs\ProcessStoreServiceCallJob;
 use Domain\TrackingRequests\Models\TrackingRequest;
 use Domain\TrackingRequests\Enums\TrackingRequest as TrackingRequestEnum;
 use Domain\Users\Models\User;
 use GuzzleHttp\Psr7\Uri;
+use Illuminate\Bus\Dispatcher;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Collection;
 use Support\Contracts\StoreContract;
@@ -20,6 +22,7 @@ class FulfillTrackingRequestAction
 {
     public function __construct(
         private readonly array $storeServices,
+        private readonly Dispatcher $dispatcher,
     ) {
     }
 
@@ -48,17 +51,12 @@ class FulfillTrackingRequestAction
                             => TrackingRequestEnum::from($key) === TrackingRequestEnum::Search
                         );
 
-                        $search->each(function (EloquentCollection $trackingRequests) use ($storeService, $user) {
-                            $urls = $trackingRequests->pluck('url')->map(fn (string $url) => new Uri($url));
-                            $stockSearchData = $storeService->search($urls->toArray());
-                            $this->handleSearch($stockSearchData, $user);
-                        });
-
-                        $singleProduct->each(function (EloquentCollection $trackingRequests) use ($storeService, $user) {
-                            $urls = $trackingRequests->pluck('url')->map(fn (string $url) => new Uri($url));
-                            $stockData = $storeService->product($urls->toArray());
-                            $this->handleSingleProduct($stockData, $user);
-                        });
+                        $this->dispatcher->dispatch(new ProcessStoreServiceCallJob(
+                            $search,
+                            $singleProduct,
+                            $user,
+                            $storeService,
+                        ));
                     });
             });
     }

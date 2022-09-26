@@ -12,6 +12,7 @@ use Domain\TrackingRequests\Enums\TrackingRequest as TrackingRequestEnum;
 use Domain\TrackingRequests\Events\TrackingRequestCreatedEvent;
 use Domain\TrackingRequests\Events\TrackingRequestUpdatedEvent;
 use Domain\TrackingRequests\QueryBuilders\TrackingRequestQueryBuilder;
+use Domain\TrackingRequests\States\TrackingRequestState;
 use Domain\Users\Concerns\HasUuid;
 use Domain\Users\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -19,11 +20,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Query\Builder;
+use Spatie\ModelStates\HasStates;
 
 class TrackingRequest extends Model
 {
     use HasUuid;
     use HasFactory;
+    use HasStates;
 
     protected $dispatchesEvents = [
         'updated' => TrackingRequestUpdatedEvent::class,
@@ -32,6 +35,7 @@ class TrackingRequest extends Model
     protected $casts = [
         'tracking_type' => TrackingRequestEnum::class,
         'store' => Store::class,
+        'status' => TrackingRequestState::class,
     ];
 
     /**
