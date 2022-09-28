@@ -13,8 +13,10 @@ class SendTrackingRequestFailedNotificationAction
         TrackingRequest $trackingRequest,
         AlertChannel $alertChannel,
     ) {
+        Assert::true($trackingRequest->user->is($alertChannel->user), 'The alert channel must be owned by the tracking request user.');
+
         if ($alertChannel->type->requiresVerification()) {
-            Assert::notNull($alertChannel->verified_at);
+            Assert::notNull($alertChannel->verified_at, 'The alert channel must be verified.');
         }
 
         $alertChannel->notify(

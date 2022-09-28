@@ -19,6 +19,15 @@ class TrackingRequestFailedNotification extends Notification implements ShouldQu
     {
     }
 
+    public function shouldSend(AlertChannel $alertChannel, string $channel): bool
+    {
+        if (! $alertChannel->type->requiresVerification()) {
+            return true;
+        }
+
+        return $alertChannel->verified_at !== null;
+    }
+
     /**
      * @return array<int, string>
      */

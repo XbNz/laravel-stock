@@ -16,13 +16,15 @@ abstract class TrackingRequestState extends State
     public static function config(): StateConfig
     {
         return parent::config()
-            ->default(InProgressState::class)
+            ->default(DormantState::class)
             ->allowTransition(
                 [DormantState::class, InProgressState::class],
                 FailedState::class,
                 ToFailedTransition::class
             )
             ->allowTransition(DormantState::class, PausedState::class)
-            ->allowTransition(PausedState::class, DormantState::class);
+            ->allowTransition(PausedState::class, DormantState::class)
+            ->allowTransition(DormantState::class, InProgressState::class)
+            ->allowTransition(InProgressState::class, DormantState::class);
     }
 }
