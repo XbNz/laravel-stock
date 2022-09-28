@@ -10,7 +10,9 @@ use App\Api\TrackingRequests\Resources\TrackingRequestResource;
 use Domain\TrackingRequests\Actions\CreateTrackingRequestAction;
 use Domain\TrackingRequests\Actions\DestroyTrackingRequestAction;
 use Domain\TrackingRequests\Actions\FulfillTrackingRequestAction;
+use Domain\TrackingRequests\Actions\UpdateTrackingRequestAction;
 use Domain\TrackingRequests\DTOs\CreateTrackingRequestData;
+use Domain\TrackingRequests\DTOs\UpdateTrackingRequestData;
 use Domain\TrackingRequests\Models\TrackingRequest;
 use GuzzleHttp\Psr7\Uri;
 use Illuminate\Contracts\Auth\Access\Gate;
@@ -61,6 +63,7 @@ class TrackingRequestController
         try {
             $trackingRequest = ($trackingRequestAction)(
                 new CreateTrackingRequestData(
+                    $request->get('name'),
                     new Uri($request->get('url')),
                     $request->get('update_interval')
                 ),
@@ -80,6 +83,7 @@ class TrackingRequestController
     public function update(
         TrackingRequest $trackingRequest,
         UpdateTrackingRequestRequest $request,
+        UpdateTrackingRequestAction $updateTrackingRequest,
     ): JsonResource {
         $gate = $this->gate->inspect('update', $trackingRequest);
 
@@ -88,11 +92,15 @@ class TrackingRequestController
             abort($gate->code());
         }
 
-        $trackingRequest->update([
-            'update_interval' => $request->get('update_interval'),
-        ]);
+        $trackingRequest = ($updateTrackingRequest)(
+            new UpdateTrackingRequestData(
+                $request->get('name'),
+                $request->get('update_interval')
+            ),
+            $trackingRequest
+        );
 
-        return TrackingRequestResource::make($trackingRequest->fresh());
+        return TrackingRequestResource::make($trackingRequest);
     }
 
     public function destroy(

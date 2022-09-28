@@ -18,13 +18,13 @@ class StockSearchData implements MappableContract
     public function __construct(
         public readonly UriInterface $uri,
         public readonly StockDataCollection $stocks,
-        public readonly ?string $image = null,
+        public readonly ?string $imagePath = null,
     ) {
-        if ($image !== null) {
-            Assert::fileExists($image);
-            Assert::isArray(getimagesizefromstring(File::get($image)));
+        if ($imagePath !== null) {
+            Assert::fileExists($imagePath);
+            Assert::isArray(getimagesizefromstring(File::get($imagePath)));
         }
 
-        Assert::minCount($stocks, 1, "Zero stocks found for {$uri}. Image stored in {$image}");
+        Assert::minCount($stocks, 1, "Zero stocks found for {$uri}. Image stored in {$imagePath}");
     }
 }

@@ -22,6 +22,7 @@ class TrackingRequestFactory extends Factory
         $randomTrackingType = Arr::random(TrackingRequestEnum::cases());
 
         return [
+            'name' => $this->faker->text(10),
             'user_id' => User::factory(),
             'url' => $randomStore->storeBaseUri() . '/' . $this->faker->slug(),
             'store' => $randomStore->value,

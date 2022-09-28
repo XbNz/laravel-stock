@@ -12,7 +12,7 @@ class Price
     public function __construct(
         public readonly int $baseAmount,
         public readonly Currency $currency,
-        public readonly ?int $fractionalAmount = null,
+        public readonly int $fractionalAmount,
     ) {
         Assert::greaterThanEq($baseAmount, 0);
         Assert::greaterThanEq($fractionalAmount, 0);

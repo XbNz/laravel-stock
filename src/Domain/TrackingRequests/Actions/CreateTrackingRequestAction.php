@@ -22,8 +22,8 @@ class CreateTrackingRequestAction
         return TrackingRequest::query()->firstOrCreate([
             'user_id' => $user->id,
             'url' => (string) $data->url,
-            'update_interval' => $data->updateInterval,
         ], [
+            'name' => $data->name,
             'user_id' => $user->id,
             'url' => (string) $data->url,
             'update_interval' => $data->updateInterval,

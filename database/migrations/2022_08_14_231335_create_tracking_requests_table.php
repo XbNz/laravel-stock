@@ -12,6 +12,7 @@ return new class() extends Migration {
         Schema::create('tracking_requests', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();
+            $table->string('name');
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('url');
             $table->string('store');

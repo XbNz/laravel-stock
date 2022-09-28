@@ -8,6 +8,7 @@ use Webmozart\Assert\Assert;
 class CreateTrackingRequestData
 {
     public function __construct(
+        public readonly string $name,
         public readonly UriInterface $url,
         public readonly int $updateInterval,
     ) {

@@ -9,7 +9,8 @@ class UpdateTrackingRequestRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'update_interval' => ['required', 'integer', 'min:30'],
+            'name' => ['string', 'max:255'],
+            'update_interval' => ['integer', 'min:30'],
         ];
     }
 

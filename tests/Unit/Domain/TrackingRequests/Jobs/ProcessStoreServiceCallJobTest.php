@@ -2,16 +2,23 @@
 
 namespace Tests\Unit\Domain\TrackingRequests\Jobs;
 
+use Domain\Alerts\Models\AlertChannel;
+use Domain\Stores\DTOs\StockData;
 use Domain\TrackingRequests\Enums\TrackingRequest as TrackingRequestEnum;
 use Domain\TrackingRequests\Jobs\ProcessStoreServiceCallJob;
 use Domain\TrackingRequests\Models\TrackingRequest;
+use Domain\TrackingRequests\Notifications\TrackingRequestFailedNotification;
 use Domain\TrackingRequests\States\DormantState;
 use Domain\TrackingRequests\States\FailedState;
 use Domain\TrackingRequests\States\InProgressState;
+use Exception;
 use GuzzleHttp\Psr7\Uri;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Queue;
 use Support\Contracts\StoreContract;
 use Tests\TestCase;
 use Tests\Unit\Fakes\FakeStore;
@@ -116,21 +123,61 @@ class ProcessStoreServiceCallJobTest extends TestCase
     public function after_completion_a_tracking_request_must_be_set_to_dormant(): void
     {
         // Arrange
+        $trackingRequest = TrackingRequest::factory()->create([
+            'tracking_type' => TrackingRequestEnum::SingleProduct,
+            'status' => DormantState::class,
+            'url' => 'https://www.amazon.co.uk/dp/B07ZJZ2Z9Z',
+        ]);
 
-        // TODO: Move the private methods on the job class to action classes responsible for updating stock. Then mock those in this test.
+        $mockStore = $this->mock(StoreContract::class);
+        $mockStore->shouldReceive('supports')->andReturnTrue();
+        $mockStore->shouldReceive('product')
+            ->with([new Uri($trackingRequest->url)])
+            ->andReturn([
+                StockData::generateFake(['link' => new Uri($trackingRequest->url)])
+            ]);
 
         // Act
 
+        (new ProcessStoreServiceCallJob(
+            Collection::make([$trackingRequest]),
+            $trackingRequest->user,
+            [$mockStore]
+        ))->handle();
+
         // Assert
+
+        $this->assertTrue($trackingRequest->wasChanged());
+        $this->assertInstanceOf(DormantState::class, $trackingRequest->status);
     }
 
     /** @test **/
-    public function a_failed_job_must_call_the_failed_notification_action(): void
+    public function a_failed_job_must_call_the_failed_notification_action_and_log_the_context(): void
     {
         // Arrange
+        Notification::fake();
+        Log::shouldReceive('warning')->once();
+
+        $trackingRequest = TrackingRequest::factory()->create([
+            'tracking_type' => TrackingRequestEnum::SingleProduct,
+            'status' => DormantState::class,
+            'url' => 'https://www.amazon.co.uk/dp/B07ZJZ2Z9Z',
+        ]);
+
+        $channel = AlertChannel::factory()->verificationNotRequiredChannel()->create([
+            'user_id' => $trackingRequest->user_id,
+        ]);
 
         // Act
 
+        (new ProcessStoreServiceCallJob(
+            Collection::make([$trackingRequest]),
+            $trackingRequest->user,
+            [new FakeStore()]
+        ))->failed(new Exception('test'));
+
         // Assert
+
+        Notification::assertSentTo($channel, TrackingRequestFailedNotification::class);
     }
 }

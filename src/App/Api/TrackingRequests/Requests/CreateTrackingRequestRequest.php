@@ -17,7 +17,7 @@ class CreateTrackingRequestRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // url and user_id are unique together
+            'name' => ['required', 'string', 'max:255'],
             'url' => [
                 'required',
                 'active_url',

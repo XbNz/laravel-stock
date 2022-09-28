@@ -8,6 +8,7 @@ use App\Api\Alerts\Controllers\TrackingAlertController;
 use App\Api\Alerts\Controllers\VerifyAlertChannelController;
 use App\Api\Stocks\Controllers\StockController;
 use App\Api\Stocks\Controllers\StockHistoryController;
+use App\Api\TrackingRequests\Controllers\TogglePauseTrackingRequestController;
 use App\Api\TrackingRequests\Controllers\ToggleTrackingRequestAlertRelationshipController;
 use App\Api\TrackingRequests\Controllers\DetachAlertController;
 use App\Api\TrackingRequests\Controllers\TrackingRequestController;
@@ -35,7 +36,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('tracking-request/{trackingRequest:uuid}', [TrackingRequestController::class, 'update'])->name('update');
         Route::delete('tracking-request/{trackingRequest:uuid}', [TrackingRequestController::class, 'destroy'])->name('destroy');
 
-        Route::post('tracking-request/{trackingRequest:uuid}/tracking-alert/{trackingAlert:uuid}/toggle', ToggleTrackingRequestAlertRelationshipController::class)->name('toggleAlert');
+        Route::post(
+            'tracking-request/{trackingRequest:uuid}/tracking-alert/{trackingAlert:uuid}/toggleAlert',
+            ToggleTrackingRequestAlertRelationshipController::class)->name('toggleAlert'
+        );
+
+        Route::post('tracking-request/{trackingRequest:uuid}/togglePause', TogglePauseTrackingRequestController::class)->name('togglePause');
     });
 
     Route::name('trackingAlert.')->group(function () {

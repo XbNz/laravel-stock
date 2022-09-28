@@ -3,6 +3,7 @@
 namespace Tests\Feature\TrackingRequests\TrackingRequestController;
 
 use Domain\TrackingRequests\Models\TrackingRequest;
+use Generator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,9 +23,11 @@ class UpdateTest extends TestCase
 
         // Act
         $responseA = $this->json('PUT', route('trackingRequest.update', ['trackingRequest' => $trackingRequestA->uuid]), [
+            'name' => '::new-name::',
             'update_interval' => 55,
         ]);
         $responseB = $this->json('PUT', route('trackingRequest.update', ['trackingRequest' => $trackingRequestB->uuid]), [
+            'name' => '::new-name::',
             'update_interval' => 55,
         ]);
 
@@ -34,6 +37,7 @@ class UpdateTest extends TestCase
         $responseA->assertJsonFragment(['update_interval' => 55]);
 
         $this->assertDatabaseHas('tracking_requests', [
+            'name' => '::new-name::',
             'user_id' => $trackingRequestA->user->id,
             'update_interval' => 55,
         ]);
@@ -43,19 +47,49 @@ class UpdateTest extends TestCase
         ]);
     }
 
-    /** @test **/
-    public function updated_interval_must_be_above_30_seconds(): void
+
+    /**
+     * @test
+     * @dataProvider validationProvider
+     **/
+    public function validation_tests(array $payload, array $errors): void
     {
         // Arrange
-        $trackingRequest = TrackingRequest::factory()->create(['update_interval' => 35]);
+        $trackingRequest = TrackingRequest::factory()->create();
         Sanctum::actingAs($trackingRequest->user);
 
         // Act
-        $response = $this->json('PUT', route('trackingRequest.update', ['trackingRequest' => $trackingRequest->uuid]), [
-            'update_interval' => 29,
-        ]);
+        $response = $this->json('PUT', route('trackingRequest.update', ['trackingRequest' => $trackingRequest->uuid]), $payload);
 
         // Assert
-        $response->assertJsonValidationErrorFor('update_interval');
+        $response->assertJsonValidationErrorFor(...$errors);
     }
+
+    public function validationProvider(): Generator
+    {
+        $default = [
+            'name' => '::name::',
+            'update_interval' => 35,
+        ];
+
+        yield from [
+            'name must be a string' => [
+                'payload' => array_merge($default, ['name' => 123]),
+                'errors' => ['name'],
+            ],
+            'name must be less than 255 characters' => [
+                'payload' => array_merge($default, ['name' => str_repeat('a', 256)]),
+                'errors' => ['name'],
+            ],
+            'update_interval must be an integer' => [
+                'payload' => array_merge($default, ['update_interval' => '::abc::']),
+                'errors' => ['update_interval'],
+            ],
+            'update_interval must be above 30 seconds' => [
+                'payload' => array_merge($default, ['update_interval' => 29]),
+                'errors' => ['update_interval'],
+            ],
+        ];
+    }
+
 }

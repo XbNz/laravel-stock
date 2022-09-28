@@ -2,6 +2,7 @@
 
 namespace Domain\TrackingRequests\Jobs;
 
+use Domain\Stocks\Actions\CreateOrUpdateStocksForTrackingRequestAction;
 use Domain\Stores\DTOs\StockData;
 use Domain\Stores\DTOs\StockSearchData;
 use Domain\Stores\Enums\Store;
@@ -21,7 +22,9 @@ use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 use Support\Contracts\StoreContract;
+use Throwable;
 use Webmozart\Assert\Assert;
 
 class ProcessStoreServiceCallJob implements ShouldQueue
@@ -78,7 +81,6 @@ class ProcessStoreServiceCallJob implements ShouldQueue
 
             });
 
-
         $trackingRequests->each(fn(TrackingRequest $trackingRequest) => $trackingRequest
             ->status
             ->transitionTo(DormantState::class)
@@ -89,45 +91,40 @@ class ProcessStoreServiceCallJob implements ShouldQueue
     {
         Assert::allIsInstanceOf($stockData, StockData::class);
 
-        \Illuminate\Support\Collection::make($stockData)
-            ->each(function (StockData $stockData) use ($user) {
-                $trackingRequest = $user->trackingRequests()->where('url', (string) $stockData->link)->sole();
-
-                if ($stockData->price !== null) {
-                    $basePrice = $stockData->price->baseAmount;
-                    $fractionalPrice = $stockData->price->fractionalAmount ?? 00; //todo: find a better way to handle this
-                    $price = $basePrice . $fractionalPrice;
-                }
-
-                $trackingRequest->stocks()->updateOrCreate(
-                    [
-                        'sku' => $stockData->sku,
-                        'store' => $stockData->store,
-                    ],
-                    [
-                        'price' => $price ?? null,
-                        'availability' => $stockData->available,
-                        'url' => (string) $stockData->link,
-                        'image' => $stockData->imagePath,
-                        'title' => $stockData->title,
-                    ]
-                );
+        Collection::make($stockData)
+            ->each(function (StockData $stock) use ($user) {
+                $trackingRequest = $user->trackingRequests()->whereUrl($stock->link)->sole();
+                app(CreateOrUpdateStocksForTrackingRequestAction::class)($stock, $trackingRequest);
             });
     }
 
     private function handleSearch(array $searchData, User $user): void
     {
         Assert::allIsInstanceOf($searchData, StockSearchData::class);
+
+        Collection::make($searchData)
+            ->each(function (StockSearchData $searchData) use ($user) {
+                $trackingRequest = $user->trackingRequests()->where('url', $searchData->uri)->sole();
+                app(CreateOrUpdateStocksForTrackingRequestAction::class)($searchData, $trackingRequest);
+            });
     }
 
 
-    public function failed(Exception $exception): void
+    public function failed(Throwable $exception): void
     {
+        Log::warning('ProcessStoreServiceCallJob failed', [
+            'trackingRequests' => $this->trackingRequests->toArray(),
+            'user' => $this->user->toArray(),
+            'storeServices' => $this->storeServices,
+            'exception' => $exception->getMessage(),
+        ]);
+
         $this->trackingRequests->loadCount('stocks');
 
         $this->trackingRequests
             ->filter(fn (TrackingRequest $trackingRequest) => $trackingRequest->stocks_count === 0)
             ->each(fn (TrackingRequest $trackingRequest) => $trackingRequest->status->transitionTo(FailedState::class));
+
     }
 
 }

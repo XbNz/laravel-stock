@@ -10,10 +10,12 @@ class FakeStore implements StoreContract
 
     public function product(array $uris): array
     {
+        return [];
     }
 
     public function search(array $uris): array
     {
+        return [];
     }
 
     public function supports(Store $store): bool

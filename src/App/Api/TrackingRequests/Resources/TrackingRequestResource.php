@@ -20,6 +20,7 @@ class TrackingRequestResource extends JsonResource
     {
         return [
             'uuid' => $this->uuid,
+            'name' => $this->name,
             'url' => $this->url,
             'tracking_alerts' => TrackingAlertResource::collection(
                 $this->whenLoaded('trackingAlerts', $this->trackingAlerts()->get())
