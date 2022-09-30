@@ -7,8 +7,10 @@ namespace App\Console\Stores\Commands;
 use Domain\Stores\Enums\Store;
 use GuzzleHttp\Psr7\Uri;
 use Illuminate\Console\Command;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
+use Psr\Http\Message\UriInterface;
 use Spatie\Fork\Fork;
 use Support\Contracts\StoreContract;
 
@@ -27,37 +29,27 @@ class LoadProductInfoCommand extends Command
 
         $this->info("Retrieving item from {$this->argument('store')}");
 
-        $path = storage_path();
-        $path .= '/';
-        $path .= Config::get('store.' . $store->serviceFqcn() . '.image_prefix');
-        $path .= Str::random(10);
-        $path .= '.';
-        $path .= Config::get('store.' . $store->serviceFqcn() . '.image_format');
+        $links = Collection::make($this->option('links'))->map(fn (string $link) => new Uri($link));
 
-        $functions = [];
+        $stockData = $service->product($links->toArray());
 
-        foreach ($this->option('links') as $link) {
-            $functions[] = fn () => serialize($service->product(new Uri($link)));
-        }
-
-        $stockData = Fork::new()
-            ->concurrent(10)
-            ->run(...$functions);
-
-        foreach ($stockData as $stockDatum) {
-            $stockDatum = unserialize($stockDatum);
-
-            $this->table(['Title', 'Link', 'Price', 'SKU', 'Availability'], [
+        foreach ($stockData as $stock) {
+            // Table with title, link, store, price, availability, sku, image
+            $this->table(
+                ['Title', 'Link', 'Store', 'Price', 'Availability', 'SKU', 'Image'],
                 [
-                    Str::limit($stockDatum->title, 30),
-                    $stockDatum->link,
-                    $stockDatum->price,
-                    $stockDatum->sku,
-                    $stockDatum->available ? '✅' : '❌',
-                ],
-            ]);
+                    [
+                        'title' => Str::of($stock->title)->limit(15),
+                        'link' => Str::of($stock->link)->limit(15),
+                        'store' => $stock->store->value,
+                        'price' => $stock->price,
+                        'availability' => $stock->available,
+                        'sku' => $stock->sku,
+                        'image' => $stock->imagePath,
+                    ],
+                ]
+            );
 
-            $this->info("Saving image to {$stockDatum->image}");
         }
     }
 }

@@ -10,7 +10,7 @@
         "guzzlehttp/guzzle": "^7.2",
         "larabug/larabug": "^2.5",
         "laravel/framework": "^9.19",
-        "laravel/horizon": "^5.9",
+        "laravel/horizon": "^5.10",
         "laravel/jetstream": "^2.11",
         "laravel/sanctum": "^3.0",
         "laravel/tinker": "^2.7",

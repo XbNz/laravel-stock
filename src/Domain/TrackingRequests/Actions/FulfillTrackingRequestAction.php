@@ -33,7 +33,7 @@ class FulfillTrackingRequestAction
     {
         $trackingRequests
             ->groupBy(fn (TrackingRequest $trackingRequest) => $trackingRequest->user->id)
-            ->each(function (Collection $trackingRequests, int $userId) {
+            ->each(function (EloquentCollection $trackingRequests, int $userId) {
 
                 $user = User::query()->findOrFail($userId);
 

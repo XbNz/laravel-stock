@@ -9,7 +9,7 @@ return [
     AmazonCanadaService::class => [
         'screenshot_width' => 1920,
         'screenshot_height' => 1080,
-        'image_format' => Manipulations::FORMAT_JPG,
+        'image_format' => Manipulations::FORMAT_PNG,
         'image_prefix' => 'amazon_',
         'timeout' => 30,
         'proxy' => false,
@@ -17,7 +17,7 @@ return [
     BestBuyCanadaService::class => [
         'screenshot_width' => 1920,
         'screenshot_height' => 1080,
-        'image_format' => Manipulations::FORMAT_JPG,
+        'image_format' => Manipulations::FORMAT_PNG,
         'image_prefix' => 'bestbuy_',
         'timeout' => 20,
         'proxy' => false,
@@ -25,7 +25,7 @@ return [
     NeweggCanadaService::class => [
         'screenshot_width' => 1920,
         'screenshot_height' => 1080,
-        'image_format' => Manipulations::FORMAT_JPG,
+        'image_format' => Manipulations::FORMAT_PNG,
         'image_prefix' => 'newegg_',
         'timeout' => 30,
         'proxy' => false,

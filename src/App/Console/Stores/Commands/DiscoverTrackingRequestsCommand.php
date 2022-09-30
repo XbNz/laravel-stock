@@ -2,6 +2,7 @@
 
 namespace App\Console\Stores\Commands;
 
+use Domain\TrackingRequests\Actions\FulfillTrackingRequestAction;
 use Domain\TrackingRequests\Models\TrackingRequest;
 use Illuminate\Console\Command;
 
@@ -11,9 +12,8 @@ class DiscoverTrackingRequestsCommand extends Command
 
     protected $description = 'Command description';
 
-    public function handle(): int
+    public function handle(FulfillTrackingRequestAction $trackingRequestAction): int
     {
-        TrackingRequest::query()->needsUpdate();
-        // TODO: Continue here. Change DB time to UTC.
+        ($trackingRequestAction)(TrackingRequest::query()->needsUpdate()->get());
     }
 }
