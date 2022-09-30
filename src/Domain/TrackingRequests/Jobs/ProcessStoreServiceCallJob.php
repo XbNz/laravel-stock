@@ -6,6 +6,7 @@ use Domain\Stocks\Actions\CreateOrUpdateStocksForTrackingRequestAction;
 use Domain\Stores\DTOs\StockData;
 use Domain\Stores\DTOs\StockSearchData;
 use Domain\Stores\Enums\Store;
+use Domain\TrackingRequests\Actions\ConfidenceOfTrackingRequestHealthAction;
 use Domain\TrackingRequests\Enums\TrackingRequest as TrackingRequestEnum;
 use Domain\TrackingRequests\Models\TrackingRequest;
 use Domain\TrackingRequests\States\DormantState;
@@ -39,6 +40,11 @@ class ProcessStoreServiceCallJob implements ShouldQueue
         private readonly User $user,
         private readonly array $storeServices,
     ) {
+    }
+
+    public function backoff(): array
+    {
+        return [50, 100, 600];
     }
 
     public function handle()
@@ -122,7 +128,7 @@ class ProcessStoreServiceCallJob implements ShouldQueue
         $this->trackingRequests->loadCount('stocks');
 
         $this->trackingRequests
-            ->filter(fn (TrackingRequest $trackingRequest) => $trackingRequest->stocks_count === 0)
+            ->reject(fn (TrackingRequest $trackingRequest) => app(ConfidenceOfTrackingRequestHealthAction::class)($trackingRequest)->greaterThan(30))
             ->each(fn (TrackingRequest $trackingRequest) => $trackingRequest->status->transitionTo(FailedState::class));
 
     }

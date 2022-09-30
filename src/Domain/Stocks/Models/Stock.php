@@ -6,6 +6,7 @@ namespace Domain\Stocks\Models;
 
 use Database\Factories\StockFactory;
 use Domain\Stocks\Actions\FormatPriceAction;
+use Domain\Stocks\Events\StockUpdatedEvent;
 use Domain\Stocks\QueryBuilders\StockQueryBuilder;
 use Domain\Stores\Enums\Store;
 use Domain\TrackingRequests\Models\TrackingRequest;
@@ -22,6 +23,10 @@ class Stock extends Model
 {
     use HasFactory;
     use HasUuid;
+
+    protected $dispatchesEvents = [
+        'updated' => StockUpdatedEvent::class,
+    ];
 
     protected $casts = [
         'store' => Store::class,

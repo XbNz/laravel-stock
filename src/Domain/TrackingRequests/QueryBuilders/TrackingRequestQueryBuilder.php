@@ -5,6 +5,7 @@ namespace Domain\TrackingRequests\QueryBuilders;
 use Domain\Alerts\Models\TrackingAlert;
 use Domain\Stocks\Models\Stock;
 use Domain\TrackingRequests\Models\TrackingRequest;
+use Domain\TrackingRequests\States\DormantState;
 use Illuminate\Database\Eloquent\Builder;
 use Psr\Http\Message\UriInterface;
 
@@ -43,4 +44,11 @@ class TrackingRequestQueryBuilder extends Builder
     {
         return $this->where('url', $url);
     }
+
+    public function needsUpdate(): self
+    {
+        return $this->where('status', DormantState::class)
+            ->whereColumn('updated_at', '<', $this->raw('DATE_SUB(NOW(), INTERVAL update_interval SECOND)'));
+    }
+
 }

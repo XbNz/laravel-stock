@@ -5,6 +5,7 @@ namespace Tests\Unit\Domain\TrackingRequests\QueryBuilders;
 use Domain\Alerts\Models\TrackingAlert;
 use Domain\Stocks\Models\Stock;
 use Domain\TrackingRequests\Models\TrackingRequest;
+use Domain\TrackingRequests\States\DormantState;
 use GuzzleHttp\Psr7\Uri;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -64,5 +65,38 @@ class QueryBuilderTest extends TestCase
         // Assert
         $this->assertCount(1, $trackingRequests);
         $this->assertTrue($trackingRequests->contains($trackingRequestA));
+    }
+
+    /** @test **/
+    public function dormant_requests_whose_update_intervals_have_passed_should_be_picked_up(): void
+    {
+        // Arrange
+        $trackingRequestA = TrackingRequest::factory()->create(
+            [
+                'updated_at' => now(),
+                'update_interval' => 30,
+                'status' => DormantState::class
+            ]
+        );
+        $trackingRequestB = TrackingRequest::factory()->create(
+            [
+                'updated_at' => now()->subMinutes(10),
+                'update_interval' => 30,
+                'status' => DormantState::class
+            ]
+        );
+        $trackingRequestC = TrackingRequest::factory()->create(
+            [
+                'updated_at' => now()->subMinutes(10),
+                'update_interval' => 599,
+                'status' => DormantState::class
+            ]
+        );
+
+        // Act
+        $needingUpdate = TrackingRequest::query()->needsUpdate();
+
+        // Assert
+        $this->assertEquals(2, $needingUpdate->count());
     }
 }

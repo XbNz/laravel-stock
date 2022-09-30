@@ -2,15 +2,20 @@
 
 namespace Domain\Stocks\Models;
 
+use Database\Factories\StockHistoryFactory;
 use Domain\Stocks\Actions\FormatPriceAction;
+use Domain\Stocks\QueryBuilders\StockHistoryQueryBuilder;
 use Domain\Users\Concerns\HasUuid;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Query\Builder;
 
 class StockHistory extends Model
 {
     use HasUuid;
+    use HasFactory;
 
     /**
      * @var array<string, string>
@@ -18,6 +23,21 @@ class StockHistory extends Model
     protected $casts = [
         'availability' => 'boolean',
     ];
+
+    /**
+     * @param Builder $query
+     * @return StockHistoryQueryBuilder<StockHistory>
+     */
+    public function newEloquentBuilder($query): StockHistoryQueryBuilder
+    {
+        return new StockHistoryQueryBuilder($query);
+    }
+
+
+    protected static function newFactory(): StockHistoryFactory
+    {
+        return StockHistoryFactory::new();
+    }
 
     protected function price(): Attribute
     {
@@ -35,4 +55,5 @@ class StockHistory extends Model
     {
         return $this->belongsTo(Stock::class);
     }
+
 }

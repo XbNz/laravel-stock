@@ -13,4 +13,5 @@ use Illuminate\Database\Eloquent\Builder;
  */
 class StockQueryBuilder extends Builder
 {
+
 }

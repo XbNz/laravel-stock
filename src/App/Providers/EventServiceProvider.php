@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use Domain\Stocks\Subscribers\StockSubscriber;
 use Domain\TrackingRequests\Subscribers\TrackingRequestSubscriber;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -25,6 +26,7 @@ class EventServiceProvider extends ServiceProvider
 
     protected $subscribe = [
         TrackingRequestSubscriber::class,
+        StockSubscriber::class,
     ];
 
     /**
