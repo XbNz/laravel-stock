@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Console\Stores\Commands\DiscoverTrackingRequestsCommand;
 use Domain\Alerts\Models\TrackingAlert;
 use Domain\Browser\Browser;
 use Domain\Browser\PythonUndetectedChrome;
@@ -23,6 +24,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(Browser::class, function (Application $app) {
             return new PythonUndetectedChrome();
         });
+
+        $this->commands([
+            DiscoverTrackingRequestsCommand::class,
+        ]);
     }
 
     /**

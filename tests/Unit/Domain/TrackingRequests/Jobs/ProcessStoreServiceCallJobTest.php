@@ -3,6 +3,7 @@
 namespace Tests\Unit\Domain\TrackingRequests\Jobs;
 
 use Domain\Alerts\Models\AlertChannel;
+use Domain\Stocks\Models\Stock;
 use Domain\Stores\DTOs\StockData;
 use Domain\TrackingRequests\Enums\TrackingRequest as TrackingRequestEnum;
 use Domain\TrackingRequests\Jobs\ProcessStoreServiceCallJob;
@@ -11,6 +12,7 @@ use Domain\TrackingRequests\Notifications\TrackingRequestFailedNotification;
 use Domain\TrackingRequests\States\DormantState;
 use Domain\TrackingRequests\States\FailedState;
 use Domain\TrackingRequests\States\InProgressState;
+use Domain\TrackingRequests\States\Transitions\RecoveryState;
 use Exception;
 use GuzzleHttp\Psr7\Uri;
 use Illuminate\Database\Eloquent\Collection;
@@ -77,47 +79,6 @@ class ProcessStoreServiceCallJobTest extends TestCase
 
     }
 
-    /** @test **/
-    public function it_rejects_in_progress_tracking_requests(): void
-    {
-        // Arrange
-        $shouldBePutThroughNothing = TrackingRequest::factory()->create([
-            'tracking_type' => TrackingRequestEnum::SingleProduct,
-            'status' => InProgressState::class,
-        ]);
-
-        $mockStore = $this->mock(StoreContract::class);
-        $mockStore->shouldNotHaveBeenCalled();
-
-        // Act
-
-        (new ProcessStoreServiceCallJob(
-            Collection::make([$shouldBePutThroughNothing]),
-            $shouldBePutThroughNothing->user,
-            [$mockStore]
-        ))->handle();
-    }
-
-    /** @test **/
-    public function it_rejects_failed_tracking_requests(): void
-    {
-        // Arrange
-        $shouldBePutThroughNothing = TrackingRequest::factory()->create([
-            'tracking_type' => TrackingRequestEnum::SingleProduct,
-            'status' => FailedState::class,
-        ]);
-
-        $mockStore = $this->mock(StoreContract::class);
-        $mockStore->shouldNotHaveBeenCalled();
-
-        // Act
-
-        (new ProcessStoreServiceCallJob(
-            Collection::make([$shouldBePutThroughNothing]),
-            $shouldBePutThroughNothing->user,
-            [$mockStore]
-        ))->handle();
-    }
 
     /** @test **/
     public function after_completion_a_tracking_request_must_be_set_to_dormant(): void
@@ -179,5 +140,25 @@ class ProcessStoreServiceCallJobTest extends TestCase
         // Assert
 
         Notification::assertSentTo($channel, TrackingRequestFailedNotification::class);
+    }
+
+    /** @test **/
+    public function requests_are_sent_to_recovery_based_on_confidence_percentage(): void
+    {
+        // Arrange
+        $trackingRequest = TrackingRequest::factory()->has(Stock::factory())->create([
+            'status' => InProgressState::class
+        ]);
+
+        // Act
+        (new ProcessStoreServiceCallJob(
+            Collection::make([$trackingRequest]),
+            $trackingRequest->user,
+            [new FakeStore()]
+        ))->failed(new Exception('test'));
+
+        // Assert
+
+        $this->assertTrue($trackingRequest->status->equals(RecoveryState::class));
     }
 }
