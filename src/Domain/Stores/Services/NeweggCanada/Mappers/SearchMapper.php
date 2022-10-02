@@ -72,10 +72,11 @@ class SearchMapper implements MapperContract
         Assert::integerish($priceBaseStripped);
         Assert::integerish($priceFractionalStripped);
 
+        $price = $priceBaseStripped . $priceFractionalStripped;
+
         return new Price(
-            (int) $priceBaseStripped,
+            (int) $price,
             Currency::CAD,
-            (int) $priceFractionalStripped,
         );
     }
 

@@ -10,16 +10,10 @@ use Webmozart\Assert\Assert;
 class Price
 {
     public function __construct(
-        public readonly int $baseAmount,
+        public readonly int $amount,
         public readonly Currency $currency,
-        public readonly int $fractionalAmount,
     ) {
-        Assert::greaterThanEq($baseAmount, 0);
-        Assert::greaterThanEq($fractionalAmount, 0);
+        Assert::greaterThanEq($amount, 0);
     }
 
-    public function __toString(): string
-    {
-        return $this->currency->name . ' ' . $this->baseAmount . $this->currency->decimalSeparator() . $this->fractionalAmount;
-    }
 }

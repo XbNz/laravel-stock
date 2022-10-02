@@ -26,7 +26,7 @@ class CreateOrUpdateStocksForTrackingRequestAction
         $data->stocks->each(function (StockData $stockData) use ($trackingRequest, $data) {
 
             if ($stockData->price !== null) {
-                $price = $stockData->price->baseAmount . $stockData->price->fractionalAmount;
+                $price = $stockData->price->amount;
             }
 
             $trackingRequest->stocks()->updateOrCreate(
@@ -48,7 +48,7 @@ class CreateOrUpdateStocksForTrackingRequestAction
     private function handleProductStock(StockData $data, TrackingRequest $trackingRequest): void
     {
         if ($data->price !== null) {
-            $price = $data->price->baseAmount . $data->price->fractionalAmount;
+            $price = $data->price->amount;
         }
 
         $trackingRequest->stocks()->updateOrCreate(

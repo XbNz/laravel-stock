@@ -18,6 +18,14 @@ class Percentage
         return new self($value);
     }
 
+    public static function fromDifference(float $valueA, float $valueB): self
+    {
+        $difference = $valueA - $valueB;
+        $percentage = ($difference / $valueA) * 100;
+
+        return new self($percentage);
+    }
+
     public function greaterThan(float $value): bool
     {
         return $this->value > $value;

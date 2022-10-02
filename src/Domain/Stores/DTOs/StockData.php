@@ -44,7 +44,7 @@ class StockData implements MappableContract
             'title' => '::random-title::',
             'link' => new Uri('https://example.com/skuhere'),
             'store' => Arr::random(Store::cases()),
-            'price' => new Price(111, Arr::random(Currency::cases()), 111),
+            'price' => new Price(111, Arr::random(Currency::cases())),
             'available' => true,
             'sku' => '::random-sku::',
             'imagePath' => storage_path('app/tmp/test.jpg'),

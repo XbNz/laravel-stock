@@ -20,8 +20,10 @@ class DestroyTrackingRequestAction
     {
         $stocks = $trackingRequest->stocks()
             ->withCount('trackingRequests')
-            ->where('tracking_requests_count', '=', 1)
-            ->get();
+            ->get()
+            ->where('tracking_requests_count', 1);
+
+        // TODO: Find a way to avoid hydrating the models here
 
         $stocks->each(fn (Stock $stock) => $stock->users()->detach($trackingRequest->user->id));
     }

@@ -39,7 +39,7 @@ class CreateOrUpdateStocksForTrackingRequestActionTest extends TestCase
                     StockData::generateFake([
                         'title' => '::random-title::',
                         'link' => new Uri('https://example.com/skuhere'),
-                        'price' => new Price(111, Arr::random(Currency::cases()), 111),
+                        'price' => new Price(111, Arr::random(Currency::cases())),
                         'available' => true,
                         'sku' => '::random-sku::',
                     ])
@@ -57,7 +57,7 @@ class CreateOrUpdateStocksForTrackingRequestActionTest extends TestCase
         $this->assertDatabaseHas('stocks', [
             'title' => '::random-title::',
             'url' => 'https://example.com/skuhere',
-            'price' => 111111,
+            'price' => 111,
             'availability' => true,
             'sku' => '::random-sku::',
             'image' => storage_path('app/tmp/test.jpg'),
@@ -73,7 +73,7 @@ class CreateOrUpdateStocksForTrackingRequestActionTest extends TestCase
         $stockData = StockData::generateFake([
             'title' => '::random-title::',
             'link' => new Uri('https://example.com/skuhere'),
-            'price' => new Price(111, Arr::random(Currency::cases()), 111),
+            'price' => new Price(111, Arr::random(Currency::cases())),
             'available' => true,
             'sku' => '::random-sku::',
         ]);
@@ -87,7 +87,7 @@ class CreateOrUpdateStocksForTrackingRequestActionTest extends TestCase
         $this->assertDatabaseHas('stocks', [
             'title' => '::random-title::',
             'url' => 'https://example.com/skuhere',
-            'price' => 111111,
+            'price' => 111,
             'availability' => true,
             'sku' => '::random-sku::',
             'image' => storage_path('app/tmp/test.jpg'),

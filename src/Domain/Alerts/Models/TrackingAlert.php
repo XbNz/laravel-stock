@@ -3,6 +3,7 @@
 namespace Domain\Alerts\Models;
 
 use Database\Factories\TrackingAlertFactory;
+use Domain\Alerts\QueryBuilders\TrackingAlertQueryBuilder;
 use Domain\TrackingRequests\Models\TrackingRequest;
 use Domain\Users\Concerns\HasUuid;
 use Domain\Users\Models\User;
@@ -10,6 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Query\Builder;
 
 class TrackingAlert extends Model
 {
@@ -23,6 +25,15 @@ class TrackingAlert extends Model
     protected static function newFactory(): TrackingAlertFactory
     {
         return new TrackingAlertFactory;
+    }
+
+    /**
+     * @param Builder $query
+     * @return TrackingAlertQueryBuilder<TrackingAlert>
+     */
+    public function newEloquentBuilder($query): TrackingAlertQueryBuilder
+    {
+        return new TrackingAlertQueryBuilder($query);
     }
 
     /**

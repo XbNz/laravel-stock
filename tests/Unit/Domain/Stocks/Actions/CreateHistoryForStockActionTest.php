@@ -24,7 +24,7 @@ class CreateHistoryForStockActionTest extends TestCase
         // Assert
         $this->assertDatabaseHas('stock_histories', [
             'stock_id' => $stock->id,
-            'price' => $stock->price,
+            'price' => $stock->getRawOriginal('price'),
             'availability' => $stock->availability,
         ]);
     }

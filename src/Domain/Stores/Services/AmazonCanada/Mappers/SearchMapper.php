@@ -74,10 +74,13 @@ class SearchMapper implements MapperContract
         }
 
         if ($priceWhole !== null) {
+
+            $price = $priceWholeNumericOnly;
+            $price .= $priceFractionNumericOnly ?? '00';
+
             $priceObject = new Price(
-                (int) $priceWholeNumericOnly,
+                (int) $price,
                 Currency::CAD,
-                isset($priceFractionNumericOnly) ? (int) $priceFractionNumericOnly : null,
             );
         }
 

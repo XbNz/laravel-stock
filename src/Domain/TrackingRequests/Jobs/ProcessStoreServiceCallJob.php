@@ -131,14 +131,13 @@ class ProcessStoreServiceCallJob implements ShouldQueue
 
     public function failed(Throwable $exception): void
     {
+
         Log::warning('ProcessStoreServiceCallJob failed', [
             'trackingRequests' => $this->trackingRequests->toArray(),
             'user' => $this->user->toArray(),
             'storeServices' => $this->storeServices,
             'exception' => $exception->getMessage(),
         ]);
-
-        // TODO: Jobs are failing and leaving the tracking request in progress. FIX.
 
         $this->trackingRequests->loadCount('stocks');
 
@@ -147,8 +146,8 @@ class ProcessStoreServiceCallJob implements ShouldQueue
                 => app(ConfidenceOfTrackingRequestHealthAction::class)($trackingRequest)->lessThan(30)
             );
 
-        $toBeFailed->each(fn (TrackingRequest $trackingRequest) => $trackingRequest->status->transitionTo(FailedState::class));
-        $sentToRecovery->each(fn (TrackingRequest $trackingRequest) => $trackingRequest->status->transitionTo(RecoveryState::class));
+        $toBeFailed->each(fn (TrackingRequest $trackingRequest) => $trackingRequest->update(['status' => FailedState::class]));
+        $sentToRecovery->each(fn (TrackingRequest $trackingRequest) => $trackingRequest->update(['status' => RecoveryState::class]));
     }
 
 }

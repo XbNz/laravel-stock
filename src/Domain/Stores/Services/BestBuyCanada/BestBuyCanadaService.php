@@ -54,12 +54,16 @@ class BestBuyCanadaService implements StoreContract
                     $htmlPath,
                     $uri,
                     CarbonInterval::seconds($timeout),
+                    '//*[contains(@class, "screenReaderOnly") and contains(text(), "$")]',
                 );
             })
             ->toArray();
 
         $browser = $this->client
-            ->setup(new BrowserSetupData(['--headless'], false))
+            ->setup(new BrowserSetupData([
+                '--headless',
+                '--window-size=1920,1080'
+            ], false))
             ->addTargets($targets);
 
         $browser->execute();
@@ -109,7 +113,10 @@ class BestBuyCanadaService implements StoreContract
             ->toArray();
 
         $browser = $this->client
-            ->setup(new BrowserSetupData(['--headless'], true))
+            ->setup(new BrowserSetupData([
+                '--headless',
+                '--window-size=1920,1080'
+            ], true))
             ->addTargets($targets);
 
         $browser->execute();

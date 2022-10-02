@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Domain\Stocks\Models;
 
 use Database\Factories\StockFactory;
+use Domain\Alerts\Models\TrackingAlert;
 use Domain\Stocks\Actions\FormatPriceAction;
 use Domain\Stocks\Events\StockUpdatedEvent;
 use Domain\Stocks\QueryBuilders\StockQueryBuilder;
@@ -17,6 +18,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Query\Builder;
 
 class Stock extends Model
@@ -58,6 +60,7 @@ class Stock extends Model
     {
         return $this->belongsToMany(User::class);
     }
+
 
     /**
      * @return BelongsToMany<TrackingRequest>

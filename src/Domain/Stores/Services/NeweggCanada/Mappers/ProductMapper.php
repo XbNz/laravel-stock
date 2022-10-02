@@ -46,10 +46,11 @@ class ProductMapper implements MapperContract
         Assert::integerish($priceBase);
         Assert::integerish($priceFractional);
 
+        $price = $priceBase . $priceFractional;
+
         return new Price(
-            (int) $priceBase,
+            (int) $price,
             Currency::CAD,
-            (int) $priceFractional,
         );
     }
 
