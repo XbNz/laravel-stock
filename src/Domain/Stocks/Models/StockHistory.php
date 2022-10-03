@@ -4,6 +4,7 @@ namespace Domain\Stocks\Models;
 
 use Database\Factories\StockHistoryFactory;
 use Domain\Stocks\Actions\FormatPriceAction;
+use Domain\Stocks\Events\StockHistoryCreatedEvent;
 use Domain\Stocks\QueryBuilders\StockHistoryQueryBuilder;
 use Domain\Users\Concerns\HasUuid;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -22,6 +23,10 @@ class StockHistory extends Model
      */
     protected $casts = [
         'availability' => 'boolean',
+    ];
+
+    protected $dispatchesEvents = [
+        'created' => StockHistoryCreatedEvent::class,
     ];
 
     /**

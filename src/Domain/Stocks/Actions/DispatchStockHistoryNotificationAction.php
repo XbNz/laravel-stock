@@ -3,11 +3,12 @@
 namespace Domain\Stocks\Actions;
 
 use DASPRiD\Enum\Exception\IllegalArgumentException;
-use Domain\Alerts\Models\AlertChannel;
 use Domain\Alerts\Models\TrackingAlert;
-use Domain\Stocks\Models\Stock;
 use Domain\Stocks\Models\StockHistory;
+use Domain\Stocks\Notifications\StockAvailabilityNotification;
+use Domain\Stocks\Notifications\StockPriceNotification;
 use Support\ValueObjects\Percentage;
+use Webmozart\Assert\Assert;
 
 class DispatchStockHistoryNotificationAction
 {
@@ -22,42 +23,48 @@ class DispatchStockHistoryNotificationAction
             ->orderBy('created_at', 'desc')
             ->skip(1)
             ->take(1)
-            ->sole();
+            ->first();
 
-        $isPriceChange = $lastHistoricRecord->getRawOriginal('price') !== $stockHistory->getRawOriginal('price');
-        $isAvailabilityChange = $lastHistoricRecord->availability !== $stockHistory->availability;
+        Assert::notNull($lastHistoricRecord);
 
-        match (true) {
-            $isPriceChange => $this->handleNewPrice($lastHistoricRecord, $stockHistory),
-            $isAvailabilityChange => $this->handleNewAvailability($lastHistoricRecord, $stockHistory),
-            default => throw new IllegalArgumentException('No change in price or availability. Why was this state reached?'),
-        };
+        $priceIsNowLower = $lastHistoricRecord->getRawOriginal('price') > $stockHistory->getRawOriginal('price');
+        $availabilityWasFalseAndIsNowTrue = $lastHistoricRecord->availability === false && $stockHistory->availability === true;
+
+        if ($priceIsNowLower === false && $availabilityWasFalseAndIsNowTrue === false) {
+            return;
+        }
+
+        if ($priceIsNowLower) {
+            $this->handleNewPrice($lastHistoricRecord, $stockHistory);
+        }
+
+        if ($availabilityWasFalseAndIsNowTrue) {
+            $this->handleNewAvailability($stockHistory);
+        }
     }
 
     private function handleNewPrice(StockHistory $oldHistory, StockHistory $newHistory): void
     {
-        $priceIsNowHigher = $oldHistory->getRawOriginal('price') <= $newHistory->getRawOriginal('price');
-
-        if ($priceIsNowHigher) {
-            return;
-        }
-
-        $difference = Percentage::fromDifference($oldHistory->price, $newHistory->price);
+        $difference = Percentage::fromDifference($oldHistory->getRawOriginal('price'), $newHistory->getRawOriginal('price'));
 
         TrackingAlert::query()->with('alertChannel')
             ->whereInterestedIn($newHistory->stock)
-            ->where('percentage_trigger', '>=', $difference->value)
+            ->where('percentage_trigger', '<=', $difference->value)
             ->get()
-            ->each(fn(TrackingAlert $trackingAlert)
-                => $trackingAlert->alertChannel->notify() // TODO: Create a notification class
+            ->each(fn (TrackingAlert $trackingAlert)
+                => $trackingAlert->alertChannel->notify(new StockPriceNotification($oldHistory, $newHistory))
             );
-
     }
 
-    private function handleNewAvailability(StockHistory $oldHistory, StockHistory $newHistory): void
+    private function handleNewAvailability(StockHistory $newHistory): void
     {
-        $itemIsNowUnavailable = $newHistory->availability === false;
-
+        TrackingAlert::query()->with('alertChannel')
+            ->whereInterestedIn($newHistory->stock)
+            ->where('availability_trigger', true)
+            ->get()
+            ->each(fn (TrackingAlert $trackingAlert)
+                => $trackingAlert->alertChannel->notify(new StockAvailabilityNotification($newHistory))
+            );
     }
 
 }
