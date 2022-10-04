@@ -14,6 +14,8 @@ class DispatchStockHistoryNotificationAction
 {
     public function __invoke(StockHistory $stockHistory): void
     {
+        $stockHistory = $stockHistory->fresh();
+
         if ($stockHistory->stock->histories()->count() === 1) {
             return;
         }
@@ -26,6 +28,11 @@ class DispatchStockHistoryNotificationAction
             ->first();
 
         Assert::notNull($lastHistoricRecord);
+
+        Assert::integer($lastHistoricRecord?->getRawOriginal('price'));
+        Assert::integer($stockHistory?->getRawOriginal('price'));
+        Assert::integer($lastHistoricRecord?->getRawOriginal('availability'));
+        Assert::integer($stockHistory?->getRawOriginal('availability'));
 
         $priceIsNowLower = $lastHistoricRecord->getRawOriginal('price') > $stockHistory->getRawOriginal('price');
         $availabilityWasFalseAndIsNowTrue = $lastHistoricRecord->availability === false && $stockHistory->availability === true;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Stocks;
+namespace Tests\Feature\Stocks\StockHistoryController;
 
 use Carbon\Carbon;
 use Database\Factories\StockHistoryFactory;
@@ -14,7 +14,7 @@ use Illuminate\Support\Str;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
-class StockHistoryControllerTest extends TestCase
+class InvokeTest extends TestCase
 {
     use RefreshDatabase;
 

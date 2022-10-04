@@ -54,7 +54,7 @@ class BestBuyCanadaService implements StoreContract
                     $htmlPath,
                     $uri,
                     CarbonInterval::seconds($timeout),
-                    '//*[contains(@class, "screenReaderOnly") and contains(text(), "$")]',
+                    '//*[contains(@class, "productPricingContainer")]',
                 );
             })
             ->toArray();

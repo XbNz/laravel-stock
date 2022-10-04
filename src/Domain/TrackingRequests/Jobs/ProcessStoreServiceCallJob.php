@@ -15,6 +15,7 @@ use Domain\TrackingRequests\States\FailedState;
 use Domain\TrackingRequests\States\InProgressState;
 use Domain\TrackingRequests\States\PausedState;
 use Domain\TrackingRequests\States\Transitions\RecoveryState;
+use Domain\TrackingRequests\States\Transitions\ToFailedTransition;
 use Domain\Users\Models\User;
 use Exception;
 use GuzzleHttp\Psr7\Uri;
@@ -139,15 +140,14 @@ class ProcessStoreServiceCallJob implements ShouldQueue
             'exception' => $exception->getMessage(),
         ]);
 
-        $this->trackingRequests->loadCount('stocks');
-
         [$toBeFailed, $sentToRecovery] = $this->trackingRequests
             ->partition(fn (TrackingRequest $trackingRequest)
                 => app(ConfidenceOfTrackingRequestHealthAction::class)($trackingRequest)->lessThan(30)
             );
 
-        $toBeFailed->each(fn (TrackingRequest $trackingRequest) => $trackingRequest->update(['status' => FailedState::class]));
-        $sentToRecovery->each(fn (TrackingRequest $trackingRequest) => $trackingRequest->update(['status' => RecoveryState::class]));
+        $toBeFailed->each(fn (TrackingRequest $trackingRequest) => $trackingRequest->status->transitionTo(FailedState::class));
+        $sentToRecovery->each(fn (TrackingRequest $trackingRequest) => $trackingRequest->status->transitionTo(RecoveryState::class));
+        // TODO: Fix failed method abandoning request on in progress state
     }
 
 }

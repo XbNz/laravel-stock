@@ -21,12 +21,10 @@ class StockHistorySubscriberTest extends TestCase
     /** @test **/
     public function when_a_new_history_is_created_it_must_call_the_dispatch_action(): void
     {
-        // Arrange
+        // Arrange, Act & Assert
         Notification::fake();
         $actionMock = $this->mock(DispatchStockHistoryNotificationAction::class);
-        $actionMock->shouldHaveBeenCalled();
-
-        // TODO: Fix the uuid generation with created event.
+        $actionMock->shouldReceive('__invoke')->twice();
 
         $subjectStock = Stock::factory()->create();
 
@@ -54,12 +52,5 @@ class StockHistorySubscriberTest extends TestCase
 
         $trackingRequest->stocks()->attach($subjectStock);
         $trackingRequest->trackingAlerts()->attach($trackingAlert);
-
-        // Act
-        app(DispatchStockHistoryNotificationAction::class)($newestHistoricRecord);
-
-        // Assert
-        Notification::assertSentTo($trackingAlert->alertChannel, StockPriceNotification::class);
-        Notification::assertSentTo($trackingAlert->alertChannel, StockAvailabilityNotification::class);
     }
 }

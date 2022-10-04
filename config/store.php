@@ -9,19 +9,19 @@ return [
     AmazonCanadaService::class => [
         'image_format' => Manipulations::FORMAT_PNG,
         'image_prefix' => 'amazon_',
-        'timeout' => 30,
+        'timeout' => 50,
         'proxy' => false,
     ],
     BestBuyCanadaService::class => [
         'image_format' => Manipulations::FORMAT_PNG,
         'image_prefix' => 'bestbuy_',
-        'timeout' => 20,
+        'timeout' => 50,
         'proxy' => false,
     ],
     NeweggCanadaService::class => [
         'image_format' => Manipulations::FORMAT_PNG,
         'image_prefix' => 'newegg_',
-        'timeout' => 30,
+        'timeout' => 50,
         'proxy' => false,
     ],
 ];
