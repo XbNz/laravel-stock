@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Domain\Browser;
 
-use Carbon\Carbon;
 use Domain\Browser\DTOs\BrowserSetupData;
 use Domain\Browser\DTOs\TargetData;
 use Illuminate\Support\Collection;
@@ -13,11 +14,18 @@ use Webmozart\Assert\Assert;
 class PythonUndetectedChrome implements Browser
 {
     private ?BrowserSetupData $browserSetupData = null;
-    /** @var array<TargetData>|null  */
+
+    /** @var array<TargetData>|null */
     private ?array $targets = null;
 
-    public function execute(): void {
+    public function setup(BrowserSetupData $browserSetupData): self
+    {
+        $this->browserSetupData = $browserSetupData;
+        return $this;
+    }
 
+    public function execute(): void
+    {
         $json = $this->serializeToScriptCompatibleJson();
 
         $process = new Process([
@@ -28,12 +36,6 @@ class PythonUndetectedChrome implements Browser
 
         $process->setTimeout(1000);
         $process->mustRun();
-    }
-
-    public function setup(BrowserSetupData $browserSetupData): self
-    {
-        $this->browserSetupData = $browserSetupData;
-        return $this;
     }
 
     public function addTargets(array $targetDataArray): self
@@ -48,7 +50,8 @@ class PythonUndetectedChrome implements Browser
         return new self();
     }
 
-    private function serializeToScriptCompatibleJson(): string {
+    private function serializeToScriptCompatibleJson(): string
+    {
         $targetDataArray = $this->targets;
         $browserSetupData = $this->browserSetupData;
 
@@ -68,7 +71,7 @@ class PythonUndetectedChrome implements Browser
             'selenium' => [
                 'arguments' => $browserSetupData->arguments,
                 'fullscreen' => $browserSetupData->fullPageScreenshot,
-            ]
+            ],
         ];
 
         return json_encode($wholeArray, JSON_THROW_ON_ERROR);

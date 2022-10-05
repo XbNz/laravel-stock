@@ -7,7 +7,6 @@ namespace Database\Factories;
 use Domain\Stores\Enums\Store;
 use Domain\TrackingRequests\Enums\TrackingRequest as TrackingRequestEnum;
 use Domain\TrackingRequests\Models\TrackingRequest;
-use Domain\TrackingRequests\States\TrackingRequestState;
 use Domain\Users\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Arr;

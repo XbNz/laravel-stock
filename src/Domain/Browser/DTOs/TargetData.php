@@ -1,10 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Domain\Browser\DTOs;
 
 use Carbon\CarbonInterval;
-use DOMDocument;
-use Illuminate\Support\Facades\File;
 use Psr\Http\Message\UriInterface;
 use Webmozart\Assert\Assert;
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit\Domain\Stocks\QueryBuilders;
 
 use Domain\Stocks\Models\Stock;

@@ -13,11 +13,7 @@ use Domain\Stocks\Models\Stock;
 use Domain\Stocks\Policies\StockPolicy;
 use Domain\TrackingRequests\Models\TrackingRequest;
 use Domain\TrackingRequests\Policies\TrackingRequestPolicy;
-use Domain\Users\Models\User;
-use Illuminate\Auth\Access\Response;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Gate;
-use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -42,5 +38,4 @@ class AuthServiceProvider extends ServiceProvider
 
         //
     }
-
 }

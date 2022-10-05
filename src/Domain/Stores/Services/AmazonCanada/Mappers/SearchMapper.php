@@ -74,7 +74,6 @@ class SearchMapper implements MapperContract
         }
 
         if ($priceWhole !== null) {
-
             $price = $priceWholeNumericOnly;
             $price .= $priceFractionNumericOnly ?? '00';
 

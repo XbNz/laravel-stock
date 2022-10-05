@@ -81,7 +81,6 @@ class ShowTest extends TestCase
         // Assert
         $response->assertOk();
 
-
         $this->assertIsInt($stock->getRawOriginal('price'));
 
         $this->assertSame(

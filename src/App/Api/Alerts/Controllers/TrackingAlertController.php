@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Api\Alerts\Controllers;
 
 use App\Api\Alerts\Requests\CreateTrackingAlertRequest;
@@ -36,7 +38,6 @@ class TrackingAlertController
         CreateTrackingAlertRequest $request,
         CreateTrackingAlertAction $trackingAlertAction,
     ): JsonResource {
-
         return TrackingAlertResource::make(
             ($trackingAlertAction)(
                 new CreateTrackingAlertData(
@@ -44,7 +45,7 @@ class TrackingAlertController
                     $request->get('percentage_trigger'),
                     $request->get('availability_trigger'),
                 ),
-                $request->user(),
+            $request->user(),
             ),
         );
     }
@@ -66,7 +67,6 @@ class TrackingAlertController
         TrackingAlert $trackingAlert,
         UpdateTrackingAlertAction $trackingAlertAction,
     ): JsonResource {
-
         $gate = $this->gate->inspect('update', $trackingAlert);
 
         if ($gate->denied()) {
@@ -83,7 +83,7 @@ class TrackingAlertController
                     $request->get('percentage_trigger'),
                     $request->get('availability_trigger'),
                 ),
-                $trackingAlert,
+            $trackingAlert,
             ),
         );
     }

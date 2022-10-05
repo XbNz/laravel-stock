@@ -15,5 +15,4 @@ class Price
     ) {
         Assert::greaterThanEq($amount, 0);
     }
-
 }

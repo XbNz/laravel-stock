@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit\Domain\Stocks\Actions;
 
 use Domain\Stocks\Actions\CreateHistoryForStockAction;
@@ -50,8 +52,13 @@ class CreateHistoryForStockActionTest extends TestCase
     {
         // Arrange
         $stock = Stock::factory()
-            ->has(StockHistory::factory(state: ['price' => 100, 'created_at' => now()->subDay()]), 'histories')
-            ->create(['price' => 200]);
+            ->has(StockHistory::factory(state: [
+                'price' => 100,
+                'created_at' => now()->subDay(),
+            ]), 'histories')
+            ->create([
+                'price' => 200,
+            ]);
 
         // Act
         app(CreateHistoryForStockAction::class)($stock);
@@ -66,8 +73,13 @@ class CreateHistoryForStockActionTest extends TestCase
     {
         // Arrange
         $stock = Stock::factory()
-            ->has(StockHistory::factory(state: ['availability' => true, 'created_at' => now()->subDay()]), 'histories')
-            ->create(['availability' => false]);
+            ->has(StockHistory::factory(state: [
+                'availability' => true,
+                'created_at' => now()->subDay(),
+            ]), 'histories')
+            ->create([
+                'availability' => false,
+            ]);
 
         // Act
         app(CreateHistoryForStockAction::class)($stock);

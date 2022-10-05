@@ -1,12 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature\TrackingRequests\TrackingRequestController;
 
 use Domain\TrackingRequests\Models\TrackingRequest;
 use Generator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
-use Symfony\Component\HttpFoundation\Response;
 use Tests\TestCase;
 
 class UpdateTest extends TestCase
@@ -17,16 +18,22 @@ class UpdateTest extends TestCase
     public function the_owner_of_a_tracking_request_can_update_only_its_update_interval(): void
     {
         // Arrange
-        $trackingRequestA = TrackingRequest::factory()->create(['update_interval' => 35]);
+        $trackingRequestA = TrackingRequest::factory()->create([
+            'update_interval' => 35,
+        ]);
         $trackingRequestB = TrackingRequest::factory()->create();
         Sanctum::actingAs($trackingRequestA->user);
 
         // Act
-        $responseA = $this->json('PUT', route('trackingRequest.update', ['trackingRequest' => $trackingRequestA->uuid]), [
+        $responseA = $this->json('PUT', route('trackingRequest.update', [
+            'trackingRequest' => $trackingRequestA->uuid,
+        ]), [
             'name' => '::new-name::',
             'update_interval' => 55,
         ]);
-        $responseB = $this->json('PUT', route('trackingRequest.update', ['trackingRequest' => $trackingRequestB->uuid]), [
+        $responseB = $this->json('PUT', route('trackingRequest.update', [
+            'trackingRequest' => $trackingRequestB->uuid,
+        ]), [
             'name' => '::new-name::',
             'update_interval' => 55,
         ]);
@@ -34,7 +41,9 @@ class UpdateTest extends TestCase
         // Assert
         $responseA->assertOk();
         $responseB->assertNotFound();
-        $responseA->assertJsonFragment(['update_interval' => 55]);
+        $responseA->assertJsonFragment([
+            'update_interval' => 55,
+        ]);
 
         $this->assertDatabaseHas('tracking_requests', [
             'name' => '::new-name::',
@@ -47,7 +56,6 @@ class UpdateTest extends TestCase
         ]);
     }
 
-
     /**
      * @test
      * @dataProvider validationProvider
@@ -59,7 +67,9 @@ class UpdateTest extends TestCase
         Sanctum::actingAs($trackingRequest->user);
 
         // Act
-        $response = $this->json('PUT', route('trackingRequest.update', ['trackingRequest' => $trackingRequest->uuid]), $payload);
+        $response = $this->json('PUT', route('trackingRequest.update', [
+            'trackingRequest' => $trackingRequest->uuid,
+        ]), $payload);
 
         // Assert
         $response->assertJsonValidationErrorFor(...$errors);
@@ -74,22 +84,29 @@ class UpdateTest extends TestCase
 
         yield from [
             'name must be a string' => [
-                'payload' => array_merge($default, ['name' => 123]),
+                'payload' => array_merge($default, [
+                    'name' => 123,
+                ]),
                 'errors' => ['name'],
             ],
             'name must be less than 255 characters' => [
-                'payload' => array_merge($default, ['name' => str_repeat('a', 256)]),
+                'payload' => array_merge($default, [
+                    'name' => str_repeat('a', 256),
+                ]),
                 'errors' => ['name'],
             ],
             'update_interval must be an integer' => [
-                'payload' => array_merge($default, ['update_interval' => '::abc::']),
+                'payload' => array_merge($default, [
+                    'update_interval' => '::abc::',
+                ]),
                 'errors' => ['update_interval'],
             ],
             'update_interval must be above 30 seconds' => [
-                'payload' => array_merge($default, ['update_interval' => 29]),
+                'payload' => array_merge($default, [
+                    'update_interval' => 29,
+                ]),
                 'errors' => ['update_interval'],
             ],
         ];
     }
-
 }

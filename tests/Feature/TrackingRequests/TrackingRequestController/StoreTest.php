@@ -37,12 +37,12 @@ class StoreTest extends TestCase
         // Act
         $responseA = $this->json('POST', route('trackingRequest.store'), [
             'name' => '::name::',
-            'url' => "https://www.anything.com/",
+            'url' => 'https://www.anything.com/',
             'update_interval' => 350,
         ]);
         $responseB = $this->json('POST', route('trackingRequest.store'), [
             'name' => '::name::',
-            'url' => "https://www.anything.com/",
+            'url' => 'https://www.anything.com/',
             'update_interval' => 350,
         ]);
 
@@ -52,7 +52,7 @@ class StoreTest extends TestCase
         $responseA->assertJson([
             'data' => [
                 'name' => '::name::',
-                'url' => "https://www.anything.com/",
+                'url' => 'https://www.anything.com/',
                 'store' => $randomStore->value,
                 'tracking_type' => $randomTrackingType->value,
                 'update_interval' => 350,
@@ -64,7 +64,7 @@ class StoreTest extends TestCase
         $this->assertDatabaseHas('tracking_requests', [
             'name' => '::name::',
             'user_id' => $user->id,
-            'url' => "https://www.anything.com/",
+            'url' => 'https://www.anything.com/',
             'store' => $randomStore->value,
             'tracking_type' => $randomTrackingType->value,
             'update_interval' => 350,
@@ -88,12 +88,12 @@ class StoreTest extends TestCase
         // Act
         $responseA = $this->json('POST', route('trackingRequest.store'), [
             'name' => '::name::',
-            'url' => "https://www.anything.com/",
+            'url' => 'https://www.anything.com/',
             'update_interval' => 350,
         ]);
         $responseB = $this->json('POST', route('trackingRequest.store'), [
             'name' => '::name::',
-            'url' => "https://www.anything.com/",
+            'url' => 'https://www.anything.com/',
             'update_interval' => 350,
         ]);
 
@@ -107,7 +107,9 @@ class StoreTest extends TestCase
     public function is_the_same_link_is_created_by_two_different_users_it_should_be_allowed(): void
     {
         // Arrange
-        $trackingRequest = \Domain\TrackingRequests\Models\TrackingRequest::factory()->create(['url' => "https://www.anything.com/"]);
+        $trackingRequest = \Domain\TrackingRequests\Models\TrackingRequest::factory()->create([
+            'url' => 'https://www.anything.com/',
+        ]);
         $anotherUser = User::factory()->create();
         Sanctum::actingAs($anotherUser);
         $randomStore = Arr::random(Store::cases());
@@ -121,7 +123,7 @@ class StoreTest extends TestCase
         // Act
         $response = $this->json('POST', route('trackingRequest.store'), [
             'name' => '::name::',
-            'url' => "https://www.anything.com/",
+            'url' => 'https://www.anything.com/',
             'update_interval' => 350,
         ]);
 
@@ -136,7 +138,6 @@ class StoreTest extends TestCase
         $this->assertRouteUsesMiddleware('trackingRequest.store', ['auth:sanctum']);
     }
 
-
     /** @test **/
     public function url_must_be_from_a_supported_store(): void
     {
@@ -147,13 +148,15 @@ class StoreTest extends TestCase
         // Act
         $response = $this->json('POST', route('trackingRequest.store'), [
             'name' => '::name::',
-            'url' => "https://www.google.com/",
+            'url' => 'https://www.google.com/',
             'update_interval' => 35,
         ]);
 
         // Assert
         $response->assertJsonValidationErrorFor('url');
-        $response->assertJsonValidationErrors(['url' => 'Unsupported store.']);
+        $response->assertJsonValidationErrors([
+            'url' => 'Unsupported store.',
+        ]);
     }
 
     /**
@@ -182,19 +185,27 @@ class StoreTest extends TestCase
 
         yield from [
             'name must be a string' => [
-                'payload' => array_merge($default, ['name' => 123]),
+                'payload' => array_merge($default, [
+                    'name' => 123,
+                ]),
                 'errors' => ['name'],
             ],
             'name must be less than 255 characters' => [
-                'payload' => array_merge($default, ['name' => str_repeat('a', 256)]),
+                'payload' => array_merge($default, [
+                    'name' => str_repeat('a', 256),
+                ]),
                 'errors' => ['name'],
             ],
             'update_interval must be an integer' => [
-                'payload' => array_merge($default, ['update_interval' => '::abc::']),
+                'payload' => array_merge($default, [
+                    'update_interval' => '::abc::',
+                ]),
                 'errors' => ['update_interval'],
             ],
             'update_interval must be above 30 seconds' => [
-                'payload' => array_merge($default, ['update_interval' => 29]),
+                'payload' => array_merge($default, [
+                    'update_interval' => 29,
+                ]),
                 'errors' => ['update_interval'],
             ],
             'name must be present' => [
@@ -211,5 +222,4 @@ class StoreTest extends TestCase
             ],
         ];
     }
-
 }

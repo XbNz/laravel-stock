@@ -1,15 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature\AlertChannels\TrackingAlertController;
 
 use Domain\Alerts\Models\AlertChannel;
-use Domain\Users\Models\User;
 use Generator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Arr;
 use Laravel\Sanctum\Sanctum;
-use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\Response;
 use Tests\TestCase;
 
@@ -28,7 +28,7 @@ class StoreTest extends TestCase
         // Act
         $response = $this->json('POST', route('trackingAlert.store'), [
             'alert_channel_uuid' => $alertChannel->uuid,
-            'percentage_trigger' => '50',
+            'percentage_trigger' => 50,
             'availability_trigger' => true,
         ]);
 
@@ -37,7 +37,9 @@ class StoreTest extends TestCase
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJson([
             'data' => [
-                'alert_channel' => ['uuid' => $alertChannel->uuid],
+                'alert_channel' => [
+                    'uuid' => $alertChannel->uuid,
+                ],
                 'percentage_trigger' => '50',
                 'availability_trigger' => true,
             ],
@@ -124,11 +126,15 @@ class StoreTest extends TestCase
 
         yield from [
             'non_integer_percentage_trigger' => [
-                'payload' => array_merge($good, ['percentage_trigger' => '::gibberish::']),
+                'payload' => array_merge($good, [
+                    'percentage_trigger' => '::gibberish::',
+                ]),
                 'error' => 'percentage_trigger',
             ],
             'non_boolean_availability_trigger' => [
-                'payload' => array_merge($good, ['availability_trigger' => '::gibberish::']),
+                'payload' => array_merge($good, [
+                    'availability_trigger' => '::gibberish::',
+                ]),
                 'error' => 'availability_trigger',
             ],
             'missing_both' => [
@@ -136,11 +142,15 @@ class StoreTest extends TestCase
                 'error' => 'percentage_trigger',
             ],
             'percentage_over_100' => [
-                'payload' => array_merge($good, ['percentage_trigger' => 101]),
+                'payload' => array_merge($good, [
+                    'percentage_trigger' => 101,
+                ]),
                 'error' => 'percentage_trigger',
             ],
             'percentage_under_1' => [
-                'payload' => array_merge($good, ['percentage_trigger' => 0]),
+                'payload' => array_merge($good, [
+                    'percentage_trigger' => 0,
+                ]),
                 'error' => 'percentage_trigger',
             ],
         ];

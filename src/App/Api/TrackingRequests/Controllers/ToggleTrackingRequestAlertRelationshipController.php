@@ -1,22 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Api\TrackingRequests\Controllers;
 
-use App\Api\Alerts\Resources\TrackingAlertResource;
-use App\Api\TrackingRequests\Requests\AttachRequest;
 use App\Api\TrackingRequests\Resources\TrackingRequestResource;
 use Domain\Alerts\Models\TrackingAlert;
-use Domain\TrackingRequests\Actions\AttachTrackingRequestAndTrackingAlertAction;
 use Domain\TrackingRequests\Models\TrackingRequest;
-use Domain\TrackingRequests\Rules\AttachOnlyUniqueAlertRule;
 use Illuminate\Contracts\Auth\Access\Gate;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
-use Webmozart\Assert\Assert;
 
 class ToggleTrackingRequestAlertRelationshipController
 {
@@ -39,5 +32,4 @@ class ToggleTrackingRequestAlertRelationshipController
 
         return TrackingRequestResource::make($trackingRequest->load('trackingAlerts'));
     }
-
 }

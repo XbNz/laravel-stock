@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature\AlertChannels\TrackingAlertController;
 
 use Domain\Alerts\Models\TrackingAlert;
@@ -23,8 +25,12 @@ class DestroyTest extends TestCase
         Sanctum::actingAs($trackingAlertA->user);
 
         // Act
-        $responseA = $this->json('DELETE', route('trackingAlert.destroy', ['trackingAlert' => $trackingAlertA->uuid]));
-        $responseB = $this->json('DELETE', route('trackingAlert.destroy', ['trackingAlert' => $trackingAlertB->uuid]));
+        $responseA = $this->json('DELETE', route('trackingAlert.destroy', [
+            'trackingAlert' => $trackingAlertA->uuid,
+        ]));
+        $responseB = $this->json('DELETE', route('trackingAlert.destroy', [
+            'trackingAlert' => $trackingAlertB->uuid,
+        ]));
 
         // Assert
         $responseA->assertStatus(Response::HTTP_NO_CONTENT);
@@ -39,13 +45,19 @@ class DestroyTest extends TestCase
     {
         // Arrange
         $user = User::factory()->create();
-        $trackingAlert = TrackingAlert::factory(['user_id' => $user->id]);
-        $trackingRequest = TrackingRequest::factory(['user_id' => $user->id])->has($trackingAlert)->create();
+        $trackingAlert = TrackingAlert::factory([
+            'user_id' => $user->id,
+        ]);
+        $trackingRequest = TrackingRequest::factory([
+            'user_id' => $user->id,
+        ])->has($trackingAlert)->create();
         $this->assertDatabaseCount('tracking_alert_tracking_request', 1);
         Sanctum::actingAs($trackingRequest->user);
 
         // Act
-        $this->json('DELETE', route('trackingAlert.destroy', ['trackingAlert' => $trackingRequest->trackingAlerts()->sole()->uuid]));
+        $this->json('DELETE', route('trackingAlert.destroy', [
+            'trackingAlert' => $trackingRequest->trackingAlerts()->sole()->uuid,
+        ]));
 
         // Assert
         $this->assertDatabaseCount('tracking_alerts', 0);

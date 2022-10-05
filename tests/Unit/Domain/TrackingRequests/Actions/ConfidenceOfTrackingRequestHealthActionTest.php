@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit\Domain\TrackingRequests\Actions;
 
 use Domain\Stocks\Models\Stock;
@@ -8,7 +10,6 @@ use Domain\TrackingRequests\Actions\ConfidenceOfTrackingRequestHealthAction;
 use Domain\TrackingRequests\Models\TrackingRequest;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Arr;
-use Support\ValueObjects\Percentage;
 use Tests\TestCase;
 
 class ConfidenceOfTrackingRequestHealthActionTest extends TestCase
@@ -48,8 +49,12 @@ class ConfidenceOfTrackingRequestHealthActionTest extends TestCase
     {
         // Arrange
         $store = Arr::random(Store::cases());
-        $trackingRequestA = TrackingRequest::factory()->create(['store' => $store]);
-        $trackingRequestB = TrackingRequest::factory()->create(['store' => $store]);
+        $trackingRequestA = TrackingRequest::factory()->create([
+            'store' => $store,
+        ]);
+        $trackingRequestB = TrackingRequest::factory()->create([
+            'store' => $store,
+        ]);
 
         $this->travel(1)->minutes();
         $trackingRequestB->touch();

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit\Domain\TrackingRequests\Jobs;
 
 use Domain\Alerts\Models\AlertChannel;
@@ -17,10 +19,8 @@ use Exception;
 use GuzzleHttp\Psr7\Uri;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Facades\Queue;
 use Support\Contracts\StoreContract;
 use Tests\TestCase;
 use Tests\Unit\Fakes\FakeStore;
@@ -51,7 +51,6 @@ class ProcessStoreServiceCallJobTest extends TestCase
             $shouldBePutThroughSearchMethod->user,
             [$mockStore]
         ))->handle();
-
     }
 
     /** @test **/
@@ -76,9 +75,7 @@ class ProcessStoreServiceCallJobTest extends TestCase
             $shouldBePutThroughProductMethod->user,
             [$mockStore]
         ))->handle();
-
     }
-
 
     /** @test **/
     public function after_completion_a_tracking_request_must_be_set_to_dormant(): void
@@ -95,7 +92,9 @@ class ProcessStoreServiceCallJobTest extends TestCase
         $mockStore->shouldReceive('product')
             ->with([new Uri($trackingRequest->url)])
             ->andReturn([
-                StockData::generateFake(['link' => new Uri($trackingRequest->url)])
+                StockData::generateFake([
+                    'link' => new Uri($trackingRequest->url),
+                ]),
             ]);
 
         // Act
@@ -147,7 +146,7 @@ class ProcessStoreServiceCallJobTest extends TestCase
     {
         // Arrange
         $trackingRequest = TrackingRequest::factory()->has(Stock::factory())->create([
-            'status' => InProgressState::class
+            'status' => InProgressState::class,
         ]);
 
         // Act
@@ -160,5 +159,25 @@ class ProcessStoreServiceCallJobTest extends TestCase
         // Assert
 
         $this->assertTrue($trackingRequest->status->equals(RecoveryState::class));
+    }
+
+    /** @test **/
+    public function requests_are_sent_to_failed_based_on_confidence_percentage(): void
+    {
+        // Arrange
+        $trackingRequest = TrackingRequest::factory()->create([
+            'status' => InProgressState::class,
+        ]);
+
+        // Act
+        (new ProcessStoreServiceCallJob(
+            Collection::make([$trackingRequest]),
+            $trackingRequest->user,
+            [new FakeStore()]
+        ))->failed(new Exception('test'));
+
+        // Assert
+
+        $this->assertTrue($trackingRequest->status->equals(FailedState::class));
     }
 }

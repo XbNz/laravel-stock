@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Domain\TrackingRequests\Actions;
 
 use Domain\Stocks\Models\Stock;
 use Domain\TrackingRequests\Models\TrackingRequest;
-use Illuminate\Database\Eloquent\Builder;
 
 class DestroyTrackingRequestAction
 {
@@ -27,6 +28,4 @@ class DestroyTrackingRequestAction
 
         $stocks->each(fn (Stock $stock) => $stock->users()->detach($trackingRequest->user->id));
     }
-
-
 }

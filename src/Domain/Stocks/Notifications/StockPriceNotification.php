@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Domain\Stocks\Notifications;
 
 use Domain\Alerts\Models\AlertChannel;
@@ -17,8 +19,10 @@ class StockPriceNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public function __construct(private readonly StockHistory $previous, private readonly StockHistory $current)
-    {
+    public function __construct(
+        private readonly StockHistory $previous,
+        private readonly StockHistory $current
+    ) {
     }
 
     public function shouldSend(AlertChannel $alertChannel, string $channel): bool
@@ -44,7 +48,7 @@ class StockPriceNotification extends Notification implements ShouldQueue
 
     public function toDiscord()
     {
-        // TODO: Implement toDiscord() method.
+        
     }
 
     public function toMail($notifiable): MailMessage
@@ -54,7 +58,7 @@ class StockPriceNotification extends Notification implements ShouldQueue
         $store = Str::of($this->current->stock->store->value)->headline();
         $link = $this->current->stock->url;
 
-        return (new MailMessage)
+        return (new MailMessage())
             ->subject("{$priceChange->value}% price change for {$trimmedStock}")
             ->line("Price change detected for the following stock: {$this->current->stock->title}")
             ->action("Buy at {$store}", $link);

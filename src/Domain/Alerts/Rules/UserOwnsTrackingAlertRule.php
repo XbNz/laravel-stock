@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Domain\Alerts\Rules;
 
 use Domain\Alerts\Models\TrackingAlert;

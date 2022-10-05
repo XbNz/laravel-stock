@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Domain\TrackingRequests\Actions;
 
 use Domain\Alerts\Models\AlertChannel;
@@ -24,5 +26,4 @@ class SendTrackingRequestFailedNotificationAction
             new TrackingRequestFailedNotification($trackingRequest)
         );
     }
-
 }

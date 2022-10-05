@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit\Domain\Stocks\Actions;
 
 use Domain\Stocks\Actions\FormatPriceAction;
@@ -112,5 +114,4 @@ class FormatPriceActionTest extends TestCase
             [10000000000, '£100,000,000.00'],
         ];
     }
-
 }

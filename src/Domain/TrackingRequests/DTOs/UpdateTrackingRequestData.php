@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Domain\TrackingRequests\DTOs;
 
 use ECSPrefix202209\Webmozart\Assert\Assert;

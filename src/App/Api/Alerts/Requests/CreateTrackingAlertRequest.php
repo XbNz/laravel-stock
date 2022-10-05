@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Api\Alerts\Requests;
 
 use Domain\Alerts\Rules\AlertChannelMustBeVerifiedRule;
@@ -18,7 +20,7 @@ class CreateTrackingAlertRequest extends FormRequest
                 'bail',
                 new UserOwnsAlertChannelRule($this->user()),
                 'bail',
-                new AlertChannelMustBeVerifiedRule,
+                new AlertChannelMustBeVerifiedRule(),
             ],
             'percentage_trigger' => ['integer', 'min:1', 'max:100', 'required_without:availability_trigger'],
             'availability_trigger' => ['boolean', 'required_without:percentage_trigger'],

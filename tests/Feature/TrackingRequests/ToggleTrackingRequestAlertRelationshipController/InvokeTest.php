@@ -1,12 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature\TrackingRequests\ToggleTrackingRequestAlertRelationshipController;
 
 use Domain\Alerts\Models\TrackingAlert;
 use Domain\TrackingRequests\Models\TrackingRequest;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
-use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
 
 class InvokeTest extends TestCase
@@ -18,7 +19,9 @@ class InvokeTest extends TestCase
     {
         // Arrange
         $trackingRequest = TrackingRequest::factory()->create();
-        $trackingAlert = TrackingAlert::factory()->create(['user_id' => $trackingRequest->user_id]);
+        $trackingAlert = TrackingAlert::factory()->create([
+            'user_id' => $trackingRequest->user_id,
+        ]);
 
         Sanctum::actingAs($trackingRequest->user);
 
@@ -36,9 +39,9 @@ class InvokeTest extends TestCase
                 'tracking_alerts' => [
                     [
                         'uuid' => $trackingAlert->uuid,
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ]);
 
         $this->assertDatabaseHas('tracking_alert_tracking_request', [
@@ -90,8 +93,12 @@ class InvokeTest extends TestCase
     {
         // Arrange
         $trackingRequest = TrackingRequest::factory()->create();
-        $trackingAlertA = TrackingAlert::factory()->create(['user_id' => $trackingRequest->user_id]);
-        $trackingAlertB = TrackingAlert::factory()->create(['user_id' => $trackingRequest->user_id]);
+        $trackingAlertA = TrackingAlert::factory()->create([
+            'user_id' => $trackingRequest->user_id,
+        ]);
+        $trackingAlertB = TrackingAlert::factory()->create([
+            'user_id' => $trackingRequest->user_id,
+        ]);
         $trackingRequest->trackingAlerts()->attach($trackingAlertA);
         Sanctum::actingAs($trackingRequest->user);
 

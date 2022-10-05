@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Domain\TrackingRequests\States;
 
 class PausedState extends TrackingRequestState
 {
-
     public function color(): string
     {
         // Hex for gray
@@ -15,5 +16,4 @@ class PausedState extends TrackingRequestState
     {
         return 'paused';
     }
-
 }

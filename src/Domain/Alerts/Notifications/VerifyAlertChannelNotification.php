@@ -9,7 +9,6 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Config;
 use Webmozart\Assert\Assert;
 
@@ -21,7 +20,6 @@ class VerifyAlertChannelNotification extends Notification implements ShouldQueue
         private readonly string $signedUrl,
     ) {
     }
-
 
     /**
      * @return array<int, string>

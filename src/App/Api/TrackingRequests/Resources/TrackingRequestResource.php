@@ -14,7 +14,7 @@ class TrackingRequestResource extends JsonResource
 {
     /**
      * @param Request $request
-     * @return array<string, string|int>
+     * @return array<string, mixed>
      */
     public function toArray($request): array
     {
@@ -25,7 +25,7 @@ class TrackingRequestResource extends JsonResource
             'tracking_alerts' => TrackingAlertResource::collection(
                 $this->whenLoaded('trackingAlerts', $this->trackingAlerts()->get())
             ),
-            'store' => $this->store,
+            'store' => $this->store->value,
             'tracking_type' => $this->tracking_type->value,
             'update_interval' => $this->update_interval,
             'status' => $this->status->name(),

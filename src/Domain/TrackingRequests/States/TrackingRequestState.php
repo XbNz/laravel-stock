@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Domain\TrackingRequests\States;
 
 use Domain\TrackingRequests\States\Transitions\RecoveryState;
@@ -9,10 +11,9 @@ use Spatie\ModelStates\StateConfig;
 
 abstract class TrackingRequestState extends State
 {
-
     abstract public function color(): string;
-    abstract public function name(): string;
 
+    abstract public function name(): string;
 
     public static function config(): StateConfig
     {

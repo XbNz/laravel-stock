@@ -1,9 +1,8 @@
 <?php
 
-namespace Domain\Browser\DTOs;
+declare(strict_types=1);
 
-use Domain\Browser\Browser;
-use Webmozart\Assert\Assert;
+namespace Domain\Browser\DTOs;
 
 class BrowserSetupData
 {

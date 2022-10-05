@@ -8,10 +8,7 @@ use Domain\Stores\Enums\Store;
 use GuzzleHttp\Psr7\Uri;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
-use Psr\Http\Message\UriInterface;
-use Spatie\Fork\Fork;
 use Support\Contracts\StoreContract;
 
 class LoadProductInfoCommand extends Command
@@ -49,7 +46,6 @@ class LoadProductInfoCommand extends Command
                     ],
                 ]
             );
-
         }
     }
 }

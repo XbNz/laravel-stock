@@ -73,7 +73,6 @@ class SearchMapper implements MapperContract
             Assert::integerish($fractionalPrice);
         }
 
-
         $price = $basePrice;
         $price .= $fractionalPrice ?? '00';
 

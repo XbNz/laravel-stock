@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Domain\TrackingRequests\DTOs;
 
 use Psr\Http\Message\UriInterface;

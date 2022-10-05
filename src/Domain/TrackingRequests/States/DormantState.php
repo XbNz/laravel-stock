@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Domain\TrackingRequests\States;
 
 class DormantState extends TrackingRequestState
 {
-
     public function color(): string
     {
         // Hex for blue
@@ -15,5 +16,4 @@ class DormantState extends TrackingRequestState
     {
         return 'dormant';
     }
-
 }

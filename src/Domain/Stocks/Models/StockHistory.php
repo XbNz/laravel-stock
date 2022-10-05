@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Domain\Stocks\Models;
 
 use Database\Factories\StockHistoryFactory;
@@ -38,6 +40,13 @@ class StockHistory extends Model
         return new StockHistoryQueryBuilder($query);
     }
 
+    /**
+     * @return BelongsTo<Stock, StockHistory>
+     */
+    public function stock(): BelongsTo
+    {
+        return $this->belongsTo(Stock::class);
+    }
 
     protected static function newFactory(): StockHistoryFactory
     {
@@ -52,13 +61,4 @@ class StockHistory extends Model
             get: fn (int $value) => ($formatPriceAction)($value, $this->stock->store->currency()),
         );
     }
-
-    /**
-     * @return BelongsTo<Stock, StockHistory>
-     */
-    public function stock(): BelongsTo
-    {
-        return $this->belongsTo(Stock::class);
-    }
-
 }

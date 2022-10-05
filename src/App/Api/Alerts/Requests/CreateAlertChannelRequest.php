@@ -9,7 +9,6 @@ use Domain\Alerts\Rules\ValueChannelRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\Rule;
-use InvalidArgumentException;
 
 class CreateAlertChannelRequest extends FormRequest
 {

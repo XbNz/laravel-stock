@@ -10,7 +10,6 @@ use App\Api\Stocks\Controllers\StockController;
 use App\Api\Stocks\Controllers\StockHistoryController;
 use App\Api\TrackingRequests\Controllers\TogglePauseTrackingRequestController;
 use App\Api\TrackingRequests\Controllers\ToggleTrackingRequestAlertRelationshipController;
-use App\Api\TrackingRequests\Controllers\DetachAlertController;
 use App\Api\TrackingRequests\Controllers\TrackingRequestController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -28,7 +27,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('stock/{stock:uuid}/history', StockHistoryController::class)->name('history');
     });
 
-
     Route::name('trackingRequest.')->group(function () {
         Route::get('tracking-request/', [TrackingRequestController::class, 'index'])->name('index');
         Route::get('tracking-request/{trackingRequest:uuid}', [TrackingRequestController::class, 'show'])->name('show');
@@ -38,7 +36,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::post(
             'tracking-request/{trackingRequest:uuid}/tracking-alert/{trackingAlert:uuid}/toggleAlert',
-            ToggleTrackingRequestAlertRelationshipController::class)->name('toggleAlert'
+            ToggleTrackingRequestAlertRelationshipController::class
+        )->name(
+            'toggleAlert'
         );
 
         Route::post('tracking-request/{trackingRequest:uuid}/togglePause', TogglePauseTrackingRequestController::class)->name('togglePause');

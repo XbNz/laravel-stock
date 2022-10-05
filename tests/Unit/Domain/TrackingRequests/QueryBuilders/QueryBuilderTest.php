@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit\Domain\TrackingRequests\QueryBuilders;
 
 use Domain\Alerts\Models\TrackingAlert;
@@ -18,8 +20,12 @@ class QueryBuilderTest extends TestCase
     public function filters_stock(): void
     {
         // Arrange
-        $trackingRequestA = TrackingRequest::factory()->has(Stock::factory(state: ['price' => 100]))->create();
-        $trackingRequestB = TrackingRequest::factory()->has(Stock::factory(state: ['price' => 200]))->create();
+        $trackingRequestA = TrackingRequest::factory()->has(Stock::factory(state: [
+            'price' => 100,
+        ]))->create();
+        $trackingRequestB = TrackingRequest::factory()->has(Stock::factory(state: [
+            'price' => 200,
+        ]))->create();
 
         // Act
         $trackingRequests = TrackingRequest::query()
@@ -36,8 +42,12 @@ class QueryBuilderTest extends TestCase
     public function filters_tracking_alert(): void
     {
         // Arrange
-        $trackingRequestA = TrackingRequest::factory()->has(TrackingAlert::factory(state: ['percentage_trigger' => 50]))->create();
-        $trackingRequestB = TrackingRequest::factory()->has(TrackingAlert::factory(state: ['percentage_trigger' => 100]))->create();
+        $trackingRequestA = TrackingRequest::factory()->has(TrackingAlert::factory(state: [
+            'percentage_trigger' => 50,
+        ]))->create();
+        $trackingRequestB = TrackingRequest::factory()->has(TrackingAlert::factory(state: [
+            'percentage_trigger' => 100,
+        ]))->create();
 
         // Act
         $trackingRequests = TrackingRequest::query()
@@ -54,8 +64,12 @@ class QueryBuilderTest extends TestCase
     public function filters_url(): void
     {
         // Arrange
-        $trackingRequestA = TrackingRequest::factory()->create(['url' => 'https://example.com']);
-        $trackingRequestB = TrackingRequest::factory()->create(['url' => 'https://example.org']);
+        $trackingRequestA = TrackingRequest::factory()->create([
+            'url' => 'https://example.com',
+        ]);
+        $trackingRequestB = TrackingRequest::factory()->create([
+            'url' => 'https://example.org',
+        ]);
 
         // Act
         $trackingRequests = TrackingRequest::query()
@@ -75,21 +89,21 @@ class QueryBuilderTest extends TestCase
             [
                 'updated_at' => now(),
                 'update_interval' => 30,
-                'status' => DormantState::class
+                'status' => DormantState::class,
             ]
         );
         $trackingRequestB = TrackingRequest::factory()->create(
             [
                 'updated_at' => now()->subMinutes(10),
                 'update_interval' => 30,
-                'status' => DormantState::class
+                'status' => DormantState::class,
             ]
         );
         $trackingRequestC = TrackingRequest::factory()->create(
             [
                 'updated_at' => now()->subMinutes(10),
                 'update_interval' => 599,
-                'status' => DormantState::class
+                'status' => DormantState::class,
             ]
         );
 

@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Domain\Stocks\Actions;
 
-use DASPRiD\Enum\Exception\IllegalArgumentException;
 use Domain\Alerts\Models\TrackingAlert;
 use Domain\Stocks\Models\StockHistory;
 use Domain\Stocks\Notifications\StockAvailabilityNotification;
@@ -29,10 +30,10 @@ class DispatchStockHistoryNotificationAction
 
         Assert::notNull($lastHistoricRecord);
 
-        Assert::integer($lastHistoricRecord?->getRawOriginal('price'));
-        Assert::integer($stockHistory?->getRawOriginal('price'));
-        Assert::integer($lastHistoricRecord?->getRawOriginal('availability'));
-        Assert::integer($stockHistory?->getRawOriginal('availability'));
+        Assert::integer($lastHistoricRecord->getRawOriginal('price'));
+        Assert::integer($stockHistory->getRawOriginal('price'));
+        Assert::integer($lastHistoricRecord->getRawOriginal('availability'));
+        Assert::integer($stockHistory->getRawOriginal('availability'));
 
         $priceIsNowLower = $lastHistoricRecord->getRawOriginal('price') > $stockHistory->getRawOriginal('price');
         $availabilityWasFalseAndIsNowTrue = $lastHistoricRecord->availability === false && $stockHistory->availability === true;
@@ -58,7 +59,8 @@ class DispatchStockHistoryNotificationAction
             ->whereInterestedIn($newHistory->stock)
             ->where('percentage_trigger', '<=', $difference->value)
             ->get()
-            ->each(fn (TrackingAlert $trackingAlert)
+            ->each(
+                fn (TrackingAlert $trackingAlert)
                 => $trackingAlert->alertChannel->notify(new StockPriceNotification($oldHistory, $newHistory))
             );
     }
@@ -69,9 +71,9 @@ class DispatchStockHistoryNotificationAction
             ->whereInterestedIn($newHistory->stock)
             ->where('availability_trigger', true)
             ->get()
-            ->each(fn (TrackingAlert $trackingAlert)
+            ->each(
+                fn (TrackingAlert $trackingAlert)
                 => $trackingAlert->alertChannel->notify(new StockAvailabilityNotification($newHistory))
             );
     }
-
 }

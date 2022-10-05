@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Api\TrackingRequests\Requests;
 
-use Domain\Alerts\Rules\UserOwnsTrackingAlertRule;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -22,7 +21,7 @@ class CreateTrackingRequestRequest extends FormRequest
                 'required',
                 'active_url',
                 Rule::unique('tracking_requests')
-                    ->where(fn (Builder $query) => $query->where('user_id', $this->user()->id))
+                    ->where(fn (Builder $query) => $query->where('user_id', $this->user()->id)),
             ],
             'update_interval' => ['required', 'integer', 'min:30'],
         ];

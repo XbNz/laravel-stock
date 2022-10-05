@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Domain\TrackingRequests\QueryBuilders;
 
 use Domain\Alerts\Models\TrackingAlert;
@@ -50,5 +52,4 @@ class TrackingRequestQueryBuilder extends Builder
         return $this->where('status', DormantState::class)
             ->whereColumn('updated_at', '<', $this->raw('DATE_SUB(NOW(), INTERVAL update_interval SECOND)'));
     }
-
 }

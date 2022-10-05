@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use Domain\Stocks\Models\Stock;
 use Domain\Stocks\Models\StockHistory;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Carbon;
 
 class StockHistoryFactory extends Factory
 {

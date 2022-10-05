@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature\Stocks\StockHistoryController;
 
 use Carbon\Carbon;
@@ -49,8 +51,8 @@ class InvokeTest extends TestCase
                     'price',
                     'availability',
                     'created_at',
-                ]
-            ]
+                ],
+            ],
         ]);
     }
 
@@ -68,10 +70,9 @@ class InvokeTest extends TestCase
             'stock' => $stock->uuid,
         ]));
 
-
         // Assert
         $response->assertJsonStructure([
-            'links', 'meta'
+            'links', 'meta',
         ]);
     }
 
@@ -86,12 +87,12 @@ class InvokeTest extends TestCase
 
         // Act
         $responseA = $this->json('GET', route('stock.history', [
-                'stock' => $stock->uuid,
-            ]) . '?sort=-price');
+            'stock' => $stock->uuid,
+        ]) . '?sort=-price');
 
         $responseB = $this->json('GET', route('stock.history', [
-                'stock' => $stock->uuid,
-            ]) . '?sort=price');
+            'stock' => $stock->uuid,
+        ]) . '?sort=price');
 
         // Assert
         $responseA->assertOk();
@@ -122,12 +123,12 @@ class InvokeTest extends TestCase
 
         // Act
         $responseA = $this->json('GET', route('stock.history', [
-                'stock' => $stock->uuid,
-            ]) . '?sort=-availability');
+            'stock' => $stock->uuid,
+        ]) . '?sort=-availability');
 
         $responseB = $this->json('GET', route('stock.history', [
-                'stock' => $stock->uuid,
-            ]) . '?sort=availability');
+            'stock' => $stock->uuid,
+        ]) . '?sort=availability');
 
         // Assert
         $responseA->assertOk();
@@ -156,12 +157,12 @@ class InvokeTest extends TestCase
 
         // Act
         $responseA = $this->json('GET', route('stock.history', [
-                'stock' => $stock->uuid,
-            ]) . '?sort=-created_at');
+            'stock' => $stock->uuid,
+        ]) . '?sort=-created_at');
 
         $responseB = $this->json('GET', route('stock.history', [
-                'stock' => $stock->uuid,
-            ]) . '?sort=created_at');
+            'stock' => $stock->uuid,
+        ]) . '?sort=created_at');
 
         // Assert
         $responseA->assertOk();

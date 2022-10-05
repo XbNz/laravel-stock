@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Domain\TrackingRequests\Notifications;
 
 use Domain\Alerts\Models\AlertChannel;
@@ -52,7 +54,7 @@ class TrackingRequestFailedNotification extends Notification implements ShouldQu
 
     public function toDiscord()
     {
-        // TODO: Implement toDiscord() method.
+        
     }
 
     public function toArray($notifiable): array

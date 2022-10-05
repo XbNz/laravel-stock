@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature\AlertChannels\TrackingAlertController;
 
 use Domain\Alerts\Models\TrackingAlert;
@@ -18,26 +20,36 @@ class ShowTest extends TestCase
     public function a_user_can_only_retrieve_their_own_tracking_alerts(): void
     {
         // Arrange
-        $trackingAlertA = TrackingAlert::factory()->create(['percentage_trigger' => 50]);
-        $trackingAlertB = TrackingAlert::factory()->create(['percentage_trigger' => 75]);
+        $trackingAlertA = TrackingAlert::factory()->create([
+            'percentage_trigger' => 50,
+        ]);
+        $trackingAlertB = TrackingAlert::factory()->create([
+            'percentage_trigger' => 75,
+        ]);
         Sanctum::actingAs($trackingAlertA->user);
 
         // Act
-        $responseA = $this->json('GET', route('trackingAlert.show', ['trackingAlert' => $trackingAlertA->uuid]));
-        $responseB = $this->json('GET', route('trackingAlert.show', ['trackingAlert' => $trackingAlertB->uuid]));
+        $responseA = $this->json('GET', route('trackingAlert.show', [
+            'trackingAlert' => $trackingAlertA->uuid,
+        ]));
+        $responseB = $this->json('GET', route('trackingAlert.show', [
+            'trackingAlert' => $trackingAlertB->uuid,
+        ]));
 
         // Assert
         $responseB->assertNotFound();
         $responseA->assertJson([
             'data' => [
                 'uuid' => $trackingAlertA->uuid,
-                'alert_channel' => ['uuid' => $trackingAlertA->alertChannel->uuid],
+                'alert_channel' => [
+                    'uuid' => $trackingAlertA->alertChannel->uuid,
+                ],
                 'tracking_requests' => [],
                 'percentage_trigger' => 50,
                 'availability_trigger' => $trackingAlertA->availability_trigger,
                 'created_at' => $trackingAlertA->created_at->format('Y-m-d H:i:s'),
                 'updated_at' => $trackingAlertA->updated_at->format('Y-m-d H:i:s'),
-            ]
+            ],
         ]);
     }
 
@@ -50,7 +62,9 @@ class ShowTest extends TestCase
         Sanctum::actingAs($trackingAlert->user);
 
         // Act
-        $response = $this->json('GET', route('trackingAlert.show', ['trackingAlert' => $trackingAlert->uuid]));
+        $response = $this->json('GET', route('trackingAlert.show', [
+            'trackingAlert' => $trackingAlert->uuid,
+        ]));
 
         // Assert
         $response->assertJsonMissingPath('data.tracking_requests.0.tracking_alerts');

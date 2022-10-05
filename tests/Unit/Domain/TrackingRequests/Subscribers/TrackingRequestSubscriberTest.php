@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit\Domain\TrackingRequests\Subscribers;
 
-use Database\Factories\StockFactory;
 use Domain\Stocks\Models\Stock;
 use Domain\TrackingRequests\Models\TrackingRequest;
 use Domain\Users\Models\User;

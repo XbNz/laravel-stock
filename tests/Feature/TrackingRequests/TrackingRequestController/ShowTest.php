@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature\TrackingRequests\TrackingRequestController;
 
 use Domain\Alerts\Models\TrackingAlert;
@@ -21,8 +23,12 @@ class ShowTest extends TestCase
         Sanctum::actingAs($trackingRequestA->user);
 
         // Act
-        $responseA = $this->json('GET', route('trackingRequest.show', ['trackingRequest' => $trackingRequestA->uuid]));
-        $responseB = $this->json('GET', route('trackingRequest.show', ['trackingRequest' => $trackingRequestB->uuid]));
+        $responseA = $this->json('GET', route('trackingRequest.show', [
+            'trackingRequest' => $trackingRequestA->uuid,
+        ]));
+        $responseB = $this->json('GET', route('trackingRequest.show', [
+            'trackingRequest' => $trackingRequestB->uuid,
+        ]));
 
         // Assert
         $responseA->assertOk();
@@ -40,7 +46,7 @@ class ShowTest extends TestCase
                 'color' => $trackingRequestA->status->color(),
                 'created_at' => $trackingRequestA->created_at->format('Y-m-d H:i:s'),
                 'updated_at' => $trackingRequestA->updated_at->format('Y-m-d H:i:s'),
-            ]
+            ],
         ]);
     }
 
@@ -52,7 +58,9 @@ class ShowTest extends TestCase
         Sanctum::actingAs($trackingRequest->user);
 
         // Act
-        $response = $this->json('GET', route('trackingRequest.show', ['trackingRequest' => $trackingRequest->uuid]));
+        $response = $this->json('GET', route('trackingRequest.show', [
+            'trackingRequest' => $trackingRequest->uuid,
+        ]));
 
         // Assert
         $response->assertJsonCount(3, 'data.tracking_alerts');

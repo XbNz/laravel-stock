@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Domain\Stocks\Notifications;
 
 use Domain\Alerts\Models\AlertChannel;
@@ -43,7 +45,7 @@ class StockAvailabilityNotification extends Notification implements ShouldQueue
 
     public function toDiscord()
     {
-        // TODO: Implement toDiscord() method.
+        
     }
 
     public function toMail($notifiable): MailMessage
@@ -52,7 +54,7 @@ class StockAvailabilityNotification extends Notification implements ShouldQueue
         $store = Str::of($this->current->stock->store->value)->headline();
         $link = $this->current->stock->url;
 
-        return (new MailMessage)
+        return (new MailMessage())
             ->subject("{$trimmedStock} is now available!")
             ->line("Stock is now available for the following product: {$this->current->stock->title}")
             ->action("Buy at {$store}", $link);

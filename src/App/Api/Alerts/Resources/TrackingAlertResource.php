@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Api\Alerts\Resources;
 
 use App\Api\TrackingRequests\Resources\TrackingRequestResource;
@@ -11,13 +13,12 @@ class TrackingAlertResource extends JsonResource
 {
     /**
      * @param Request $request
-     * @return array
      */
     public function toArray($request): array
     {
         return [
             'uuid' => $this->uuid,
-            'alert_channel' => AlertchannelResource::make($this->alertChannel()->sole()),
+            'alert_channel' => AlertChannelResource::make($this->alertChannel()->sole()),
             'tracking_requests' => TrackingRequestResource::collection(
                 $this->whenLoaded(
                     'trackingRequests',

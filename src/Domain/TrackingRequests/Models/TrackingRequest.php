@@ -9,7 +9,6 @@ use Domain\Alerts\Models\TrackingAlert;
 use Domain\Stocks\Models\Stock;
 use Domain\Stores\Enums\Store;
 use Domain\TrackingRequests\Enums\TrackingRequest as TrackingRequestEnum;
-use Domain\TrackingRequests\Events\TrackingRequestCreatedEvent;
 use Domain\TrackingRequests\Events\TrackingRequestUpdatedEvent;
 use Domain\TrackingRequests\QueryBuilders\TrackingRequestQueryBuilder;
 use Domain\TrackingRequests\States\TrackingRequestState;

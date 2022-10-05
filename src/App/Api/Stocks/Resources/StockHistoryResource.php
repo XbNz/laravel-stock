@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Api\Stocks\Resources;
 
 use Domain\Stocks\Models\StockHistory;
@@ -11,7 +13,6 @@ class StockHistoryResource extends JsonResource
 {
     /**
      * @param Request $request
-     * @return array
      */
     public function toArray($request): array
     {

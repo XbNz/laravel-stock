@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Api\TrackingRequests\Controllers;
 
 use App\Api\TrackingRequests\Resources\TrackingRequestResource;
 use Domain\TrackingRequests\Actions\ToggleTrackingRequestStatusAction;
 use Domain\TrackingRequests\Models\TrackingRequest;
-use Domain\TrackingRequests\States\PausedState;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Symfony\Component\HttpFoundation\Response;
@@ -37,5 +38,4 @@ class TogglePauseTrackingRequestController
 
         return TrackingRequestResource::make($trackingRequest->fresh());
     }
-
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature\TrackingRequests\TogglePauseTrackingRequestController;
 
 use Domain\TrackingRequests\Models\TrackingRequest;
@@ -30,12 +32,18 @@ class InvokeTest extends TestCase
         Sanctum::actingAs($trackingRequestA->user);
 
         // Act
-        $responseA = $this->json('POST', route('trackingRequest.togglePause', ['trackingRequest' => $trackingRequestA->uuid]));
-        $responseB = $this->json('POST', route('trackingRequest.togglePause', ['trackingRequest' => $trackingRequestB->uuid]));
+        $responseA = $this->json('POST', route('trackingRequest.togglePause', [
+            'trackingRequest' => $trackingRequestA->uuid,
+        ]));
+        $responseB = $this->json('POST', route('trackingRequest.togglePause', [
+            'trackingRequest' => $trackingRequestB->uuid,
+        ]));
 
         // Assert
         $responseA->assertOk();
-        $responseA->assertJsonFragment(['status' => 'paused']);
+        $responseA->assertJsonFragment([
+            'status' => 'paused',
+        ]);
         $trackingRequestA->status->equals(PausedState::class);
         $responseB->assertNotFound();
     }
@@ -51,7 +59,9 @@ class InvokeTest extends TestCase
         Sanctum::actingAs($trackingRequest->user);
 
         // Act
-        $response = $this->json('POST', route('trackingRequest.togglePause', ['trackingRequest' => $trackingRequest->uuid]));
+        $response = $this->json('POST', route('trackingRequest.togglePause', [
+            'trackingRequest' => $trackingRequest->uuid,
+        ]));
 
         // Assert
         $response->assertStatus(Response::HTTP_PRECONDITION_FAILED);
@@ -67,7 +77,9 @@ class InvokeTest extends TestCase
         Sanctum::actingAs($trackingRequest->user);
 
         // Act
-        $response = $this->json('POST', route('trackingRequest.togglePause', ['trackingRequest' => $trackingRequest->uuid]));
+        $response = $this->json('POST', route('trackingRequest.togglePause', [
+            'trackingRequest' => $trackingRequest->uuid,
+        ]));
 
         // Assert
         $this->assertTrue($trackingRequest->fresh()->status->equals(DormantState::class));

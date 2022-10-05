@@ -6,7 +6,6 @@ namespace Tests\Unit\Domain\Stores\Services;
 
 use Domain\Stores\DTOs\StockData;
 use Domain\Stores\DTOs\StockSearchData;
-use Domain\Stores\Factories\BrowserShotFactory;
 use Psr\Http\Message\UriInterface;
 use Support\Contracts\StoreContract;
 

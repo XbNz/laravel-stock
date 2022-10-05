@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit\Domain\TrackingRequests\States;
 
 use Domain\Alerts\Models\AlertChannel;
@@ -8,7 +10,6 @@ use Domain\TrackingRequests\Notifications\TrackingRequestFailedNotification;
 use Domain\TrackingRequests\States\DormantState;
 use Domain\TrackingRequests\States\FailedState;
 use Domain\TrackingRequests\States\InProgressState;
-use Domain\TrackingRequests\States\Transitions\ToFailedTransition;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
@@ -31,7 +32,6 @@ class ToFailedTransitionTest extends TestCase
 
         // Act
 
-
         // Assert
 
         $this->assertTrue(
@@ -52,7 +52,6 @@ class ToFailedTransitionTest extends TestCase
 
         // Act
 
-
         // Assert
 
         $this->assertFalse(
@@ -71,8 +70,9 @@ class ToFailedTransitionTest extends TestCase
         $trackingRequest = TrackingRequest::factory()->create();
         $alertChannel = AlertChannel::factory()->for($trackingRequest->user)
             ->verificationRequiredChannel()
-            ->create(['verified_at' => now()]);
-
+            ->create([
+                'verified_at' => now(),
+            ]);
 
         // Act
         $trackingRequest->status->transitionTo(FailedState::class);
@@ -80,5 +80,4 @@ class ToFailedTransitionTest extends TestCase
         // Assert
         Notification::assertSentTo($alertChannel, TrackingRequestFailedNotification::class);
     }
-
 }

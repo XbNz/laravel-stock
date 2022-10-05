@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Domain\TrackingRequests\Policies;
 
-use Domain\Alerts\Models\TrackingAlert;
 use Domain\TrackingRequests\Models\TrackingRequest;
 use Domain\Users\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -12,7 +13,6 @@ use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 class TrackingRequestPolicy
 {
     use HandlesAuthorization;
-
 
     public function view(User $user, TrackingRequest $trackingRequest): Response
     {
@@ -34,5 +34,4 @@ class TrackingRequestPolicy
             ? Response::allow()
             : Response::deny(code: SymfonyResponse::HTTP_NOT_FOUND);
     }
-
 }

@@ -42,7 +42,6 @@ class RouteServiceProvider extends ServiceProvider
         Route::model('trackingAlert', TrackingAlert::class, function (string $value) {
             return TrackingAlert::findByUuid(Uuid::fromString($value));
         });
-
     }
 
     /**

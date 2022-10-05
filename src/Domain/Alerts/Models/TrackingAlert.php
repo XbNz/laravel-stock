@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Domain\Alerts\Models;
 
 use Database\Factories\TrackingAlertFactory;
@@ -21,11 +23,6 @@ class TrackingAlert extends Model
     protected $casts = [
         'availability_trigger' => 'boolean',
     ];
-
-    protected static function newFactory(): TrackingAlertFactory
-    {
-        return new TrackingAlertFactory;
-    }
 
     /**
      * @param Builder $query
@@ -58,5 +55,10 @@ class TrackingAlert extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    protected static function newFactory(): TrackingAlertFactory
+    {
+        return new TrackingAlertFactory();
     }
 }

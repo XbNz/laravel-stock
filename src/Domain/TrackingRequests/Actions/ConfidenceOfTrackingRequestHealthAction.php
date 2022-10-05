@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Domain\TrackingRequests\Actions;
 
 use Domain\TrackingRequests\Models\TrackingRequest;
@@ -16,8 +18,7 @@ class ConfidenceOfTrackingRequestHealthAction
 
     private function trackingRequestHasAtSomePointHadASuccessfulStockAssociation(TrackingRequest $trackingRequest): Percentage
     {
-        $trackingRequest->loadCount('stocks');
-        return $trackingRequest->stocks_count > 0 ? Percentage::from(33) : Percentage::from(0);
+        return $trackingRequest->stocks()->count() > 0 ? Percentage::from(33) : Percentage::from(0);
     }
 
     private function otherTrackingRequestsWithThisStoreHaveBeenSuccessful(TrackingRequest $trackingRequest): Percentage

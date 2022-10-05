@@ -19,7 +19,6 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use Psr\Http\Message\UriInterface;
-use Spatie\Browsershot\Browsershot;
 use Support\Contracts\StoreContract;
 use Symfony\Component\DomCrawler\Crawler;
 use Webmozart\Assert\Assert;
@@ -62,7 +61,7 @@ class BestBuyCanadaService implements StoreContract
         $browser = $this->client
             ->setup(new BrowserSetupData([
                 '--headless',
-                '--window-size=1920,1080'
+                '--window-size=1920,1080',
             ], false))
             ->addTargets($targets);
 
@@ -82,7 +81,6 @@ class BestBuyCanadaService implements StoreContract
                 }
 
                 return $product;
-
             })->toArray();
     }
 
@@ -107,7 +105,7 @@ class BestBuyCanadaService implements StoreContract
                     $htmlPath,
                     $uri,
                     CarbonInterval::seconds($timeout),
-                '//*[contains(text(), "Available to ship") or contains(text(), "Available online only")]',
+                    '//*[contains(text(), "Available to ship") or contains(text(), "Available online only")]',
                 );
             })
             ->toArray();
@@ -115,7 +113,7 @@ class BestBuyCanadaService implements StoreContract
         $browser = $this->client
             ->setup(new BrowserSetupData([
                 '--headless',
-                '--window-size=1920,1080'
+                '--window-size=1920,1080',
             ], true))
             ->addTargets($targets);
 
@@ -139,7 +137,6 @@ class BestBuyCanadaService implements StoreContract
                     $stockDataCollection,
                     $targetData->screenShotFileName,
                 );
-
             })->toArray();
     }
 

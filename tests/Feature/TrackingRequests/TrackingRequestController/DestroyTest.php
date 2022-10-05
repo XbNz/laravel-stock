@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Feature\TrackingRequests\TrackingRequestController;
 
-use Database\Factories\UserFactory;
 use Domain\Stocks\Models\Stock;
 use Domain\TrackingRequests\Models\TrackingRequest;
 use Domain\Users\Models\User;
@@ -63,7 +62,9 @@ class DestroyTest extends TestCase
         // Arrange
         $stock = Stock::factory()->create();
         $user = User::factory()->create();
-        $trackingRequests = TrackingRequest::factory()->count(2)->create(['user_id' => $user->id]);
+        $trackingRequests = TrackingRequest::factory()->count(2)->create([
+            'user_id' => $user->id,
+        ]);
 
         $user->stocks()->attach($stock);
         $trackingRequests->each(fn (TrackingRequest $trackingRequest) => $trackingRequest->stocks()->attach($stock));

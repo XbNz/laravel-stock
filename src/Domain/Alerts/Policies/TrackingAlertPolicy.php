@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Domain\Alerts\Policies;
 
 use Domain\Alerts\Models\TrackingAlert;
@@ -32,5 +34,4 @@ class TrackingAlertPolicy
             ? Response::allow()
             : Response::deny(code: SymfonyResponse::HTTP_NOT_FOUND);
     }
-
 }

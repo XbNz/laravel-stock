@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Api\Stocks\Controllers;
 
 use App\Api\Stocks\Resources\StockHistoryResource;
@@ -31,5 +33,4 @@ class StockHistoryController
 
         return StockHistoryResource::collection($stockHistories);
     }
-
 }

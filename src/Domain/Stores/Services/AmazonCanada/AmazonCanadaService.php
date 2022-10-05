@@ -19,7 +19,6 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use Psr\Http\Message\UriInterface;
-use Spatie\Browsershot\Browsershot;
 use Support\Contracts\StoreContract;
 use Symfony\Component\DomCrawler\Crawler;
 use Webmozart\Assert\Assert;
@@ -81,9 +80,7 @@ class AmazonCanadaService implements StoreContract
                 }
 
                 return $product;
-
             })->toArray();
-
     }
 
     /**
@@ -138,7 +135,6 @@ class AmazonCanadaService implements StoreContract
                     $stockDataCollection,
                     $targetData->screenShotFileName,
                 );
-
             })->toArray();
     }
 

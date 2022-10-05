@@ -97,5 +97,4 @@ class InvokeTest extends TestCase
     {
         $this->assertRouteUsesMiddleware('alertChannel.verify', ['signed']);
     }
-
 }

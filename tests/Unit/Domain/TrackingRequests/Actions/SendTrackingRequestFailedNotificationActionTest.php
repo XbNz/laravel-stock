@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit\Domain\TrackingRequests\Actions;
 
 use Domain\Alerts\Models\AlertChannel;
@@ -24,7 +26,9 @@ class SendTrackingRequestFailedNotificationActionTest extends TestCase
         $trackingRequest = TrackingRequest::factory()->create();
         $alertChannel = AlertChannel::factory()->for($trackingRequest->user)
             ->verificationRequiredChannel()
-            ->create(['verified_at' => now()]);
+            ->create([
+                'verified_at' => now(),
+            ]);
 
         // Act
         app(SendTrackingRequestFailedNotificationAction::class)(
@@ -50,7 +54,9 @@ class SendTrackingRequestFailedNotificationActionTest extends TestCase
         $trackingRequest = TrackingRequest::factory()->create();
         $alertChannel = AlertChannel::factory()->for($trackingRequest->user)
             ->verificationRequiredChannel()
-            ->create(['verified_at' => null]);
+            ->create([
+                'verified_at' => null,
+            ]);
 
         // Act & Assert
 
@@ -60,7 +66,6 @@ class SendTrackingRequestFailedNotificationActionTest extends TestCase
             $trackingRequest,
             $alertChannel,
         );
-
     }
 
     /** @test **/
@@ -72,7 +77,9 @@ class SendTrackingRequestFailedNotificationActionTest extends TestCase
         $trackingRequest = TrackingRequest::factory()->create();
         $alertChannel = AlertChannel::factory()->for($randomUser)
             ->verificationRequiredChannel()
-            ->create(['verified_at' => now()]);
+            ->create([
+                'verified_at' => now(),
+            ]);
 
         // Act & Assert
 
@@ -82,6 +89,5 @@ class SendTrackingRequestFailedNotificationActionTest extends TestCase
             $trackingRequest,
             $alertChannel,
         );
-
     }
 }

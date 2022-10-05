@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Domain\TrackingRequests\Jobs;
 
 use Domain\Stocks\Actions\CreateOrUpdateStocksForTrackingRequestAction;
@@ -13,22 +15,16 @@ use Domain\TrackingRequests\Models\TrackingRequest;
 use Domain\TrackingRequests\States\DormantState;
 use Domain\TrackingRequests\States\FailedState;
 use Domain\TrackingRequests\States\InProgressState;
-use Domain\TrackingRequests\States\PausedState;
 use Domain\TrackingRequests\States\Transitions\RecoveryState;
-use Domain\TrackingRequests\States\Transitions\ToFailedTransition;
 use Domain\Users\Models\User;
-use Exception;
 use GuzzleHttp\Psr7\Uri;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Queue\Middleware\WithoutOverlapping;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Support\Contracts\StoreContract;
 use Throwable;
@@ -36,7 +32,14 @@ use Webmozart\Assert\Assert;
 
 class ProcessStoreServiceCallJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
+
+    public int $tries = 1;
+
+    public int $timeout = 600;
 
     /**
      * @param array<StoreContract> $storeServices
@@ -55,12 +58,9 @@ class ProcessStoreServiceCallJob implements ShouldQueue
         ];
     }
 
-    public int $tries = 1;
-    public int $timeout = 600;
-
     public function backoff(): array
     {
-        return [1];//[50, 100, 600, 5000];
+        return [1]; //[50, 100, 600, 5000];
     }
 
     public function handle()
@@ -69,8 +69,8 @@ class ProcessStoreServiceCallJob implements ShouldQueue
 
         $trackingRequests
             ->filter(fn (TrackingRequest $trackingRequest) => $trackingRequest->status->canTransitionTo(InProgressState::class))
-            ->each(fn(TrackingRequest $trackingRequest)
-                => $trackingRequest->status->transitionTo(InProgressState::class)
+            ->each(
+                fn (TrackingRequest $trackingRequest) => $trackingRequest->status->transitionTo(InProgressState::class)
             );
 
         $trackingRequests
@@ -79,12 +79,13 @@ class ProcessStoreServiceCallJob implements ShouldQueue
                 fn (TrackingRequest $trackingRequest) => $trackingRequest->tracking_type->value,
             ])
             ->each(function (Collection $trackingRequests, string $store) {
-
-                $storeService = Collection::make($this->storeServices)->sole(fn (StoreContract $storeService)
+                $storeService = Collection::make($this->storeServices)->sole(
+                    fn (StoreContract $storeService)
                     => $storeService->supports(Store::from($store))
                 );
 
-                [$search, $singleProduct] = $trackingRequests->partition(fn (EloquentCollection $trackingRequests, string $trackingType)
+                [$search, $singleProduct] = $trackingRequests->partition(
+                    fn (EloquentCollection $trackingRequests, string $trackingType)
                     => TrackingRequestEnum::from($trackingType) === TrackingRequestEnum::Search
                 );
 
@@ -99,13 +100,35 @@ class ProcessStoreServiceCallJob implements ShouldQueue
                     $stockData = $storeService->product($urls->toArray());
                     $this->handleSingleProduct($stockData, $this->user);
                 });
-
             });
 
-        $trackingRequests->each(fn(TrackingRequest $trackingRequest) => $trackingRequest
-            ->status
-            ->transitionTo(DormantState::class)
+        $trackingRequests->each(
+            fn (TrackingRequest $trackingRequest) => $trackingRequest
+                ->status
+                ->transitionTo(DormantState::class)
         );
+    }
+
+    public function failed(Throwable $exception): void
+    {
+        Log::warning('ProcessStoreServiceCallJob failed', [
+            'trackingRequests' => $this->trackingRequests->toArray(),
+            'user' => $this->user->toArray(),
+            'storeServices' => $this->storeServices,
+            'exception' => $exception->getMessage(),
+        ]);
+
+        [$toBeFailed, $sentToRecovery] = $this->trackingRequests
+            ->partition(
+                fn (TrackingRequest $trackingRequest)
+                => app(ConfidenceOfTrackingRequestHealthAction::class)($trackingRequest)->lessThan(30)
+            );
+
+        $toBeFailed->each(function (TrackingRequest $trackingRequest) {
+            $trackingRequest->status->transitionTo(FailedState::class);
+        });
+
+        $sentToRecovery->each(fn (TrackingRequest $trackingRequest) => $trackingRequest->status->transitionTo(RecoveryState::class));
     }
 
     private function handleSingleProduct(array $stockData, User $user): void
@@ -129,25 +152,4 @@ class ProcessStoreServiceCallJob implements ShouldQueue
                 app(CreateOrUpdateStocksForTrackingRequestAction::class)($searchData, $trackingRequest);
             });
     }
-
-    public function failed(Throwable $exception): void
-    {
-
-        Log::warning('ProcessStoreServiceCallJob failed', [
-            'trackingRequests' => $this->trackingRequests->toArray(),
-            'user' => $this->user->toArray(),
-            'storeServices' => $this->storeServices,
-            'exception' => $exception->getMessage(),
-        ]);
-
-        [$toBeFailed, $sentToRecovery] = $this->trackingRequests
-            ->partition(fn (TrackingRequest $trackingRequest)
-                => app(ConfidenceOfTrackingRequestHealthAction::class)($trackingRequest)->lessThan(30)
-            );
-
-        $toBeFailed->each(fn (TrackingRequest $trackingRequest) => $trackingRequest->status->transitionTo(FailedState::class));
-        $sentToRecovery->each(fn (TrackingRequest $trackingRequest) => $trackingRequest->status->transitionTo(RecoveryState::class));
-        // TODO: Fix failed method abandoning request on in progress state
-    }
-
 }

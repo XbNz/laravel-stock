@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Domain\TrackingRequests\States;
 
 class InProgressState extends TrackingRequestState
 {
-
     public function color(): string
     {
         // Hex for yellow
@@ -15,5 +16,4 @@ class InProgressState extends TrackingRequestState
     {
         return 'in_progress';
     }
-
 }

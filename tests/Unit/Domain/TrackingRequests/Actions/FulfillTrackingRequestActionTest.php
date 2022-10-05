@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit\Domain\TrackingRequests\Actions;
 
 use Domain\Stores\Enums\Store;
@@ -8,8 +10,6 @@ use Domain\TrackingRequests\Jobs\ProcessStoreServiceCallJob;
 use Domain\TrackingRequests\Models\TrackingRequest;
 use Domain\TrackingRequests\States\DormantState;
 use Domain\Users\Models\User;
-use Generator;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
@@ -44,7 +44,7 @@ class FulfillTrackingRequestActionTest extends TestCase
                 'url' => 'https://newegg.ca/eowfj-wg-ewweg-weg',
                 'status' => DormantState::class,
                 'user_id' => $userB->id,
-            ]
+            ],
         ]);
 
         $action = app(FulfillTrackingRequestAction::class);

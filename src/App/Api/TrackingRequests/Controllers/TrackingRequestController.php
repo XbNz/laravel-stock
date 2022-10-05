@@ -9,14 +9,12 @@ use App\Api\TrackingRequests\Requests\UpdateTrackingRequestRequest;
 use App\Api\TrackingRequests\Resources\TrackingRequestResource;
 use Domain\TrackingRequests\Actions\CreateTrackingRequestAction;
 use Domain\TrackingRequests\Actions\DestroyTrackingRequestAction;
-use Domain\TrackingRequests\Actions\FulfillTrackingRequestAction;
 use Domain\TrackingRequests\Actions\UpdateTrackingRequestAction;
 use Domain\TrackingRequests\DTOs\CreateTrackingRequestData;
 use Domain\TrackingRequests\DTOs\UpdateTrackingRequestData;
 use Domain\TrackingRequests\Models\TrackingRequest;
 use GuzzleHttp\Psr7\Uri;
 use Illuminate\Contracts\Auth\Access\Gate;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -25,7 +23,6 @@ use Illuminate\Support\Facades\Response as ResponseFacade;
 use Illuminate\Support\ItemNotFoundException;
 use Spatie\QueryBuilder\QueryBuilder;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
-use Throwable;
 use Webmozart\Assert\Assert;
 
 class TrackingRequestController
@@ -67,7 +64,7 @@ class TrackingRequestController
                     new Uri($request->get('url')),
                     $request->get('update_interval')
                 ),
-                $request->user()
+            $request->user()
             );
         } catch (ItemNotFoundException) {
             return ResponseFacade::json([
@@ -97,7 +94,7 @@ class TrackingRequestController
                 $request->get('name'),
                 $request->get('update_interval')
             ),
-            $trackingRequest
+        $trackingRequest
         );
 
         return TrackingRequestResource::make($trackingRequest);
@@ -106,8 +103,7 @@ class TrackingRequestController
     public function destroy(
         TrackingRequest $trackingRequest,
         DestroyTrackingRequestAction $destroyTrackingRequest
-    ): Response
-    {
+    ): Response {
         $gate = $this->gate->inspect('delete', $trackingRequest);
 
         if ($gate->denied()) {

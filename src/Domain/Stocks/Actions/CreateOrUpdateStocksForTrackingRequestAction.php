@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Domain\Stocks\Actions;
 
-use Domain\Stores\Collections\StockDataCollection;
 use Domain\Stores\DTOs\StockData;
 use Domain\Stores\DTOs\StockSearchData;
 use Domain\TrackingRequests\Models\TrackingRequest;
@@ -15,7 +16,6 @@ class CreateOrUpdateStocksForTrackingRequestAction
         match (true) {
             $data instanceof StockSearchData => $this->handleSearchStock($data, $trackingRequest),
             $data instanceof StockData => $this->handleProductStock($data, $trackingRequest),
-            default => throw new InvalidArgumentException('Invalid data type'),
         };
 
         $trackingRequest->touch();
@@ -24,7 +24,6 @@ class CreateOrUpdateStocksForTrackingRequestAction
     private function handleSearchStock(StockSearchData $data, TrackingRequest $trackingRequest): void
     {
         $data->stocks->each(function (StockData $stockData) use ($trackingRequest, $data) {
-
             if ($stockData->price !== null) {
                 $price = $stockData->price->amount;
             }

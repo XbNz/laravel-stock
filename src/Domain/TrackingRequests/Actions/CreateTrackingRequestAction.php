@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Domain\TrackingRequests\Actions;
 
 use Domain\Stores\Actions\ParseStoreByLinkAction;
@@ -17,7 +19,7 @@ class CreateTrackingRequestAction
 
     public function __invoke(CreateTrackingRequestData $data, User $user): TrackingRequest
     {
-        $store = ($this->parseStoreByLinkAction)($data->url);
+        $store = ($this->parseStoreByLinkAction)((string) $data->url);
 
         return TrackingRequest::query()->firstOrCreate([
             'user_id' => $user->id,

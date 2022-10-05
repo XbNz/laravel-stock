@@ -1,12 +1,12 @@
 <?php
 
-namespace Domain\Alerts\QueryBuilders;
+declare(strict_types=1);
 
+namespace Domain\Alerts\QueryBuilders;
 
 use Domain\Alerts\Models\TrackingAlert;
 use Domain\Stocks\Models\Stock;
 use Illuminate\Database\Eloquent\Builder;
-
 
 /**
  * @template TModelClass of TrackingAlert
@@ -14,7 +14,6 @@ use Illuminate\Database\Eloquent\Builder;
  */
 class TrackingAlertQueryBuilder extends Builder
 {
-
     /**
      * @return self<TModelClass>
      */
@@ -26,5 +25,4 @@ class TrackingAlertQueryBuilder extends Builder
             });
         });
     }
-
 }

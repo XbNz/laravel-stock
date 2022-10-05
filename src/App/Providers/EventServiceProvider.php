@@ -28,7 +28,7 @@ class EventServiceProvider extends ServiceProvider
     protected $subscribe = [
         TrackingRequestSubscriber::class,
         StockSubscriber::class,
-        StockHistorySubscriber::class
+        StockHistorySubscriber::class,
     ];
 
     /**

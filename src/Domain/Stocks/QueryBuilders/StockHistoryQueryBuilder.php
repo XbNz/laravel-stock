@@ -1,7 +1,8 @@
 <?php
 
-namespace Domain\Stocks\QueryBuilders;
+declare(strict_types=1);
 
+namespace Domain\Stocks\QueryBuilders;
 
 use Domain\Stocks\Models\Stock;
 use Domain\Stocks\Models\StockHistory;

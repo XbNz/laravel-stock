@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Domain\TrackingRequests\States;
 
 class FailedState extends TrackingRequestState
 {
-
     public function color(): string
     {
         // Hex for red
@@ -15,5 +16,4 @@ class FailedState extends TrackingRequestState
     {
         return 'failed';
     }
-
 }

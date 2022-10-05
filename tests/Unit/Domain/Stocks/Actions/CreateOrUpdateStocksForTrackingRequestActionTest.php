@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit\Domain\Stocks\Actions;
 
-use Doctrine\DBAL\Exception\InvalidArgumentException;
 use Domain\Stocks\Actions\CreateOrUpdateStocksForTrackingRequestAction;
 use Domain\Stores\Collections\StockDataCollection;
 use Domain\Stores\DTOs\StockData;
@@ -11,7 +12,6 @@ use Domain\Stores\Enums\Currency;
 use Domain\Stores\Enums\Store;
 use Domain\Stores\ValueObjects\Price;
 use Domain\TrackingRequests\Models\TrackingRequest;
-use File;
 use GuzzleHttp\Psr7\Uri;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -42,7 +42,7 @@ class CreateOrUpdateStocksForTrackingRequestActionTest extends TestCase
                         'price' => new Price(111, Arr::random(Currency::cases())),
                         'available' => true,
                         'sku' => '::random-sku::',
-                    ])
+                    ]),
                 ]
             ),
             storage_path('app/tmp/test.jpg')

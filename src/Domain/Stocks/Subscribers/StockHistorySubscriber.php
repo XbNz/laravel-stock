@@ -1,15 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Domain\Stocks\Subscribers;
 
 use Domain\Stocks\Actions\DispatchStockHistoryNotificationAction;
 use Domain\Stocks\Events\StockHistoryCreatedEvent;
 use Illuminate\Events\Dispatcher;
-use Illuminate\Support\Facades\App;
 
 class StockHistorySubscriber
 {
-
     public function __construct(private readonly DispatchStockHistoryNotificationAction $historyNotificationAction)
     {
     }

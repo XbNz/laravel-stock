@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit\Domain\Alerts\QueryBuilders;
 
 use Domain\Alerts\Models\TrackingAlert;
-use Domain\Stocks\Actions\FindTrackingAlertsInterestedInStockAction;
 use Domain\Stocks\Models\Stock;
 use Domain\TrackingRequests\Models\TrackingRequest;
 use Illuminate\Foundation\Testing\RefreshDatabase;

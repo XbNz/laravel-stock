@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Domain\Stocks\Actions;
 
 use Domain\Stocks\Models\Stock;
@@ -9,8 +11,7 @@ class CreateHistoryForStockAction
 {
     public function __invoke(Stock $stock): Stock
     {
-        $stock->loadCount('histories');
-        if ($stock->histories_count === 0) {
+        if ($stock->histories()->count() === 0) {
             $this->createHistory($stock);
             return $stock;
         }

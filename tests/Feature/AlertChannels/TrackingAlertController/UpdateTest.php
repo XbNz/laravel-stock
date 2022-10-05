@@ -1,13 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature\AlertChannels\TrackingAlertController;
 
 use Domain\Alerts\Models\AlertChannel;
 use Domain\Alerts\Models\TrackingAlert;
-use Domain\Users\Models\User;
 use Generator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Arr;
 use Laravel\Sanctum\Sanctum;
 use Symfony\Component\HttpFoundation\Response;
 use Tests\TestCase;
@@ -20,7 +20,10 @@ class UpdateTest extends TestCase
     public function the_owner_of_a_tracking_alert_can_update_it(): void
     {
         // Arrange
-        $trackingAlertA = TrackingAlert::factory()->create(['percentage_trigger' => 50, 'availability_trigger' => true]);
+        $trackingAlertA = TrackingAlert::factory()->create([
+            'percentage_trigger' => 50,
+            'availability_trigger' => true,
+        ]);
         $trackingAlertB = TrackingAlert::factory()->create();
         $newAlertChannel = AlertChannel::factory()->verificationNotRequiredChannel()->create([
             'user_id' => $trackingAlertA->user->id,
@@ -29,12 +32,16 @@ class UpdateTest extends TestCase
         Sanctum::actingAs($trackingAlertA->user);
 
         // Act
-        $responseA = $this->json('PUT', route('trackingAlert.update', ['trackingAlert' => $trackingAlertA->uuid]), [
+        $responseA = $this->json('PUT', route('trackingAlert.update', [
+            'trackingAlert' => $trackingAlertA->uuid,
+        ]), [
             'alert_channel_uuid' => $newAlertChannel->uuid,
             'percentage_trigger' => 51,
             'availability_trigger' => false,
         ]);
-        $responseB = $this->json('PUT', route('trackingAlert.update', ['trackingAlert' => $trackingAlertB->uuid]), [
+        $responseB = $this->json('PUT', route('trackingAlert.update', [
+            'trackingAlert' => $trackingAlertB->uuid,
+        ]), [
             'alert_channel_uuid' => $newAlertChannel->uuid,
             'percentage_trigger' => 1,
             'availability_trigger' => true,
@@ -46,7 +53,9 @@ class UpdateTest extends TestCase
 
         $responseA->assertJson([
             'data' => [
-                'alert_channel' => ['uuid' => $newAlertChannel->uuid],
+                'alert_channel' => [
+                    'uuid' => $newAlertChannel->uuid,
+                ],
                 'percentage_trigger' => 51,
                 'availability_trigger' => false,
             ],
@@ -73,10 +82,14 @@ class UpdateTest extends TestCase
         Sanctum::actingAs($trackingAlert->user);
 
         // Act
-        $responseA = $this->json('PUT', route('trackingAlert.update', ['trackingAlert' => $trackingAlert->uuid]), [
+        $responseA = $this->json('PUT', route('trackingAlert.update', [
+            'trackingAlert' => $trackingAlert->uuid,
+        ]), [
             'alert_channel_uuid' => $newAlertChannelA->uuid,
         ]);
-        $responseB = $this->json('PUT', route('trackingAlert.update', ['trackingAlert' => $trackingAlert->uuid]), [
+        $responseB = $this->json('PUT', route('trackingAlert.update', [
+            'trackingAlert' => $trackingAlert->uuid,
+        ]), [
             'alert_channel_uuid' => $newAlertChannelB->uuid,
         ]);
 
@@ -98,7 +111,9 @@ class UpdateTest extends TestCase
         Sanctum::actingAs($trackingAlert->user);
 
         // Act
-        $response = $this->json('PUT', route('trackingAlert.update', ['trackingAlert' => $trackingAlert->uuid]), [
+        $response = $this->json('PUT', route('trackingAlert.update', [
+            'trackingAlert' => $trackingAlert->uuid,
+        ]), [
             'alert_channel_uuid' => $alertChannel->uuid,
         ]);
 
@@ -119,15 +134,19 @@ class UpdateTest extends TestCase
     public function validation_tests(array $payload, string $error): void
     {
         // Arrange
-        $trackingAlert = TrackingAlert::factory()->create(['percentage_trigger' => 50, 'availability_trigger' => true]);
+        $trackingAlert = TrackingAlert::factory()->create([
+            'percentage_trigger' => 50,
+            'availability_trigger' => true,
+        ]);
         Sanctum::actingAs($trackingAlert->user);
 
         // Act
-        $response = $this->json('PUT', route('trackingAlert.update', ['trackingAlert' => $trackingAlert->uuid]), $payload);
+        $response = $this->json('PUT', route('trackingAlert.update', [
+            'trackingAlert' => $trackingAlert->uuid,
+        ]), $payload);
 
         // Assert
         $response->assertJsonValidationErrorFor($error);
-
 
         $this->assertDatabaseHas('tracking_alerts', [
             'user_id' => $trackingAlert->user->id,
@@ -145,19 +164,27 @@ class UpdateTest extends TestCase
 
         yield from [
             'non_integer_percentage_trigger' => [
-                'payload' => array_merge($good, ['percentage_trigger' => '::gibberish::']),
+                'payload' => array_merge($good, [
+                    'percentage_trigger' => '::gibberish::',
+                ]),
                 'error' => 'percentage_trigger',
             ],
             'non_boolean_availability_trigger' => [
-                'payload' => array_merge($good, ['availability_trigger' => '::gibberish::']),
+                'payload' => array_merge($good, [
+                    'availability_trigger' => '::gibberish::',
+                ]),
                 'error' => 'availability_trigger',
             ],
             'percentage_over_100' => [
-                'payload' => array_merge($good, ['percentage_trigger' => 101]),
+                'payload' => array_merge($good, [
+                    'percentage_trigger' => 101,
+                ]),
                 'error' => 'percentage_trigger',
             ],
             'percentage_under_1' => [
-                'payload' => array_merge($good, ['percentage_trigger' => 0]),
+                'payload' => array_merge($good, [
+                    'percentage_trigger' => 0,
+                ]),
                 'error' => 'percentage_trigger',
             ],
         ];

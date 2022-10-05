@@ -10,7 +10,6 @@ use Domain\Alerts\Actions\CreateAlertChannelAction;
 use Domain\Alerts\DTOs\AlertChannelData;
 use Domain\Alerts\Enums\AlertChannel as AlertChannelEnum;
 use Domain\Alerts\Models\AlertChannel;
-use Domain\Users\Models\User;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;

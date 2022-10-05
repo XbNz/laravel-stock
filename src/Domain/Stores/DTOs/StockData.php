@@ -33,7 +33,6 @@ class StockData implements MappableContract
         }
     }
 
-
     public static function generateFake(array $extra = []): self
     {
         $image = imagecreate(200, 200);
@@ -50,7 +49,7 @@ class StockData implements MappableContract
             'imagePath' => storage_path('app/tmp/test.jpg'),
         ], $extra);
 
-        return new StockData(
+        return new self(
             $data['title'],
             $data['link'],
             $data['store'],
