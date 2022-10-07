@@ -16,12 +16,16 @@ class DispatchStockHistoryNotificationAction
     public function __invoke(StockHistory $stockHistory): void
     {
         $stockHistory = $stockHistory->fresh();
+        Assert::notNull($stockHistory);
 
-        if ($stockHistory->stock->histories()->count() === 1) {
+        $stock = $stockHistory->stock;
+        Assert::notNull($stock, 'Why does the stock history not have a stock?');
+
+        if ($stock->histories()->count() === 1) {
             return;
         }
 
-        $lastHistoricRecord = $stockHistory->stock
+        $lastHistoricRecord = $stock
             ->histories()
             ->orderBy('created_at', 'desc')
             ->skip(1)

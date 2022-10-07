@@ -27,6 +27,9 @@ class StockHistory extends Model
         'availability' => 'boolean',
     ];
 
+    /**
+     * @var array<string, class-string>
+     */
     protected $dispatchesEvents = [
         'created' => StockHistoryCreatedEvent::class,
     ];
@@ -53,6 +56,9 @@ class StockHistory extends Model
         return StockHistoryFactory::new();
     }
 
+    /**
+     * @return Attribute<string, never>
+     */
     protected function price(): Attribute
     {
         $formatPriceAction = app(FormatPriceAction::class);

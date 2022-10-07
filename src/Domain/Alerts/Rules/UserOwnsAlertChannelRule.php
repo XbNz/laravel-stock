@@ -8,6 +8,7 @@ use Domain\Alerts\Models\AlertChannel;
 use Domain\Users\Models\User;
 use Illuminate\Contracts\Validation\Rule;
 use Ramsey\Uuid\Uuid;
+use Webmozart\Assert\Assert;
 
 class UserOwnsAlertChannelRule implements Rule
 {
@@ -18,6 +19,7 @@ class UserOwnsAlertChannelRule implements Rule
 
     public function passes($attribute, $value): bool
     {
+        Assert::string($value);
         $alertChannel = AlertChannel::findByUuid(Uuid::fromString($value));
         return $alertChannel->user->is($this->user);
     }

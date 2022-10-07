@@ -24,6 +24,9 @@ class Stock extends Model
     use HasFactory;
     use HasUuid;
 
+    /**
+     * @var array<string, class-string>
+     */
     protected $dispatchesEvents = [
         'updated' => StockUpdatedEvent::class,
     ];
@@ -66,6 +69,9 @@ class Stock extends Model
         return $this->hasMany(StockHistory::class);
     }
 
+    /**
+     * @return Attribute<string, never>
+     */
     protected function price(): Attribute
     {
         $formatPriceAction = app(FormatPriceAction::class);

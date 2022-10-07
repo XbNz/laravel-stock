@@ -29,7 +29,7 @@ class VerifyAlertChannelNotification extends Notification implements ShouldQueue
         $mappings = Config::get('alert.mappings');
         $channels = [$mappings[$alertChannel->type->value]];
         Assert::count($channels, 1, "No channels found for type {$alertChannel->type->value}");
-
+        Assert::allString($channels);
         return $channels;
     }
 

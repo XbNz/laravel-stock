@@ -38,6 +38,7 @@ class StockAvailabilityNotification extends Notification implements ShouldQueue
     {
         $mappings = Config::get('alert.mappings');
         $channels = [$mappings[$alertChannel->type->value]];
+        Assert::allString($channels);
         Assert::count($channels, 1, "No channels found for type {$alertChannel->type->value}");
 
         return $channels;
@@ -45,11 +46,12 @@ class StockAvailabilityNotification extends Notification implements ShouldQueue
 
     public function toDiscord()
     {
-        
+
     }
 
-    public function toMail($notifiable): MailMessage
+    public function toMail(): MailMessage
     {
+        // TODO: Pick up static analysis from Domain/Stocks/Notifications/StockAvailabilityNotification.php
         $trimmedStock = Str::of($this->current->stock->title)->limit(15);
         $store = Str::of($this->current->stock->store->value)->headline();
         $link = $this->current->stock->url;

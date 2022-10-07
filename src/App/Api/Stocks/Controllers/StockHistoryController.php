@@ -26,7 +26,6 @@ class StockHistoryController
             abort($gate->code());
         }
 
-        /** @phpstan-ignore-next-line  */
         $stockHistories = QueryBuilder::for($stock->histories()->with('stock'))
             ->allowedSorts(['price', 'availability', 'created_at'])
             ->cursorPaginate(20);

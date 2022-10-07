@@ -9,7 +9,7 @@ use InvalidArgumentException;
 
 class FormatPriceAction
 {
-    public function __invoke(int $priceInLowestCurrencyUnit, Currency $currency)
+    public function __invoke(int $priceInLowestCurrencyUnit, Currency $currency): string
     {
         $numberFormat = match ($currency) {
             Currency::USD, Currency::GBP, Currency::CAD, Currency::EUR => number_format(

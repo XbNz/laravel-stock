@@ -8,6 +8,7 @@ use Domain\Alerts\Models\TrackingAlert;
 use Domain\Users\Models\User;
 use Illuminate\Contracts\Validation\Rule;
 use Ramsey\Uuid\Uuid;
+use Webmozart\Assert\Assert;
 
 class UserOwnsTrackingAlertRule implements Rule
 {
@@ -18,6 +19,7 @@ class UserOwnsTrackingAlertRule implements Rule
 
     public function passes($attribute, $value): bool
     {
+        Assert::string($value);
         $trackingAlert = TrackingAlert::findByUuid(Uuid::fromString($value));
         return $trackingAlert->user->is($this->user);
     }

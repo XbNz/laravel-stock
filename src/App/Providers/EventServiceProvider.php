@@ -25,6 +25,9 @@ class EventServiceProvider extends ServiceProvider
         ],
     ];
 
+    /**
+     * @var array<int, class-string>
+     */
     protected $subscribe = [
         TrackingRequestSubscriber::class,
         StockSubscriber::class,

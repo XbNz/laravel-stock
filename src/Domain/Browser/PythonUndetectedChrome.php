@@ -38,9 +38,11 @@ class PythonUndetectedChrome implements Browser
         $process->mustRun();
     }
 
+    /**
+     * @param array<TargetData> $targetDataArray
+     */
     public function addTargets(array $targetDataArray): self
     {
-        Assert::allIsInstanceOf($targetDataArray, TargetData::class);
         $this->targets = $targetDataArray;
         return $this;
     }
@@ -52,6 +54,9 @@ class PythonUndetectedChrome implements Browser
 
     private function serializeToScriptCompatibleJson(): string
     {
+        Assert::notNull($this->browserSetupData);
+        Assert::notNull($this->targets);
+
         $targetDataArray = $this->targets;
         $browserSetupData = $this->browserSetupData;
 

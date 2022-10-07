@@ -28,6 +28,6 @@ class UpdateTrackingAlertAction
 
         $trackingAlert->save();
 
-        return $trackingAlert->fresh();
+        return $trackingAlert->fresh() ?? $trackingAlert;
     }
 }

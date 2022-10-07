@@ -6,6 +6,7 @@ namespace Domain\Stocks\Actions;
 
 use Domain\Stocks\Models\Stock;
 use Domain\Stocks\Models\StockHistory;
+use Webmozart\Assert\Assert;
 
 class CreateHistoryForStockAction
 {
@@ -17,6 +18,7 @@ class CreateHistoryForStockAction
         }
 
         $latestHistory = $stock->histories()->latest()->first();
+        Assert::notNull($latestHistory);
 
         if ($this->priceOrAvailabilityHasChanged($stock, $latestHistory)) {
             $this->createHistory($stock);

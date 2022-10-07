@@ -13,7 +13,7 @@ class AlertChannelResource extends JsonResource
 {
     /**
      * @param Request $request
-     * @return array<string, array<string, string|null>>
+     * @return array<string, array<string, mixed>>
      */
     public function toArray($request): array
     {
