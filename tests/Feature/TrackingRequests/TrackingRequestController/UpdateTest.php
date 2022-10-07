@@ -56,6 +56,49 @@ class UpdateTest extends TestCase
         ]);
     }
 
+    /** @test **/
+    public function name_field_is_optional(): void
+    {
+        // Arrange
+        $trackingRequest = TrackingRequest::factory()->create();
+        Sanctum::actingAs($trackingRequest->user);
+
+        // Act
+        $response = $this->json('PUT', route('trackingRequest.update', [
+            'trackingRequest' => $trackingRequest->uuid,
+        ]), [
+            'update_interval' => 55,
+        ]);
+
+        // Assert
+        $response->assertOk();
+        $response->assertJsonFragment([
+            'update_interval' => 55,
+        ]);
+
+    }
+
+    /** @test **/
+    public function update_interval_field_is_optional(): void
+    {
+        // Arrange
+        $trackingRequest = TrackingRequest::factory()->create();
+        Sanctum::actingAs($trackingRequest->user);
+
+        // Act
+        $response = $this->json('PUT', route('trackingRequest.update', [
+            'trackingRequest' => $trackingRequest->uuid,
+        ]), [
+            'name' => '::new-name::',
+        ]);
+
+        // Assert
+        $response->assertOk();
+        $response->assertJsonFragment([
+            'name' => '::new-name::',
+        ]);
+    }
+
     /**
      * @test
      * @dataProvider validationProvider

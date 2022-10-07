@@ -11,10 +11,16 @@ class UpdateTrackingRequestAction
 {
     public function __invoke(UpdateTrackingRequestData $data, TrackingRequest $trackingRequest): TrackingRequest
     {
-        $trackingRequest->update([
-            'name' => $data->name,
-            'update_interval' => $data->updateInterval,
-        ]);
+
+        if ($data->name !== null) {
+            $trackingRequest->name = $data->name;
+        }
+
+        if ($data->updateInterval !== null) {
+            $trackingRequest->update_interval = $data->updateInterval;
+        }
+
+        $trackingRequest->saveOrFail();
 
         return $trackingRequest->fresh();
     }
