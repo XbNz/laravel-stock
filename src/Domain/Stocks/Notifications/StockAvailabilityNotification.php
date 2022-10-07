@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Domain\Stocks\Notifications;
 
+use Awssat\Notifications\Messages\DiscordEmbed;
+use Awssat\Notifications\Messages\DiscordMessage;
 use Domain\Alerts\Models\AlertChannel;
 use Domain\Stocks\Models\StockHistory;
 use Illuminate\Bus\Queueable;
@@ -44,9 +46,19 @@ class StockAvailabilityNotification extends Notification implements ShouldQueue
         return $channels;
     }
 
-    public function toDiscord()
+    public function toDiscord(): DiscordMessage
     {
+        $trimmedStock = Str::of($this->current->stock->title)->limit(15);
+        $store = Str::of($this->current->stock->store->value)->headline();
+        $link = $this->current->stock->url;
 
+        return (new DiscordMessage())
+            ->from('FreeloadBuddy')
+            ->content("{$trimmedStock} is available at {$store}!")
+            ->embed(function (DiscordEmbed $embed) use ($link) {
+                $embed->title('View on website')
+                    ->field('Link', $link);
+            });
     }
 
     public function toMail(): MailMessage

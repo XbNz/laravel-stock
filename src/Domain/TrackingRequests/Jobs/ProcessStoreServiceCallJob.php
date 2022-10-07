@@ -23,6 +23,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
@@ -37,7 +38,7 @@ class ProcessStoreServiceCallJob implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
-    public int $tries = 1;
+    public int $tries = 5;
 
     public int $timeout = 600;
 
@@ -60,7 +61,7 @@ class ProcessStoreServiceCallJob implements ShouldQueue
 
     public function backoff(): array
     {
-        return [1]; //[50, 100, 600, 5000];
+        return [50, 100, 600, 3600];
     }
 
     public function handle()

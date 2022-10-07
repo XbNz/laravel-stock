@@ -16,7 +16,9 @@ class DiscoverTrackingRequestsCommand extends Command
 
     public function handle(FulfillTrackingRequestAction $trackingRequestAction): int
     {
-        ($trackingRequestAction)(TrackingRequest::query()->needsUpdate()->get());
-        return 0;
+        while (true) {
+            ($trackingRequestAction)(TrackingRequest::query()->needsUpdate()->get());
+            sleep(10);
+        }
     }
 }
