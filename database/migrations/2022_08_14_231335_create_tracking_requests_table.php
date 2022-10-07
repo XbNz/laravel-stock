@@ -14,7 +14,7 @@ return new class() extends Migration {
             $table->uuid('uuid')->unique();
             $table->string('name');
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->string('url');
+            $table->string('url', 2048);
             $table->string('store');
             $table->string('tracking_type');
             $table->integer('update_interval')->nullable();
