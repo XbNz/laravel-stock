@@ -24,23 +24,26 @@ class StockHistorySubscriberTest extends TestCase
         // Arrange, Act & Assert
         Notification::fake();
         $actionMock = $this->mock(DispatchStockHistoryNotificationAction::class);
-        $actionMock->shouldReceive('__invoke')->twice();
+        $actionMock->shouldReceive('__invoke')->once();
 
-        $subjectStock = Stock::factory()->create();
+        $subjectStock = Stock::factory()->createQuietly();
 
-        $oldHistory = StockHistory::factory()->create([
+        $oldHistory = StockHistory::factory()->createQuietly([
             'price' => 150,
             'availability' => false,
             'created_at' => now()->subDays(1),
         ]);
 
-        $newestHistoricRecord = StockHistory::factory()->create([
+        $newestHistoricRecord = StockHistory::factory()->createQuietly([
             'price' => 100,
             'availability' => true,
             'created_at' => now(),
         ]);
 
         $subjectStock->histories()->saveMany([$oldHistory, $newestHistoricRecord]);
+
+        $this->travel(1)->minutes();
+        $subjectStock->touch();
 
         $alertChannel = AlertChannel::factory()->verificationNotRequiredChannel()->create();
         $trackingAlert = TrackingAlert::factory()->create([

@@ -21,6 +21,7 @@ class StockFactory extends Factory
         $randomStore = Arr::random(Store::cases());
 
         return [
+            'uuid' => $this->faker->uuid(),
             'title' => $this->faker->sentence,
             'url' => $randomStore->storeBaseUri(),
             'store' => $randomStore,

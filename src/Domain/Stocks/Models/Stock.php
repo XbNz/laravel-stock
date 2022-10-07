@@ -6,6 +6,7 @@ namespace Domain\Stocks\Models;
 
 use Database\Factories\StockFactory;
 use Domain\Stocks\Actions\FormatPriceAction;
+use Domain\Stocks\Events\StockCreatedEvent;
 use Domain\Stocks\Events\StockUpdatedEvent;
 use Domain\Stocks\QueryBuilders\StockQueryBuilder;
 use Domain\Stores\Enums\Store;
@@ -28,6 +29,7 @@ class Stock extends Model
      * @var array<string, class-string>
      */
     protected $dispatchesEvents = [
+        'created' => StockCreatedEvent::class,
         'updated' => StockUpdatedEvent::class,
     ];
 

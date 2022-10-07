@@ -25,7 +25,7 @@ class InvokeTest extends TestCase
     {
         // Arrange
         $userFactory = User::factory();
-        $stock = Stock::factory()->has($userFactory)->has(StockHistoryFactory::times(10), 'histories')->create();
+        $stock = Stock::factory()->has($userFactory)->has(StockHistoryFactory::times(10), 'histories')->createQuietly();
         $stockB = Stock::factory()->create();
 
         $user = $stock->users()->sole();

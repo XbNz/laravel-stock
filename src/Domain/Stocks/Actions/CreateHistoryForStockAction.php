@@ -12,6 +12,8 @@ class CreateHistoryForStockAction
 {
     public function __invoke(Stock $stock): Stock
     {
+        $stock = $stock->fresh();
+
         if ($stock->histories()->count() === 0) {
             $this->createHistory($stock);
             return $stock;

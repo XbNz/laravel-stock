@@ -18,7 +18,7 @@ class StockHistoryQueryBuilderTest extends TestCase
     {
         // Arrange
         Stock::factory()->count(100)->create();
-        $stockHistory = StockHistory::factory()->for(Stock::factory())->create();
+        $stockHistory = StockHistory::factory()->for(Stock::factory())->createQuietly();
 
         // Act
         $result = StockHistory::query()->whereHasStock($stockHistory->stock);

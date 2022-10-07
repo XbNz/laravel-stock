@@ -16,6 +16,7 @@ class StockHistorySubscriber
 
     public function created(StockHistoryCreatedEvent $event): void
     {
+
         ($this->historyNotificationAction)($event->history);
     }
 

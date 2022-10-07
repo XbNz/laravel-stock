@@ -26,19 +26,19 @@ class DispatchStockHistoryNotificationActionTest extends TestCase
         // Arrange
         Notification::fake();
 
-        $subjectStock = Stock::factory()->create();
+        $subjectStock = Stock::factory()->createQuietly();
 
-        $oldestHistory = StockHistory::factory()->create([
+        $oldestHistory = StockHistory::factory()->createQuietly([
             'price' => 100,
             'created_at' => now()->subDays(2),
         ]);
-        $oldHistory = StockHistory::factory()->create([
+        $oldHistory = StockHistory::factory()->createQuietly([
             'price' => 200,
             'created_at' => now()->subDays(1),
         ]);
         $priceThatIsHigherThanOldHistoryAButLowerThanOldHistoryB = 150;
 
-        $newestHistoricRecord = StockHistory::factory()->create([
+        $newestHistoricRecord = StockHistory::factory()->createQuietly([
             'price' => $priceThatIsHigherThanOldHistoryAButLowerThanOldHistoryB,
             'created_at' => now(),
         ]);
@@ -76,20 +76,20 @@ class DispatchStockHistoryNotificationActionTest extends TestCase
         // Arrange
         Notification::fake();
 
-        $subjectStock = Stock::factory()->create();
+        $subjectStock = Stock::factory()->createQuietly();
 
-        $oldestHistory = StockHistory::factory()->create([
+        $oldestHistory = StockHistory::factory()->createQuietly([
             'price' => 100,
             'availability' => true,
             'created_at' => now()->subDays(2),
         ]);
-        $oldHistory = StockHistory::factory()->create([
+        $oldHistory = StockHistory::factory()->createQuietly([
             'price' => 100,
             'availability' => false,
             'created_at' => now()->subDays(1),
         ]);
 
-        $newestHistoricRecord = StockHistory::factory()->create([
+        $newestHistoricRecord = StockHistory::factory()->createQuietly([
             'price' => 100,
             'availability' => true,
             'created_at' => now(),
@@ -128,15 +128,15 @@ class DispatchStockHistoryNotificationActionTest extends TestCase
         // Arrange
         Notification::fake();
 
-        $subjectStock = Stock::factory()->create();
+        $subjectStock = Stock::factory()->createQuietly();
 
-        $oldHistory = StockHistory::factory()->create([
+        $oldHistory = StockHistory::factory()->createQuietly([
             'price' => 150,
             'availability' => false,
             'created_at' => now()->subDays(1),
         ]);
 
-        $newestHistoricRecord = StockHistory::factory()->create([
+        $newestHistoricRecord = StockHistory::factory()->createQuietly([
             'price' => 100,
             'availability' => true,
             'created_at' => now(),

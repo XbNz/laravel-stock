@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Domain\Stocks\Notifications;
 
+use Awssat\Notifications\Messages\DiscordEmbed;
+use Awssat\Notifications\Messages\DiscordMessage;
 use Domain\Alerts\Models\AlertChannel;
 use Domain\Stocks\Models\StockHistory;
 use Illuminate\Bus\Queueable;
@@ -46,20 +48,38 @@ class StockPriceNotification extends Notification implements ShouldQueue
         return $channels;
     }
 
-    public function toDiscord()
+    public function toDiscord(): DiscordMessage
     {
-        
+        $priceChange = number_format(Percentage::fromDifference(
+            $this->previous->getRawOriginal('price'), $this->current->getRawOriginal('price')
+        )->value, 0);
+
+        $trimmedStock = Str::of($this->current->stock->title)->limit(30);
+        $store = Str::of($this->current->stock->store->value)->headline();
+        $link = $this->current->stock->url;
+
+        return (new DiscordMessage())
+            ->from('FreeloadBuddy')
+            ->embed(function (DiscordEmbed $embed) use ($priceChange, $trimmedStock, $store, $link) {
+                $embed->title("{$trimmedStock} is available with a discount of {$priceChange}% at {$store}!")
+                    ->description($link)
+                    ->field('Previous price', $this->previous->price)
+                    ->field('Current price', $this->current->price);
+            });
     }
 
     public function toMail($notifiable): MailMessage
     {
-        $priceChange = Percentage::fromDifference($this->previous->getRawOriginal('price'), $this->current->getRawOriginal('price'));
+        $priceChange = number_format(Percentage::fromDifference(
+            $this->previous->getRawOriginal('price'), $this->current->getRawOriginal('price')
+        )->value, 0);
+
         $trimmedStock = Str::of($this->current->stock->title)->limit(15);
         $store = Str::of($this->current->stock->store->value)->headline();
         $link = $this->current->stock->url;
 
         return (new MailMessage())
-            ->subject("{$priceChange->value}% price change for {$trimmedStock}")
+            ->subject("{$priceChange}% price change for {$trimmedStock}")
             ->line("Price change detected for the following stock: {$this->current->stock->title}")
             ->action("Buy at {$store}", $link);
     }

@@ -18,7 +18,7 @@ class CreateHistoryForStockActionTest extends TestCase
     public function given_a_stock_it_creates_new_historic_record_if_a_change_to_price_or_availability_has_occurred_or_if_the_stock_is_new(): void
     {
         // Arrange
-        $stock = Stock::factory()->create();
+        $stock = Stock::factory()->createQuietly();
 
         // Act
         app(CreateHistoryForStockAction::class)($stock);
@@ -35,7 +35,7 @@ class CreateHistoryForStockActionTest extends TestCase
     public function if_the_latest_historic_record_of_a_stock_is_identical_in_price_and_availability_to_the_stock_itself_no_new_record_is_added(): void
     {
         // Arrange
-        $stock = Stock::factory()->create();
+        $stock = Stock::factory()->createQuietly();
 
         // Act
         app(CreateHistoryForStockAction::class)($stock);
@@ -56,7 +56,7 @@ class CreateHistoryForStockActionTest extends TestCase
                 'price' => 100,
                 'created_at' => now()->subDay(),
             ]), 'histories')
-            ->create([
+            ->createQuietly([
                 'price' => 200,
             ]);
 
@@ -77,7 +77,7 @@ class CreateHistoryForStockActionTest extends TestCase
                 'availability' => true,
                 'created_at' => now()->subDay(),
             ]), 'histories')
-            ->create([
+            ->createQuietly([
                 'availability' => false,
             ]);
 
@@ -88,4 +88,5 @@ class CreateHistoryForStockActionTest extends TestCase
         $this->assertDatabaseCount('stock_histories', 2);
         $this->assertFalse($stock->histories()->latest()->first()->availability);
     }
+
 }
