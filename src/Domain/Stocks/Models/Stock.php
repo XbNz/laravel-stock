@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Query\Builder;
+use function _PHPStan_3bfe2e67c\RingCentral\Psr7\uri_for;
 
 class Stock extends Model
 {
@@ -72,14 +73,20 @@ class Stock extends Model
     }
 
     /**
-     * @return Attribute<string, never>
+     * @return Attribute<string|null, never>
      */
     protected function price(): Attribute
     {
         $formatPriceAction = app(FormatPriceAction::class);
 
         return Attribute::make(
-            get: fn (int $value) => ($formatPriceAction)($value, $this->store->currency()),
+            get: function (int|null $price) use ($formatPriceAction): string|null {
+                if ($price === null) {
+                    return null;
+                }
+
+                return ($formatPriceAction)($price, $this->store->currency());
+            },
         );
     }
 

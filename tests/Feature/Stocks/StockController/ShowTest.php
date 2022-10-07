@@ -90,6 +90,26 @@ class ShowTest extends TestCase
     }
 
     /** @test **/
+    public function price_can_be_null(): void
+    {
+        // Arrange
+        $userFactory = User::factory();
+        $stock = Stock::factory()->has($userFactory)->create([
+            'price' => null,
+        ]);
+        $user = $stock->users()->sole();
+        Sanctum::actingAs($user);
+
+        // Act
+        $response = $this->json('GET', route('stock.show', [
+            'stock' => $stock->uuid,
+        ]));
+
+        // Assert
+        $response->assertOk();
+    }
+
+    /** @test **/
     public function the_route_is_protected_by_the_intended_middleware(): void
     {
         $this->assertRouteUsesMiddleware('stock.show', ['auth:sanctum']);

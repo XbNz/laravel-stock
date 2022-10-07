@@ -31,7 +31,6 @@ class LoadProductInfoCommand extends Command
         $stockData = $service->product($links->toArray());
 
         foreach ($stockData as $stock) {
-            // Table with title, link, store, price, availability, sku, image
             $this->table(
                 ['Title', 'Link', 'Store', 'Price', 'Availability', 'SKU', 'Image'],
                 [
