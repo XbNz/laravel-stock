@@ -15,3 +15,5 @@ yarn-error.log
 /.idea
 /.vscode
 phpunit.xml
+rr
+.rr.yaml
