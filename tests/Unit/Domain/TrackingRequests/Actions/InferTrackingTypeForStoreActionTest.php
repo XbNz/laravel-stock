@@ -62,6 +62,11 @@ class InferTrackingTypeForStoreActionTest extends TestCase
                 'store' => Store::NeweggCanada,
                 'expectedTrackingType' => TrackingRequest::Search,
             ],
+            'newegg_canada_multiple_products_edge_case' => [
+                'url' => 'https://www.newegg.ca/p/pl?d=router',
+                'store' => Store::NeweggCanada,
+                'expectedTrackingType' => TrackingRequest::Search,
+            ],
         ];
     }
 }

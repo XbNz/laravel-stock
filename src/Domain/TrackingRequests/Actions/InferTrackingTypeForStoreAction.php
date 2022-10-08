@@ -7,6 +7,7 @@ namespace Domain\TrackingRequests\Actions;
 use Domain\Stores\Enums\Store;
 use Domain\TrackingRequests\Enums\TrackingRequest;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Psr\Http\Message\UriInterface;
 
@@ -51,7 +52,19 @@ class InferTrackingTypeForStoreAction
         $path = $uri->getPath();
         $explodedPath = explode('/', $path);
 
-        if (Collection::make($explodedPath)->search('p', true) === false) {
+        $path = Collection::make($explodedPath)->search('p', true);
+
+        if ($path === false) {
+            return TrackingRequest::Search;
+        }
+
+        if (array_key_exists($path + 1, $explodedPath) === false) {
+            return TrackingRequest::Search;
+        }
+
+        $hasSkuAfterPath = Str::of($explodedPath[$path + 1])->length() > 6;
+
+        if ($hasSkuAfterPath === false) {
             return TrackingRequest::Search;
         }
 
