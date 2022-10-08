@@ -2,9 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Domain\TrackingRequests\States\Transitions;
-
-use Domain\TrackingRequests\States\TrackingRequestState;
+namespace Domain\TrackingRequests\States;
 
 class RecoveryState extends TrackingRequestState
 {

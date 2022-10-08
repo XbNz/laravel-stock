@@ -14,7 +14,7 @@ use Domain\TrackingRequests\Notifications\TrackingRequestFailedNotification;
 use Domain\TrackingRequests\States\DormantState;
 use Domain\TrackingRequests\States\FailedState;
 use Domain\TrackingRequests\States\InProgressState;
-use Domain\TrackingRequests\States\Transitions\RecoveryState;
+use Domain\TrackingRequests\States\RecoveryState;
 use Exception;
 use GuzzleHttp\Psr7\Uri;
 use Illuminate\Database\Eloquent\Collection;

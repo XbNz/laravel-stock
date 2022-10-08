@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Domain\TrackingRequests\States;
 
-use Domain\TrackingRequests\States\Transitions\RecoveryState;
 use Domain\TrackingRequests\States\Transitions\ToFailedTransition;
 use Spatie\ModelStates\State;
 use Spatie\ModelStates\StateConfig;
