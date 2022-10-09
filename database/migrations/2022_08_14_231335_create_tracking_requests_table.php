@@ -18,7 +18,7 @@ return new class() extends Migration {
             $table->string('store', 35);
             $table->string('tracking_type', 20);
             $table->integer('update_interval')->nullable();
-            $table->string('status', 20);
+            $table->string('status', 300);
             $table->timestamps();
             $table->unique(['user_id', 'url']);
         });
