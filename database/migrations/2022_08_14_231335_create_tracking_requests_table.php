@@ -15,10 +15,10 @@ return new class() extends Migration {
             $table->string('name');
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('url', 766);
-            $table->string('store');
-            $table->string('tracking_type');
+            $table->string('store', 35);
+            $table->string('tracking_type', 20);
             $table->integer('update_interval')->nullable();
-            $table->string('status')->default('in progress');
+            $table->string('status', 20);
             $table->timestamps();
             $table->unique(['user_id', 'url']);
         });

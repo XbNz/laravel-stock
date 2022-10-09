@@ -13,8 +13,8 @@ return new class() extends Migration {
             $table->id();
             $table->uuid('uuid')->unique();
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->string('type');
-            $table->string('value');
+            $table->string('type', 50);
+            $table->string('value', 500);
             $table->dateTime('verified_at')->nullable();
             $table->timestamps();
             $table->unique(['user_id', 'type', 'value']);
