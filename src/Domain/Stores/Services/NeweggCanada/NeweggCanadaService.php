@@ -61,6 +61,8 @@ class NeweggCanadaService implements StoreContract
             ->setup(new BrowserSetupData([
                 '--headless',
                 '--window-size=1920,1080',
+                '--disable-extensions',
+                '--incognito',
             ], false))
             ->addTargets($targets);
 
@@ -112,6 +114,8 @@ class NeweggCanadaService implements StoreContract
             ->setup(new BrowserSetupData([
                 '--headless',
                 '--window-size=1920,1080',
+                '--disable-extensions',
+                '--incognito',
             ], true))
             ->addTargets($targets);
 
