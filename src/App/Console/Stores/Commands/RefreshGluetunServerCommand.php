@@ -14,11 +14,11 @@ class RefreshGluetunServerCommand extends Command
 
     public function handle()
     {
-        Http::put('http://127.0.0.1/v1/updater/status', [
+        Http::put('http://127.0.0.1:8002/v1/openvpn/status', [
             'status' => 'stopped',
         ]);
 
-        Http::put('http://127.0.0.1/v1/updater/status', [
+        Http::put('http://127.0.0.1:8002/v1/openvpn/status', [
             'status' => 'running',
         ]);
     }
