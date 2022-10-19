@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Console\Stores\Commands\DiscoverTrackingRequestsCommand;
+use App\Console\Stores\Commands\RefreshGluetunServerCommand;
 use Domain\Browser\Browser;
 use Domain\Browser\PythonUndetectedChrome;
 use Illuminate\Database\Eloquent\Model;
@@ -24,6 +25,7 @@ class AppServiceProvider extends ServiceProvider
 
         $this->commands([
             DiscoverTrackingRequestsCommand::class,
+            RefreshGluetunServerCommand::class,
         ]);
     }
 
