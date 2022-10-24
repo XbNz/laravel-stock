@@ -19,6 +19,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use Psr\Http\Message\UriInterface;
+use Support\Actions\ValidateProxiesAction;
 use Support\Contracts\StoreContract;
 use Symfony\Component\DomCrawler\Crawler;
 use Webmozart\Assert\Assert;
@@ -29,6 +30,7 @@ class AmazonCanadaService implements StoreContract
         private readonly Browser $client,
         private readonly ProductMapper $productMapper,
         private readonly SearchMapper $searchMapper,
+        private readonly ValidateProxiesAction $validateProxies,
     ) {
     }
 
@@ -42,6 +44,7 @@ class AmazonCanadaService implements StoreContract
         $prefix = Config::get('store.Domain\Stores\Services\AmazonCanada\AmazonCanadaService.image_prefix');
         $extension = Config::get('store.Domain\Stores\Services\AmazonCanada\AmazonCanadaService.image_format');
         $timeout = Config::get('store.Domain\Stores\Services\AmazonCanada\AmazonCanadaService.timeout');
+        $useProxy = Config::get('store.Domain\Stores\Services\AmazonCanada\AmazonCanadaService.proxy');
 
         $targets = Collection::make($uris)
             ->map(function (UriInterface $uri) use ($prefix, $extension, $timeout): TargetData {
@@ -57,13 +60,20 @@ class AmazonCanadaService implements StoreContract
             })
             ->toArray();
 
+        $arguments = [
+            '--headless',
+            '--window-size=1920,1080',
+            '--disable-extensions',
+            '--incognito',
+        ];
+
+        if ($useProxy) {
+            $proxies = ($this->validateProxies)();
+            $arguments[] = "--proxy-server={$proxies->random()}";
+        }
+
         $browser = $this->client
-            ->setup(new BrowserSetupData([
-                '--headless',
-                '--window-size=1920,1080',
-                '--disable-extensions',
-                '--incognito',
-            ], false))
+            ->setup(new BrowserSetupData($arguments, false))
             ->addTargets($targets);
 
         $browser->execute();
@@ -95,6 +105,7 @@ class AmazonCanadaService implements StoreContract
         $prefix = Config::get('store.Domain\Stores\Services\AmazonCanada\AmazonCanadaService.image_prefix');
         $extension = Config::get('store.Domain\Stores\Services\AmazonCanada\AmazonCanadaService.image_format');
         $timeout = Config::get('store.Domain\Stores\Services\AmazonCanada\AmazonCanadaService.timeout');
+        $useProxy = Config::get('store.Domain\Stores\Services\AmazonCanada\AmazonCanadaService.proxy');
 
         $targets = Collection::make($uris)
             ->map(function (UriInterface $uri) use ($prefix, $extension, $timeout): TargetData {
@@ -110,13 +121,20 @@ class AmazonCanadaService implements StoreContract
             })
             ->toArray();
 
+        $arguments = [
+            '--headless',
+            '--window-size=1920,1080',
+            '--disable-extensions',
+            '--incognito',
+        ];
+
+        if ($useProxy) {
+            $proxies = ($this->validateProxies)();
+            $arguments[] = "--proxy-server={$proxies->random()}";
+        }
+
         $browser = $this->client
-            ->setup(new BrowserSetupData([
-                '--headless',
-                '--window-size=1920,1080',
-                '--disable-extensions',
-                '--incognito',
-            ], true))
+            ->setup(new BrowserSetupData($arguments, true))
             ->addTargets($targets);
 
         $browser->execute();

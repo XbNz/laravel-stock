@@ -10,18 +10,18 @@ return [
         'image_format' => Manipulations::FORMAT_PNG,
         'image_prefix' => 'amazon_',
         'timeout' => 50,
-        'proxy' => false,
+        'proxy' => true,
     ],
     BestBuyCanadaService::class => [
         'image_format' => Manipulations::FORMAT_PNG,
         'image_prefix' => 'bestbuy_',
         'timeout' => 50,
-        'proxy' => false,
+        'proxy' => true,
     ],
     NeweggCanadaService::class => [
         'image_format' => Manipulations::FORMAT_PNG,
         'image_prefix' => 'newegg_',
         'timeout' => 50,
-        'proxy' => false,
+        'proxy' => true,
     ],
 ];
