@@ -25,6 +25,7 @@ class StockSearchData implements MappableContract
             Assert::isArray(getimagesizefromstring(File::get($imagePath)));
         }
 
+        $uri = urldecode((string) $uri);
         Assert::minCount($stocks, 1, "Zero stocks found for {$uri}. Image stored in {$imagePath}");
     }
 }
