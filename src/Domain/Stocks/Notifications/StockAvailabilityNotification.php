@@ -20,6 +20,15 @@ class StockAvailabilityNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
+
+    public function backoff(): array
+    {
+        return [50, 100, 600, 3600];
+    }
+
+    public int $tries = 5;
+    public int $timeout = 600;
+
     public function __construct(private readonly StockHistory $current)
     {
     }
@@ -63,7 +72,6 @@ class StockAvailabilityNotification extends Notification implements ShouldQueue
 
     public function toMail(): MailMessage
     {
-        // TODO: Pick up static analysis from Domain/Stocks/Notifications/StockAvailabilityNotification.php
         $trimmedStock = Str::of($this->current->stock->title)->limit(15);
         $store = Str::of($this->current->stock->store->value)->headline();
         $link = $this->current->stock->url;

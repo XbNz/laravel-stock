@@ -21,6 +21,14 @@ class VerifyAlertChannelNotification extends Notification implements ShouldQueue
     ) {
     }
 
+    public function backoff(): array
+    {
+        return [50, 100, 600, 3600];
+    }
+
+    public int $tries = 5;
+    public int $timeout = 600;
+
     /**
      * @return array<int, string>
      */

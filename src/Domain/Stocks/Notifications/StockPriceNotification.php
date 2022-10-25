@@ -27,6 +27,14 @@ class StockPriceNotification extends Notification implements ShouldQueue
     ) {
     }
 
+    public function backoff(): array
+    {
+        return [50, 100, 600, 3600];
+    }
+
+    public int $tries = 5;
+    public int $timeout = 600;
+
     public function shouldSend(AlertChannel $alertChannel, string $channel): bool
     {
         if (! $alertChannel->type->requiresVerification()) {
