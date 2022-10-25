@@ -9,7 +9,9 @@ use Domain\Stores\DTOs\StockData;
 use Domain\Stores\Enums\Currency;
 use Domain\Stores\Enums\Store;
 use Domain\Stores\ValueObjects\Price;
+use Exception;
 use GuzzleHttp\Psr7\Uri;
+use InvalidArgumentException;
 use Psr\Http\Message\UriInterface;
 use Support\Contracts\MapperContract;
 use Symfony\Component\DomCrawler\Crawler;
@@ -53,15 +55,17 @@ class SearchMapper implements MapperContract
 
     private function price(Crawler $rootHtml): ?Price
     {
-        $priceWhole = rescue(
-            static fn () => $rootHtml->filterXPath('//span[contains(@class, "price-whole")]')->text(),
-            static fn () => null,
-        );
+        try {
+            $priceWhole = $rootHtml->filterXPath('//span[contains(@class, "price-whole")]')->text();
+        } catch (InvalidArgumentException $e) {
+            $priceWhole = null;
+        }
 
-        $priceFraction = rescue(
-            static fn () => $rootHtml->filterXPath('//span[contains(@class, "price-fraction")]')->text(),
-            static fn () => null,
-        );
+        try {
+            $priceFraction = $rootHtml->filterXPath('//span[contains(@class, "price-fraction")]')->text();
+        } catch (InvalidArgumentException $e) {
+            $priceFraction = null;
+        }
 
         if ($priceWhole !== null) {
             $priceWholeNumericOnly = preg_replace('/\D/', '', trim($priceWhole));

@@ -10,6 +10,7 @@ use Domain\Stores\Enums\Store;
 use Domain\Stores\ValueObjects\Price;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use InvalidArgumentException;
 use Psr\Http\Message\UriInterface;
 use Support\Contracts\MapperContract;
 use Symfony\Component\DomCrawler\Crawler;
@@ -39,15 +40,18 @@ class ProductMapper implements MapperContract
     {
         $productFrame = $rootHtml->filterXPath('//div[contains(@id, "ppd")]');
 
-        $priceWhole = rescue(
-            static fn () => $productFrame->filterXPath('//span[contains(@class, "price-whole")]')->text(),
-            static fn () => null,
-        );
+        try {
+            $priceWhole = $productFrame->filterXPath('//span[contains(@class, "price-whole")]')->text();
+        } catch (InvalidArgumentException $e) {
+            $priceWhole = null;
+        }
 
-        $priceFraction = rescue(
-            static fn () => $productFrame->filterXPath('//span[contains(@class, "price-fraction")]')->text(),
-            static fn () => null,
-        );
+        try {
+            $priceFraction = $productFrame->filterXPath('//span[contains(@class, "price-fraction")]')->text();
+        } catch (InvalidArgumentException $e) {
+            $priceFraction = null;
+        }
+
 
         if ($priceWhole !== null) {
             $priceWholeNumericOnly = preg_replace('/\D/', '', trim($priceWhole));
