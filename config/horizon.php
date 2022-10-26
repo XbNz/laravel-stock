@@ -169,7 +169,7 @@ return [
             'connection' => 'redis',
             'queue' => ['default'],
             'balance' => 'auto',
-            'maxProcesses' => 1,
+            'maxProcesses' => 5,
             'maxTime' => 0,
             'maxJobs' => 0,
             'memory' => 128,
@@ -182,7 +182,7 @@ return [
     'environments' => [
         'production' => [
             'supervisor-1' => [
-                'maxProcesses' => 1,
+                'maxProcesses' => 5,
                 'balanceMaxShift' => 1,
                 'balanceCooldown' => 3,
             ],
@@ -190,7 +190,7 @@ return [
 
         'local' => [
             'supervisor-1' => [
-                'maxProcesses' => 3,
+                'maxProcesses' => 5,
             ],
         ],
     ],
