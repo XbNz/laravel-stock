@@ -12,9 +12,12 @@ class ConsoleKernel extends Kernel
     /**
      * Define the application's command schedule.
      */
-    protected function schedule(Schedule $schedule)
+    protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+        $schedule->command('refresh:gluetun')->everyFifteenMinutes();
+        $schedule->command('recycle:temp-folder')->everyFourHours()->when(function () {
+            return $this->app->make('queue')->size() === 0;
+        });
     }
 
     /**
