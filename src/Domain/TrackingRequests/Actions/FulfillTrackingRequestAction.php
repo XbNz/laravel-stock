@@ -23,10 +23,8 @@ class FulfillTrackingRequestAction
      */
     public function __invoke(EloquentCollection $trackingRequests): void
     {
-        $trackingRequests->load('user');
-
         $trackingRequests
-            ->groupBy(fn (TrackingRequest $trackingRequest) => $trackingRequest->user->id)
+            ->groupBy(fn (TrackingRequest $trackingRequest) => $trackingRequest->user()->first()->id)
             ->each(function (EloquentCollection $trackingRequests, int $userId) {
                 $user = User::query()->findOrFail($userId);
 
