@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Domain\TrackingRequests\Notifications;
 
+use Awssat\Notifications\Messages\DiscordMessage;
 use Domain\Alerts\Models\AlertChannel;
 use Domain\TrackingRequests\Models\TrackingRequest;
 use Illuminate\Bus\Queueable;
@@ -60,9 +61,11 @@ class TrackingRequestFailedNotification extends Notification implements ShouldQu
             ->line('Thank you!');
     }
 
-    public function toDiscord()
+    public function toDiscord(): DiscordMessage
     {
-
+        return (new DiscordMessage())->content(
+            "Your recent tracking request failed. Cannot find items for URL: {$this->trackingRequest->url}",
+        );
     }
 
     public function toArray($notifiable): array
