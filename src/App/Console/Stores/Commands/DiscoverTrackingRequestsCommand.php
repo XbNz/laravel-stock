@@ -7,6 +7,7 @@ namespace App\Console\Stores\Commands;
 use Domain\TrackingRequests\Actions\FulfillTrackingRequestAction;
 use Domain\TrackingRequests\Models\TrackingRequest;
 use Illuminate\Console\Command;
+use Illuminate\Database\Eloquent\Collection;
 
 class DiscoverTrackingRequestsCommand extends Command
 {
@@ -17,7 +18,8 @@ class DiscoverTrackingRequestsCommand extends Command
     public function handle(FulfillTrackingRequestAction $trackingRequestAction): int
     {
         while (true) {
-            ($trackingRequestAction)(TrackingRequest::query()->needsUpdate()->get());
+            TrackingRequest::query()->needsUpdate()->get()
+                ->each(fn(TrackingRequest $trackingRequest) => ($trackingRequestAction)(Collection::make($trackingRequest)));
             sleep(10);
         }
     }
