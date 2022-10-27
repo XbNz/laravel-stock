@@ -22,4 +22,10 @@ class RecycleTempFolderTest extends TestCase
         $this->assertFileDoesNotExist(storage_path('app/temp/test.txt'));
         $this->assertDirectoryExists(storage_path('app/temp'));
     }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        File::deleteDirectory(storage_path('app/temp'));
+    }
 }

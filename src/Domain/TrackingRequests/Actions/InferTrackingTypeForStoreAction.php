@@ -17,6 +17,7 @@ class InferTrackingTypeForStoreAction
     {
         return match ($store) {
             Store::AmazonCanada => $this->inferTrackingTypeForAmazonCanada($uri),
+            Store::AmazonUs => $this->inferTrackingTypeForAmazonUs($uri),
             Store::BestBuyCanada => $this->inferTrackingTypeForBestBuyCanada($uri),
             Store::NeweggCanada => $this->inferTrackingTypeForNeweggCanada($uri),
             default => throw new InvalidArgumentException("Cannot infer tracking type for {$uri}"),
@@ -24,6 +25,18 @@ class InferTrackingTypeForStoreAction
     }
 
     private function inferTrackingTypeForAmazonCanada(UriInterface $uri): TrackingRequest
+    {
+        $path = $uri->getPath();
+        $explodedPath = explode('/', $path);
+
+        if (Collection::make($explodedPath)->search('dp', true) === false) {
+            return TrackingRequest::Search;
+        }
+
+        return TrackingRequest::SingleProduct;
+    }
+
+    private function inferTrackingTypeForAmazonUs(UriInterface $uri): TrackingRequest
     {
         $path = $uri->getPath();
         $explodedPath = explode('/', $path);

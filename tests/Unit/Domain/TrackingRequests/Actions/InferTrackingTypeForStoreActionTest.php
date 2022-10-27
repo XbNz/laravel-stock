@@ -37,6 +37,11 @@ class InferTrackingTypeForStoreActionTest extends TestCase
                 'store' => Store::AmazonCanada,
                 'expectedTrackingType' => TrackingRequest::SingleProduct,
             ],
+            'amazon_us_single_product' => [
+                'url' => 'https://www.amazon.com/dp/B079JLY5M5',
+                'store' => Store::AmazonUs,
+                'expectedTrackingType' => TrackingRequest::SingleProduct,
+            ],
             'best_buy_canada_single_product' => [
                 'url' => 'https://www.bestbuy.ca/en-ca/product/xerox-013r00669-workcentre-5945-5955-print-cartridge-90000-yield/11378395',
                 'store' => Store::BestBuyCanada,
@@ -50,6 +55,11 @@ class InferTrackingTypeForStoreActionTest extends TestCase
             'amazon_canada_multiple_products' => [
                 'url' => 'https://www.amazon.ca/',
                 'store' => Store::AmazonCanada,
+                'expectedTrackingType' => TrackingRequest::Search,
+            ],
+            'amazon_us_multiple_products' => [
+                'url' => 'https://www.amazon.com',
+                'store' => Store::AmazonUs,
                 'expectedTrackingType' => TrackingRequest::Search,
             ],
             'best_buy_canada_multiple_products' => [

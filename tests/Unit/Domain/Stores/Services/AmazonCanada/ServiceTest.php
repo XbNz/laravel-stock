@@ -7,6 +7,7 @@ namespace Tests\Unit\Domain\Stores\Services\AmazonCanada;
 use Domain\Stores\Services\AmazonCanada\AmazonCanadaService;
 use GuzzleHttp\Psr7\Uri;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Config;
 use Psr\Http\Message\UriInterface;
 use Tests\TestCase;
 use Tests\Unit\Domain\Stores\Services\StoreContractTests;
@@ -14,6 +15,12 @@ use Tests\Unit\Domain\Stores\Services\StoreContractTests;
 class ServiceTest extends TestCase
 {
     use StoreContractTests;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        Config::set(['store.Domain\Stores\Services\AmazonCanada\AmazonCanadaService.proxy' => false]);
+    }
 
     public function getStoreImplementation(): string
     {

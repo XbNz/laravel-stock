@@ -16,19 +16,22 @@ class ParseStoreByLinkActionTest extends TestCase
         // Arrange
         $action = app(ParseStoreByLinkAction::class);
 
-        $amazon = 'https://amazon.ca';
+        $amazonCanada = 'https://amazon.ca';
+        $amazonUs = 'https://amazon.com';
         $bestbuy = 'https://www.bestbuy.ca';
         $newegg = 'https://www.newegg.ca';
 
         // Act
 
-        $shouldBeAmazon = ($action)($amazon);
+        $shouldBeAmazonCanada = ($action)($amazonCanada);
+        $shouldBeAmazonUs = ($action)($amazonUs);
         $shouldBeBestBuy = ($action)($bestbuy);
         $shouldBeNewegg = ($action)($newegg);
 
         // Assert
 
-        $this->assertSame(Store::AmazonCanada, $shouldBeAmazon);
+        $this->assertSame(Store::AmazonCanada, $shouldBeAmazonCanada);
+        $this->assertSame(Store::AmazonUs, $shouldBeAmazonUs);
         $this->assertSame(Store::BestBuyCanada, $shouldBeBestBuy);
         $this->assertSame(Store::NeweggCanada, $shouldBeNewegg);
     }
