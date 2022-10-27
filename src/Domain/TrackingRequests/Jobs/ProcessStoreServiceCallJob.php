@@ -37,7 +37,7 @@ class ProcessStoreServiceCallJob implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
-    public int $tries = 6;
+    public int $tries = 8;
 
     public int $timeout = 600;
 
@@ -60,7 +60,7 @@ class ProcessStoreServiceCallJob implements ShouldQueue
 
     public function backoff(): array
     {
-        return [50, 100, 600, 3600, 86400];
+        return [5, 15, 50, 100, 600, 3600, 86400];
     }
 
     public function handle()
