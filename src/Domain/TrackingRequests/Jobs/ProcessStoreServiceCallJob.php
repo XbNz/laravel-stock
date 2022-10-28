@@ -60,7 +60,7 @@ class ProcessStoreServiceCallJob implements ShouldQueue
 
     public function backoff(): array
     {
-        return [5, 15, 50, 100, 600, 3600, 86400];
+        return [5, 100, 300, 900, 4500, 7600, 86400];
     }
 
     public function handle()
