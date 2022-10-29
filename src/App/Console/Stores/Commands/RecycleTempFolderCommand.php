@@ -14,7 +14,7 @@ class RecycleTempFolderCommand extends Command
     public function handle()
     {
         $this->info('Recycling temp folder');
-        File::deleteDirectory(storage_path('app/temp'));
-        File::makeDirectory(storage_path('app/temp'));
+        File::deleteDirectory(storage_path('app/tmp'));
+        File::makeDirectory(storage_path('app/tmp'));
     }
 }
