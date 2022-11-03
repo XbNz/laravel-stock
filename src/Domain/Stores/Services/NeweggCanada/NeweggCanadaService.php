@@ -45,6 +45,7 @@ class NeweggCanadaService implements StoreContract
         $extension = Config::get('store.Domain\Stores\Services\NeweggCanada\NeweggCanadaService.image_format');
         $timeout = Config::get('store.Domain\Stores\Services\NeweggCanada\NeweggCanadaService.timeout');
         $useProxy = Config::get('store.Domain\Stores\Services\NeweggCanada\NeweggCanadaService.proxy');
+        $userAgent = Config::get('store.Domain\Stores\Services\NeweggCanada\NeweggCanadaService.user_agent');
 
         $targets = Collection::make($uris)
             ->map(function (UriInterface $uri) use ($prefix, $extension, $timeout): TargetData {
@@ -65,6 +66,7 @@ class NeweggCanadaService implements StoreContract
             '--window-size=1920,1080',
             '--disable-extensions',
             '--incognito',
+            "--user-agent={$userAgent}"
         ];
 
         if ($useProxy) {
@@ -106,6 +108,7 @@ class NeweggCanadaService implements StoreContract
         $extension = Config::get('store.Domain\Stores\Services\NeweggCanada\NeweggCanadaService.image_format');
         $timeout = Config::get('store.Domain\Stores\Services\NeweggCanada\NeweggCanadaService.timeout');
         $useProxy = Config::get('store.Domain\Stores\Services\NeweggCanada\NeweggCanadaService.proxy');
+        $userAgent = Config::get('store.Domain\Stores\Services\NeweggCanada\NeweggCanadaService.user_agent');
 
         $targets = Collection::make($uris)
             ->map(function (UriInterface $uri) use ($prefix, $extension, $timeout): TargetData {
@@ -126,6 +129,7 @@ class NeweggCanadaService implements StoreContract
             '--window-size=1920,1080',
             '--disable-extensions',
             '--incognito',
+            "--user-agent={$userAgent}"
         ];
 
         if ($useProxy) {

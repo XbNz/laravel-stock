@@ -45,6 +45,7 @@ class AmazonCanadaService implements StoreContract
         $extension = Config::get('store.Domain\Stores\Services\AmazonCanada\AmazonCanadaService.image_format');
         $timeout = Config::get('store.Domain\Stores\Services\AmazonCanada\AmazonCanadaService.timeout');
         $useProxy = Config::get('store.Domain\Stores\Services\AmazonCanada\AmazonCanadaService.proxy');
+        $userAgent = Config::get('store.Domain\Stores\Services\AmazonCanada\AmazonCanadaService.user_agent');
 
         $targets = Collection::make($uris)
             ->map(function (UriInterface $uri) use ($prefix, $extension, $timeout): TargetData {
@@ -65,6 +66,7 @@ class AmazonCanadaService implements StoreContract
             '--window-size=1920,1080',
             '--disable-extensions',
             '--incognito',
+            "--user-agent={$userAgent}"
         ];
 
         if ($useProxy) {
@@ -106,6 +108,7 @@ class AmazonCanadaService implements StoreContract
         $extension = Config::get('store.Domain\Stores\Services\AmazonCanada\AmazonCanadaService.image_format');
         $timeout = Config::get('store.Domain\Stores\Services\AmazonCanada\AmazonCanadaService.timeout');
         $useProxy = Config::get('store.Domain\Stores\Services\AmazonCanada\AmazonCanadaService.proxy');
+        $userAgent = Config::get('store.Domain\Stores\Services\AmazonCanada\AmazonCanadaService.user_agent');
 
         $targets = Collection::make($uris)
             ->map(function (UriInterface $uri) use ($prefix, $extension, $timeout): TargetData {
@@ -126,6 +129,7 @@ class AmazonCanadaService implements StoreContract
             '--window-size=1920,1080',
             '--disable-extensions',
             '--incognito',
+            "--user-agent={$userAgent}"
         ];
 
         if ($useProxy) {

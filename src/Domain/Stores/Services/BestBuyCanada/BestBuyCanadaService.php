@@ -45,6 +45,7 @@ class BestBuyCanadaService implements StoreContract
         $extension = Config::get('store.Domain\Stores\Services\BestBuyCanada\BestBuyCanadaService.image_format');
         $timeout = Config::get('store.Domain\Stores\Services\BestBuyCanada\BestBuyCanadaService.timeout');
         $useProxy = Config::get('store.Domain\Stores\Services\BestBuyCanada\BestBuyCanadaService.proxy');
+        $userAgent = Config::get('store.Domain\Stores\Services\BestBuyCanada\BestBuyCanadaService.user_agent');
 
         $targets = Collection::make($uris)
             ->map(function (UriInterface $uri) use ($prefix, $extension, $timeout): TargetData {
@@ -66,6 +67,7 @@ class BestBuyCanadaService implements StoreContract
             '--window-size=1920,1080',
             '--disable-extensions',
             '--incognito',
+            "--user-agent={$userAgent}"
         ];
 
         if ($useProxy) {
@@ -107,6 +109,7 @@ class BestBuyCanadaService implements StoreContract
         $extension = Config::get('store.Domain\Stores\Services\BestBuyCanada\BestBuyCanadaService.image_format');
         $timeout = Config::get('store.Domain\Stores\Services\BestBuyCanada\BestBuyCanadaService.timeout');
         $useProxy = Config::get('store.Domain\Stores\Services\BestBuyCanada\BestBuyCanadaService.proxy');
+        $userAgent = Config::get('store.Domain\Stores\Services\BestBuyCanada\BestBuyCanadaService.user_agent');
 
         $targets = Collection::make($uris)
             ->map(function (UriInterface $uri) use ($prefix, $extension, $timeout): TargetData {
@@ -128,6 +131,7 @@ class BestBuyCanadaService implements StoreContract
             '--window-size=1920,1080',
             '--disable-extensions',
             '--incognito',
+            "--user-agent={$userAgent}"
         ];
 
         if ($useProxy) {
