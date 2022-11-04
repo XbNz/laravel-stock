@@ -60,13 +60,15 @@ class StockAvailabilityNotification extends Notification implements ShouldQueue
         $trimmedStock = Str::of($this->current->stock->title)->limit(30);
         $store = Str::of($this->current->stock->store->value)->headline();
         $link = $this->current->stock->url;
+        $imageUrl = config('app.url') . '/products/' . Str::of($this->current->stock->image)->basename();
 
         return (new DiscordMessage())
             ->from('FreeloadBuddy')
-            ->embed(function (DiscordEmbed $embed) use ($trimmedStock, $store, $link) {
+            ->embed(function (DiscordEmbed $embed) use ($trimmedStock, $store, $link, $imageUrl) {
                 $embed->title("{$trimmedStock} is available at {$store}!")
                     ->description($link)
-                    ->field('Price', $this->current->price);
+                    ->field('Price', $this->current->price)
+                    ->image($imageUrl);
             });
     }
 

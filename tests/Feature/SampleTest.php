@@ -32,6 +32,10 @@ class SampleTest extends TestCase
             'price' => 1099,
         ]);
 
+        $stockHistoryB->stock->update([
+            'image' => storage_path('app/tmp/amazon_HEjzHfkazs.png'),
+        ]);
+
         // Act
         $alertChannel->notify(new StockPriceNotification($stockHistory, $stockHistoryB));
 

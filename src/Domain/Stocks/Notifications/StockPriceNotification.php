@@ -13,6 +13,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Support\ValueObjects\Percentage;
 use Webmozart\Assert\Assert;
@@ -65,14 +66,16 @@ class StockPriceNotification extends Notification implements ShouldQueue
         $trimmedStock = Str::of($this->current->stock->title)->limit(30);
         $store = Str::of($this->current->stock->store->value)->headline();
         $link = $this->current->stock->url;
+        $imageUrl = config('app.url') . '/products/' . Str::of($this->current->stock->image)->basename();
 
         return (new DiscordMessage())
             ->from('FreeloadBuddy')
-            ->embed(function (DiscordEmbed $embed) use ($priceChange, $trimmedStock, $store, $link) {
+            ->embed(function (DiscordEmbed $embed) use ($priceChange, $trimmedStock, $store, $link, $imageUrl) {
                 $embed->title("{$trimmedStock} is available with a discount of {$priceChange}% at {$store}!")
                     ->description($link)
                     ->field('Previous price', $this->previous->price)
-                    ->field('Current price', $this->current->price);
+                    ->field('Current price', $this->current->price)
+                    ->image($imageUrl);
             });
     }
 
