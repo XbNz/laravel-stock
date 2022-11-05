@@ -16,6 +16,7 @@ class ConsoleKernel extends Kernel
     {
         $schedule->command('refresh:gluetun')->everyFiveMinutes();
         $schedule->command('recycle:temp-folder')->daily();
+        $schedule->command('telescope:prune')->daily();
     }
 
     /**
