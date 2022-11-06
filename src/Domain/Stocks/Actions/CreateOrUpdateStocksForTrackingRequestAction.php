@@ -7,7 +7,6 @@ namespace Domain\Stocks\Actions;
 use Domain\Stores\DTOs\StockData;
 use Domain\Stores\DTOs\StockSearchData;
 use Domain\TrackingRequests\Models\TrackingRequest;
-use InvalidArgumentException;
 
 class CreateOrUpdateStocksForTrackingRequestAction
 {

@@ -8,6 +8,7 @@ use App\Api\Alerts\Resources\TrackingAlertResource;
 use Domain\TrackingRequests\Models\TrackingRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Webmozart\Assert\Assert;
 
 /** @mixin TrackingRequest */
 class TrackingRequestResource extends JsonResource
@@ -18,6 +19,9 @@ class TrackingRequestResource extends JsonResource
      */
     public function toArray($request): array
     {
+        Assert::notNull($this->created_at);
+        Assert::notNull($this->updated_at);
+
         return [
             'uuid' => $this->uuid,
             'name' => $this->name,

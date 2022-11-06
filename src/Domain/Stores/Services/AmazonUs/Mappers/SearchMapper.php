@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Domain\Stores\Services\AmazonUs\Mappers;
 
 use Domain\Stores\Collections\StockDataCollection;

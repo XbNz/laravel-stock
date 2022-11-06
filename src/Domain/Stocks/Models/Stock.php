@@ -19,7 +19,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Query\Builder;
-use function _PHPStan_3bfe2e67c\RingCentral\Psr7\uri_for;
 
 class Stock extends Model
 {

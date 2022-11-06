@@ -67,7 +67,7 @@ class BestBuyCanadaService implements StoreContract
             '--window-size=1920,1080',
             '--disable-extensions',
             '--incognito',
-            "--user-agent={$userAgent}"
+            "--user-agent={$userAgent}",
         ];
 
         if ($useProxy) {
@@ -131,7 +131,7 @@ class BestBuyCanadaService implements StoreContract
             '--window-size=1920,1080',
             '--disable-extensions',
             '--incognito',
-            "--user-agent={$userAgent}"
+            "--user-agent={$userAgent}",
         ];
 
         if ($useProxy) {

@@ -52,7 +52,6 @@ class ProductMapper implements MapperContract
             $priceFraction = null;
         }
 
-
         if ($priceWhole !== null) {
             $priceWholeNumericOnly = preg_replace('/\D/', '', trim($priceWhole));
             Assert::integerish($priceWholeNumericOnly);

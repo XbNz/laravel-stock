@@ -7,7 +7,6 @@ namespace Domain\Stocks\Subscribers;
 use Domain\Stocks\Actions\CreateHistoryForStockAction;
 use Domain\Stocks\Events\StockCreatedEvent;
 use Domain\Stocks\Events\StockUpdatedEvent;
-use Domain\Stocks\Models\Stock;
 use Illuminate\Events\Dispatcher;
 
 class StockSubscriber

@@ -18,6 +18,10 @@ class TrackingRequestFailedNotification extends Notification implements ShouldQu
 {
     use Queueable;
 
+    public int $tries = 5;
+
+    public int $timeout = 600;
+
     public function __construct(private readonly TrackingRequest $trackingRequest)
     {
     }
@@ -26,9 +30,6 @@ class TrackingRequestFailedNotification extends Notification implements ShouldQu
     {
         return [50, 100, 600, 3600];
     }
-
-    public int $tries = 5;
-    public int $timeout = 600;
 
     public function shouldSend(AlertChannel $alertChannel, string $channel): bool
     {

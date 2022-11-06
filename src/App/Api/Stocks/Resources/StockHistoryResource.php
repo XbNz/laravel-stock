@@ -7,6 +7,7 @@ namespace App\Api\Stocks\Resources;
 use Domain\Stocks\Models\StockHistory;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Webmozart\Assert\Assert;
 
 /** @mixin StockHistory */
 class StockHistoryResource extends JsonResource
@@ -17,6 +18,8 @@ class StockHistoryResource extends JsonResource
      */
     public function toArray($request): array
     {
+        Assert::notNull($this->created_at);
+
         return [
             'price' => $this->price,
             'availability' => $this->availability,

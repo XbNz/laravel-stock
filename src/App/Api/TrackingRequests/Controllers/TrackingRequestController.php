@@ -24,6 +24,7 @@ use Illuminate\Support\ItemNotFoundException;
 use Spatie\QueryBuilder\QueryBuilder;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Webmozart\Assert\Assert;
+use Psl\Type;
 
 class TrackingRequestController
 {
@@ -57,12 +58,20 @@ class TrackingRequestController
         CreateTrackingRequestRequest $request,
         CreateTrackingRequestAction $trackingRequestAction
     ): JsonResponse|JsonResource {
+        $sanitized = Type\shape([
+            'name' => Type\string(),
+            'url' => Type\string(),
+            'update_interval' => Type\int(),
+        ])->coerce($request->safe());
+
+        Assert::notNull($request->user());
+
         try {
             $trackingRequest = ($trackingRequestAction)(
                 new CreateTrackingRequestData(
-                    $request->get('name'),
-                    new Uri($request->get('url')),
-                    $request->get('update_interval')
+                    $sanitized['name'],
+                    new Uri($sanitized['url']),
+                    $sanitized['update_interval'],
                 ),
             $request->user()
             );
@@ -89,10 +98,15 @@ class TrackingRequestController
             abort($gate->code());
         }
 
+        $sanitized = Type\shape([
+            'name' => Type\string(),
+            'update_interval' => Type\int(),
+        ])->coerce($request->safe());
+
         $trackingRequest = ($updateTrackingRequest)(
             new UpdateTrackingRequestData(
-                $request->get('name'),
-                $request->get('update_interval')
+                $sanitized['name'],
+                $sanitized['update_interval'],
             ),
         $trackingRequest
         );

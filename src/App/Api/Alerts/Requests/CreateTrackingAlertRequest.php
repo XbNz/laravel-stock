@@ -7,6 +7,7 @@ namespace App\Api\Alerts\Requests;
 use Domain\Alerts\Rules\AlertChannelMustBeVerifiedRule;
 use Domain\Alerts\Rules\UserOwnsAlertChannelRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Webmozart\Assert\Assert;
 
 class CreateTrackingAlertRequest extends FormRequest
 {
@@ -15,6 +16,7 @@ class CreateTrackingAlertRequest extends FormRequest
      */
     public function rules(): array
     {
+        Assert::notNull($this->user());
         return [
             'alert_channel_uuid' => [
                 'required',

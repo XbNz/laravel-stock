@@ -7,6 +7,7 @@
     "require": {
         "php": "^8.1.0",
         "awssat/discord-notification-channel": "^1.4",
+        "azjezz/psl": "^2.1",
         "guzzlehttp/guzzle": "^7.2",
         "larabug/larabug": "^2.5",
         "laravel/framework": "^9.19",
@@ -39,6 +40,7 @@
         "mockery/mockery": "^1.4.4",
         "nunomaduro/collision": "^6.1",
         "nunomaduro/larastan": "^2.1",
+        "php-standard-library/phpstan-extension": "^1.0",
         "phpstan/extension-installer": "^1.1",
         "phpstan/phpstan-webmozart-assert": "^1.2",
         "phpunit/phpunit": "^9.5.10",

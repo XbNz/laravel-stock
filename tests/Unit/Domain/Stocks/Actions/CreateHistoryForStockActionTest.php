@@ -88,5 +88,4 @@ class CreateHistoryForStockActionTest extends TestCase
         $this->assertDatabaseCount('stock_histories', 2);
         $this->assertFalse($stock->histories()->latest()->first()->availability);
     }
-
 }

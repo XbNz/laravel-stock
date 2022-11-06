@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Response as ResponseFacade;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Webmozart\Assert\Assert;
+use Psl\Type;
 
 class TrackingAlertController
 {
@@ -29,6 +30,7 @@ class TrackingAlertController
 
     public function index(Request $request): JsonResource
     {
+        Assert::notNull($request->user());
         return TrackingAlertResource::collection(
             $request->user()->trackingAlerts()->cursorPaginate(20)
         );
@@ -38,12 +40,20 @@ class TrackingAlertController
         CreateTrackingAlertRequest $request,
         CreateTrackingAlertAction $trackingAlertAction,
     ): JsonResource {
+        $sanitized = Type\shape([
+            'alert_channel_uuid' => Type\string(),
+            'percentage_trigger' => Type\int(),
+            'availability_trigger' => Type\bool(),
+        ])->coerce($request->safe());
+
+        Assert::notNull($request->user());
+
         return TrackingAlertResource::make(
             ($trackingAlertAction)(
                 new CreateTrackingAlertData(
-                    Uuid::fromString($request->get('alert_channel_uuid')),
-                    $request->get('percentage_trigger'),
-                    $request->get('availability_trigger'),
+                    Uuid::fromString($sanitized['alert_channel_uuid']),
+                    $sanitized['percentage_trigger'],
+                    $sanitized['availability_trigger'],
                 ),
             $request->user(),
             ),
@@ -74,14 +84,20 @@ class TrackingAlertController
             abort($gate->code());
         }
 
+        $sanitized = Type\shape([
+            'alert_channel_uuid' => Type\nullable(Type\string()),
+            'percentage_trigger' => Type\nullable(Type\int()),
+            'availability_trigger' => Type\nullable(Type\bool()),
+        ])->coerce($request->safe());
+
         return TrackingAlertResource::make(
             ($trackingAlertAction)(
                 new UpdateTrackingAlertData(
-                    $request->get('alert_channel_uuid') !== null
-                        ? Uuid::fromString($request->get('alert_channel_uuid'))
+                    $sanitized['alert_channel_uuid'] !== null
+                        ? Uuid::fromString($sanitized['alert_channel_uuid'])
                         : null,
-                    $request->get('percentage_trigger'),
-                    $request->get('availability_trigger'),
+                    $sanitized['percentage_trigger'],
+                    $sanitized['availability_trigger'],
                 ),
             $trackingAlert,
             ),

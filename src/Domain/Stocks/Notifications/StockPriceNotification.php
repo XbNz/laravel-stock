@@ -13,7 +13,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Support\ValueObjects\Percentage;
 use Webmozart\Assert\Assert;
@@ -21,6 +20,10 @@ use Webmozart\Assert\Assert;
 class StockPriceNotification extends Notification implements ShouldQueue
 {
     use Queueable;
+
+    public int $tries = 5;
+
+    public int $timeout = 600;
 
     public function __construct(
         private readonly StockHistory $previous,
@@ -32,9 +35,6 @@ class StockPriceNotification extends Notification implements ShouldQueue
     {
         return [50, 100, 600, 3600];
     }
-
-    public int $tries = 5;
-    public int $timeout = 600;
 
     public function shouldSend(AlertChannel $alertChannel, string $channel): bool
     {
@@ -60,7 +60,8 @@ class StockPriceNotification extends Notification implements ShouldQueue
     public function toDiscord(): DiscordMessage
     {
         $priceChange = number_format(Percentage::fromDifference(
-            $this->previous->getRawOriginal('price'), $this->current->getRawOriginal('price')
+            $this->previous->getRawOriginal('price'),
+            $this->current->getRawOriginal('price')
         )->value, 0);
 
         $trimmedStock = Str::of($this->current->stock->title)->limit(30);
@@ -82,7 +83,8 @@ class StockPriceNotification extends Notification implements ShouldQueue
     public function toMail($notifiable): MailMessage
     {
         $priceChange = number_format(Percentage::fromDifference(
-            $this->previous->getRawOriginal('price'), $this->current->getRawOriginal('price')
+            $this->previous->getRawOriginal('price'),
+            $this->current->getRawOriginal('price')
         )->value, 0);
 
         $trimmedStock = Str::of($this->current->stock->title)->limit(15);

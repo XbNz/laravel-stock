@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Feature;
 
 use Domain\Alerts\Models\AlertChannel;
 use Domain\Stocks\Models\StockHistory;
-use Domain\Stocks\Notifications\StockAvailabilityNotification;
 use Domain\Stocks\Notifications\StockPriceNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;

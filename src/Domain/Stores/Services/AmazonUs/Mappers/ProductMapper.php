@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Domain\Stores\Services\AmazonUs\Mappers;
 
 use Domain\Stores\DTOs\StockData;
@@ -48,7 +50,6 @@ class ProductMapper
         } catch (InvalidArgumentException $e) {
             $priceFraction = null;
         }
-
 
         if ($priceWhole !== null) {
             $priceWholeNumericOnly = preg_replace('/\D/', '', trim($priceWhole));

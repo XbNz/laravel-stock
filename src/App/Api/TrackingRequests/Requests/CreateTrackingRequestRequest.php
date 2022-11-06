@@ -7,6 +7,7 @@ namespace App\Api\TrackingRequests\Requests;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Webmozart\Assert\Assert;
 
 class CreateTrackingRequestRequest extends FormRequest
 {
@@ -15,6 +16,8 @@ class CreateTrackingRequestRequest extends FormRequest
      */
     public function rules(): array
     {
+        Assert::notNull($this->user());
+
         return [
             'name' => ['required', 'string', 'max:255'],
             'url' => [

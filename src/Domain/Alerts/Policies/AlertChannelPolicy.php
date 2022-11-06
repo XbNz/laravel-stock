@@ -9,6 +9,7 @@ use Domain\Users\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Auth\Access\Response;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
+use Webmozart\Assert\Assert;
 
 class AlertChannelPolicy
 {
@@ -16,6 +17,7 @@ class AlertChannelPolicy
 
     public function view(User $user, AlertChannel $alertChannel): Response
     {
+        Assert::notNull($alertChannel->user);
         return $alertChannel->user->is($user)
             ? Response::allow()
             : Response::deny(code: SymfonyResponse::HTTP_NOT_FOUND);
@@ -23,6 +25,7 @@ class AlertChannelPolicy
 
     public function delete(User $user, AlertChannel $alertChannel): Response
     {
+        Assert::notNull($alertChannel->user);
         return $alertChannel->user->is($user)
             ? Response::allow()
             : Response::deny(code: SymfonyResponse::HTTP_NOT_FOUND);

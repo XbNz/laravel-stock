@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit\App\Commands;
 
 use Illuminate\Support\Facades\File;
@@ -27,5 +29,4 @@ class RecycleTempFolderTest extends TestCase
         $this->assertFileDoesNotExist(storage_path('app/tmp/test.txt'));
         $this->assertDirectoryExists(storage_path('app/tmp'));
     }
-
 }

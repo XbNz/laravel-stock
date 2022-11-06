@@ -33,7 +33,6 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider
     protected function gate()
     {
         Gate::define('viewHorizon', function (User $user) {
-            /** @phpstan-ignore-next-line  */
             return true;
         });
     }

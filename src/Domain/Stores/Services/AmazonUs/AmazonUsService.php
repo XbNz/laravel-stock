@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Domain\Stores\Services\AmazonUs;
 
 use Carbon\CarbonInterval;
@@ -64,7 +66,7 @@ class AmazonUsService implements StoreContract
             '--window-size=1920,1080',
             '--disable-extensions',
             '--incognito',
-            "--user-agent={$userAgent}"
+            "--user-agent={$userAgent}",
         ];
 
         if ($useProxy) {
@@ -127,7 +129,7 @@ class AmazonUsService implements StoreContract
             '--window-size=1920,1080',
             '--disable-extensions',
             '--incognito',
-            "--user-agent={$userAgent}"
+            "--user-agent={$userAgent}",
         ];
 
         if ($useProxy) {

@@ -66,7 +66,7 @@ class NeweggCanadaService implements StoreContract
             '--window-size=1920,1080',
             '--disable-extensions',
             '--incognito',
-            "--user-agent={$userAgent}"
+            "--user-agent={$userAgent}",
         ];
 
         if ($useProxy) {
@@ -129,7 +129,7 @@ class NeweggCanadaService implements StoreContract
             '--window-size=1920,1080',
             '--disable-extensions',
             '--incognito',
-            "--user-agent={$userAgent}"
+            "--user-agent={$userAgent}",
         ];
 
         if ($useProxy) {

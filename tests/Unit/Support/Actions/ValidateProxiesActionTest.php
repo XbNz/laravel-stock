@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit\Support\Actions;
 
 use Generator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Config;
-use InvalidArgumentException;
 use Support\Actions\ValidateProxiesAction;
 use Tests\TestCase;
 
@@ -28,7 +29,6 @@ class ValidateProxiesActionTest extends TestCase
         }
 
         $collectionOfProxies = app(ValidateProxiesAction::class)();
-
 
         // Assert
         $this->assertInstanceOf(Collection::class, $collectionOfProxies);

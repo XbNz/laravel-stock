@@ -16,18 +16,22 @@ class VerifyAlertChannelNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
+    public int $tries = 5;
+
+    public int $timeout = 600;
+
     public function __construct(
         private readonly string $signedUrl,
     ) {
     }
 
+    /**
+     * @return array<int, int>
+     */
     public function backoff(): array
     {
         return [50, 100, 600, 3600];
     }
-
-    public int $tries = 5;
-    public int $timeout = 600;
 
     /**
      * @return array<int, string>

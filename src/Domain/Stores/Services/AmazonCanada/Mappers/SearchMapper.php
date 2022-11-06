@@ -9,7 +9,6 @@ use Domain\Stores\DTOs\StockData;
 use Domain\Stores\Enums\Currency;
 use Domain\Stores\Enums\Store;
 use Domain\Stores\ValueObjects\Price;
-use Exception;
 use GuzzleHttp\Psr7\Uri;
 use InvalidArgumentException;
 use Psr\Http\Message\UriInterface;

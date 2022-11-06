@@ -11,7 +11,6 @@ class UpdateTrackingRequestAction
 {
     public function __invoke(UpdateTrackingRequestData $data, TrackingRequest $trackingRequest): TrackingRequest
     {
-
         if ($data->name !== null) {
             $trackingRequest->name = $data->name;
         }

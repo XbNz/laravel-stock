@@ -19,7 +19,9 @@ class ServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        Config::set(['store.Domain\Stores\Services\NeweggCanada\NeweggCanadaService.proxy' => false]);
+        Config::set([
+            'store.Domain\Stores\Services\NeweggCanada\NeweggCanadaService.proxy' => false,
+        ]);
     }
 
     public function getStoreImplementation(): string

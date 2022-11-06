@@ -17,6 +17,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Response as ResponseFacade;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Webmozart\Assert\Assert;
+use Psl\Type;
 
 class AlertChannelController
 {
@@ -26,6 +27,7 @@ class AlertChannelController
 
     public function index(Request $request): JsonResource
     {
+        Assert::notNull($request->user());
         return AlertChannelResource::collection($request->user()->alertChannels()->paginate(20));
     }
 
@@ -33,11 +35,18 @@ class AlertChannelController
         CreateAlertChannelRequest $request,
         CreateAlertChannelAction $alertChannelAction,
     ): JsonResource {
+        $sanitized = Type\shape([
+            'type' => Type\string(),
+            'value' => Type\string()
+        ])->coerce($request->safe());
+
+        Assert::notNull($request->user());
+
         return AlertChannelResource::make(
             ($alertChannelAction)(
                 new AlertChannelData(
-                    AlertChannelEnum::from($request->get('type')),
-                    $request->get('value'),
+                    AlertChannelEnum::from($sanitized['type']),
+                    $sanitized['value'],
                 ),
             $request->user(),
             )

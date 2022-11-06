@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Support\Actions;
 
 use Illuminate\Support\Collection;
@@ -8,6 +10,9 @@ use Webmozart\Assert\Assert;
 
 class ValidateProxiesAction
 {
+    /**
+     * @return Collection<int, string>
+     */
     public function __invoke(): Collection
     {
         $proxies = Config::get('proxy.proxies');

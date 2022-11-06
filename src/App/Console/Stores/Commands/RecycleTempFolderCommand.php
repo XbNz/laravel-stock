@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Console\Stores\Commands;
 
 use Illuminate\Console\Command;
@@ -11,7 +13,7 @@ class RecycleTempFolderCommand extends Command
 
     protected $description = 'Command description';
 
-    public function handle()
+    public function handle(): int
     {
         $this->info('Recycling temp folder');
 
@@ -19,5 +21,7 @@ class RecycleTempFolderCommand extends Command
             File::deleteDirectory(storage_path('app/tmp'));
             File::makeDirectory(storage_path('app/tmp'));
         }
+
+        return 0;
     }
 }

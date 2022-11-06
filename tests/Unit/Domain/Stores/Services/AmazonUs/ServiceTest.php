@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Unit\Domain\Stores\Services\AmazonUs;
 
-use Domain\Stores\Services\AmazonCanada\AmazonCanadaService;
 use Domain\Stores\Services\AmazonUs\AmazonUsService;
 use GuzzleHttp\Psr7\Uri;
 use Illuminate\Support\Collection;
@@ -18,7 +19,9 @@ class ServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        Config::set(['store.Domain\Stores\Services\AmazonUs\AmazonUsService.proxy' => false]);
+        Config::set([
+            'store.Domain\Stores\Services\AmazonUs\AmazonUsService.proxy' => false,
+        ]);
     }
 
     public function getStoreImplementation(): string

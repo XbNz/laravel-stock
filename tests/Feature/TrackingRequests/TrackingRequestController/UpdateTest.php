@@ -75,7 +75,6 @@ class UpdateTest extends TestCase
         $response->assertJsonFragment([
             'update_interval' => 55,
         ]);
-
     }
 
     /** @test **/
