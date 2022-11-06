@@ -18,21 +18,12 @@ class StockSubscriber
 
     public function updated(StockUpdatedEvent $event): void
     {
-        if ($this->priceAndAvailabilityNotNull($event->stock->fresh())) {
-            ($this->historyForStockAction)($event->stock);
-        }
+        ($this->historyForStockAction)($event->stock->fresh());
     }
 
     public function created(StockCreatedEvent $event): void
     {
-        if ($this->priceAndAvailabilityNotNull($event->stock->fresh())) {
-            ($this->historyForStockAction)($event->stock);
-        }
-    }
-
-    private function priceAndAvailabilityNotNull(Stock $stock): bool
-    {
-        return $stock->getRawOriginal('price') !== null && $stock->availability !== null;
+        ($this->historyForStockAction)($event->stock->fresh());
     }
 
     public function subscribe(Dispatcher $dispatcher): void

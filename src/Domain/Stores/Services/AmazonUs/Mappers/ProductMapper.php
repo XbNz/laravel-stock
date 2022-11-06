@@ -33,7 +33,7 @@ class ProductMapper
         );
     }
 
-    private function price(Crawler $rootHtml): ?Price
+    private function price(Crawler $rootHtml): Price
     {
         $productFrame = $rootHtml->filterXPath('//div[contains(@id, "ppd")]');
 
@@ -70,7 +70,7 @@ class ProductMapper
             );
         }
 
-        return $priceObject ?? null;
+        return $priceObject ?? new Price(0, Currency::USD);
     }
 
     private function itemName(Crawler $rootHtml): string

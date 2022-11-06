@@ -53,7 +53,7 @@ class SearchMapper implements MapperContract
         return $collection;
     }
 
-    private function price(Crawler $rootHtml): ?Price
+    private function price(Crawler $rootHtml): Price
     {
         try {
             $priceWhole = $rootHtml->filterXPath('//span[contains(@class, "price-whole")]')->text();
@@ -87,7 +87,7 @@ class SearchMapper implements MapperContract
             );
         }
 
-        return $priceObject ?? null;
+        return $priceObject ?? new Price(0, Currency::CAD);
     }
 
     private function itemName(Crawler $rootHtml): string

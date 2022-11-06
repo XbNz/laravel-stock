@@ -20,7 +20,7 @@ class StockData implements MappableContract
         public readonly string $title,
         public readonly UriInterface $link,
         public readonly Store $store,
-        public readonly ?Price $price,
+        public readonly Price $price,
         public readonly bool $available,
         public readonly string $sku,
         public readonly ?string $imagePath = null,

@@ -49,7 +49,7 @@ class SearchMapper
         return $collection;
     }
 
-    private function price(Crawler $rootHtml): ?Price
+    private function price(Crawler $rootHtml): Price
     {
         try {
             $priceWhole = $rootHtml->filterXPath('//span[contains(@class, "price-whole")]')->text();
@@ -83,7 +83,7 @@ class SearchMapper
             );
         }
 
-        return $priceObject ?? null;
+        return $priceObject ?? new Price(0, Currency::USD);
     }
 
     private function itemName(Crawler $rootHtml): string

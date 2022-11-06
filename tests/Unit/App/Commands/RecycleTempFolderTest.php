@@ -11,6 +11,11 @@ class RecycleTempFolderTest extends TestCase
     public function it_empties_the_temp_folder_and_recreates_it(): void
     {
         // Arrange
+
+        if (File::exists(storage_path('app/tmp'))) {
+            File::deleteDirectory(storage_path('app/tmp'));
+        }
+
         File::makeDirectory(storage_path('app/tmp'));
         File::put(storage_path('app/tmp/test.txt'), 'test');
 
@@ -23,9 +28,4 @@ class RecycleTempFolderTest extends TestCase
         $this->assertDirectoryExists(storage_path('app/tmp'));
     }
 
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-        File::deleteDirectory(storage_path('app/tmp'));
-    }
 }
