@@ -41,7 +41,7 @@ class SearchMapper
                     $itemName,
                     new Uri("https://www.amazon.com/dp/{$sku}"),
                     Store::AmazonUs,
-                    $price,
+                    $price ?? new Price(0, Currency::USD),
                     $availability ?? false,
                     $sku,
                 )
@@ -51,7 +51,7 @@ class SearchMapper
         return $collection;
     }
 
-    private function price(Crawler $rootHtml): Price
+    private function price(Crawler $rootHtml): ?Price
     {
         try {
             $priceWhole = $rootHtml->filterXPath('//span[contains(@class, "price-whole")]')->text();
@@ -85,7 +85,7 @@ class SearchMapper
             );
         }
 
-        return $priceObject ?? new Price(0, Currency::USD);
+        return $priceObject ?? null;
     }
 
     private function itemName(Crawler $rootHtml): string

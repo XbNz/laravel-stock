@@ -42,7 +42,7 @@ class SearchMapper implements MapperContract
                     $itemName,
                     new Uri("https://www.amazon.ca/dp/{$sku}"),
                     Store::AmazonCanada,
-                    $price,
+                    $price ?? new Price(0, Currency::CAD),
                     $availability ?? false,
                     $sku,
                 )
@@ -52,7 +52,7 @@ class SearchMapper implements MapperContract
         return $collection;
     }
 
-    private function price(Crawler $rootHtml): Price
+    private function price(Crawler $rootHtml): ?Price
     {
         try {
             $priceWhole = $rootHtml->filterXPath('//span[contains(@class, "price-whole")]')->text();
@@ -86,7 +86,7 @@ class SearchMapper implements MapperContract
             );
         }
 
-        return $priceObject ?? new Price(0, Currency::CAD);
+        return $priceObject ?? null;
     }
 
     private function itemName(Crawler $rootHtml): string

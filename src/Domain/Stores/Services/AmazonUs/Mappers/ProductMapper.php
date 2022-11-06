@@ -28,14 +28,14 @@ class ProductMapper
             $itemName,
             $searchUri,
             Store::AmazonUs,
-            $price,
+            $price ?? new Price(0, Currency::USD),
             $availability,
             $sku,
             $image,
         );
     }
 
-    private function price(Crawler $rootHtml): Price
+    private function price(Crawler $rootHtml): ?Price
     {
         $productFrame = $rootHtml->filterXPath('//div[contains(@id, "ppd")]');
 
@@ -71,7 +71,7 @@ class ProductMapper
             );
         }
 
-        return $priceObject ?? new Price(0, Currency::USD);
+        return $priceObject ?? null;
     }
 
     private function itemName(Crawler $rootHtml): string

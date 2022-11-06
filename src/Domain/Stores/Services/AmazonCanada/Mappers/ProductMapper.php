@@ -29,14 +29,14 @@ class ProductMapper implements MapperContract
             $itemName,
             $searchUri,
             Store::AmazonCanada,
-            $price,
+            $price ?? new Price(0, Currency::CAD),
             $availability,
             $sku,
             $image,
         );
     }
 
-    private function price(Crawler $rootHtml): Price
+    private function price(Crawler $rootHtml): ?Price
     {
         $productFrame = $rootHtml->filterXPath('//div[contains(@id, "ppd")]');
 
@@ -72,7 +72,7 @@ class ProductMapper implements MapperContract
             );
         }
 
-        return $priceObject ?? new Price(0, Currency::CAD);
+        return $priceObject ?? null;
     }
 
     private function itemName(Crawler $rootHtml): string
