@@ -169,15 +169,15 @@ class DispatchStockHistoryNotificationActionTest extends TestCase
         // Arrange
         Notification::fake();
 
-        $subjectStock = Stock::factory()->create();
+        $subjectStock = Stock::factory()->createQuietly();
 
-        $oldHistory = StockHistory::factory()->create([
+        $oldHistory = StockHistory::factory()->createQuietly([
             'price' => 100,
             'availability' => false,
             'created_at' => now()->subDays(1),
         ]);
 
-        $newestHistoricRecord = StockHistory::factory()->create([
+        $newestHistoricRecord = StockHistory::factory()->createQuietly([
             'price' => 100,
             'availability' => false,
             'created_at' => now(),
@@ -209,15 +209,15 @@ class DispatchStockHistoryNotificationActionTest extends TestCase
         // Arrange
         Notification::fake();
 
-        $subjectStock = Stock::factory()->create();
+        $subjectStock = Stock::factory()->createQuietly();
 
-        $oldHistory = StockHistory::factory()->create([
+        $oldHistory = StockHistory::factory()->createQuietly([
             'price' => 150,
             'availability' => false,
             'created_at' => now()->subDays(1),
         ]);
 
-        $newestHistoricRecord = StockHistory::factory()->create([
+        $newestHistoricRecord = StockHistory::factory()->createQuietly([
             'price' => 100,
             'availability' => true,
             'created_at' => now(),
@@ -228,6 +228,46 @@ class DispatchStockHistoryNotificationActionTest extends TestCase
         $alertChannel = AlertChannel::factory()->verificationRequiredChannel()->create([
             'verified_at' => null,
         ]);
+        $trackingAlert = TrackingAlert::factory()->create([
+            'percentage_trigger' => 10,
+            'availability_trigger' => true,
+            'alert_channel_id' => $alertChannel,
+        ]);
+        $trackingRequest = TrackingRequest::factory()->create();
+
+        $trackingRequest->stocks()->attach($subjectStock);
+        $trackingRequest->trackingAlerts()->attach($trackingAlert);
+
+        // Act
+        app(DispatchStockHistoryNotificationAction::class)($newestHistoricRecord);
+
+        // Assert
+        Notification::assertNothingSent();
+    }
+
+    /** @test **/
+    public function if_the_price_decreases_but_the_item_becomes_unavailable_it_does_not_send_a_notification(): void
+    {
+        // Arrange
+        Notification::fake();
+
+        $subjectStock = Stock::factory()->createQuietly();
+
+        $oldHistory = StockHistory::factory()->createQuietly([
+            'price' => 150,
+            'availability' => true,
+            'created_at' => now()->subDays(1),
+        ]);
+
+        $newestHistoricRecord = StockHistory::factory()->createQuietly([
+            'price' => 0,
+            'availability' => false,
+            'created_at' => now(),
+        ]);
+
+        $subjectStock->histories()->saveMany([$oldHistory, $newestHistoricRecord]);
+
+        $alertChannel = AlertChannel::factory()->verificationNotRequiredChannel();
         $trackingAlert = TrackingAlert::factory()->create([
             'percentage_trigger' => 10,
             'availability_trigger' => true,

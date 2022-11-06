@@ -59,6 +59,10 @@ class DispatchStockHistoryNotificationAction
     {
         $difference = Percentage::fromDifference($oldHistory->getRawOriginal('price'), $newHistory->getRawOriginal('price'));
 
+        if ($newHistory->availability === false) {
+            return;
+        }
+
         TrackingAlert::query()->with('alertChannel')
             ->whereInterestedIn($newHistory->stock)
             ->where('percentage_trigger', '<=', $difference->value)
