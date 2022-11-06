@@ -85,19 +85,19 @@ class TrackingAlertController
         }
 
         $sanitized = Type\shape([
-            'alert_channel_uuid' => Type\nullable(Type\string()),
-            'percentage_trigger' => Type\nullable(Type\int()),
-            'availability_trigger' => Type\nullable(Type\bool()),
+            'alert_channel_uuid' => Type\optional(Type\string()),
+            'percentage_trigger' => Type\optional(Type\int()),
+            'availability_trigger' => Type\optional(Type\bool()),
         ])->coerce($request->safe());
 
         return TrackingAlertResource::make(
             ($trackingAlertAction)(
                 new UpdateTrackingAlertData(
-                    $sanitized['alert_channel_uuid'] !== null
+                    isset($sanitized['alert_channel_uuid'])
                         ? Uuid::fromString($sanitized['alert_channel_uuid'])
                         : null,
-                    $sanitized['percentage_trigger'],
-                    $sanitized['availability_trigger'],
+                    $sanitized['percentage_trigger'] ?? null,
+                    $sanitized['availability_trigger'] ?? null,
                 ),
             $trackingAlert,
             ),

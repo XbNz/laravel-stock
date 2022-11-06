@@ -99,14 +99,14 @@ class TrackingRequestController
         }
 
         $sanitized = Type\shape([
-            'name' => Type\string(),
-            'update_interval' => Type\int(),
+            'name' => Type\optional(Type\string()),
+            'update_interval' => Type\optional(Type\int()),
         ])->coerce($request->safe());
 
         $trackingRequest = ($updateTrackingRequest)(
             new UpdateTrackingRequestData(
-                $sanitized['name'],
-                $sanitized['update_interval'],
+                $sanitized['name'] ?? null,
+                $sanitized['update_interval'] ?? null,
             ),
         $trackingRequest
         );
