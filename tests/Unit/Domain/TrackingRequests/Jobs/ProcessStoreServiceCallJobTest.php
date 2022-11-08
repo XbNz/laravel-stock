@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Queue;
 use Support\Contracts\StoreContract;
 use Tests\TestCase;
 use Tests\Unit\Fakes\FakeStore;
@@ -30,7 +31,7 @@ class ProcessStoreServiceCallJobTest extends TestCase
     use RefreshDatabase;
 
     /** @test **/
-    public function given_a_collection_of_a_users_search_tracking_requests_it_runs_then_through_the_store_service_search_method(): void
+    public function given_a_search_tracking_request_it_runs_then_through_the_store_service_search_method(): void
     {
         // Arrange
         $shouldBePutThroughSearchMethod = TrackingRequest::factory()->create([
@@ -53,7 +54,7 @@ class ProcessStoreServiceCallJobTest extends TestCase
     }
 
     /** @test **/
-    public function given_a_collection_of_a_users_product_tracking_requests_it_runs_then_through_the_store_service_product_method(): void
+    public function given_a_product_tracking_request_it_runs_then_through_the_store_service_product_method(): void
     {
         // Arrange
         $shouldBePutThroughProductMethod = TrackingRequest::factory()->create([
@@ -174,4 +175,5 @@ class ProcessStoreServiceCallJobTest extends TestCase
 
         $this->assertTrue($trackingRequest->status->equals(FailedState::class));
     }
+
 }

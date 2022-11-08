@@ -53,7 +53,8 @@ class ProcessStoreServiceCallJob implements ShouldQueue
     public function middleware(): array
     {
         return [
-            new EnforceDormantStatusIfJobIsNotRetryMiddleware($this->trackingRequest)
+            (new WithoutOverlapping($this->trackingRequest->id))->dontRelease(),
+            new EnforceDormantStatusIfJobIsNotRetryMiddleware($this->trackingRequest),
         ];
     }
 
@@ -64,7 +65,12 @@ class ProcessStoreServiceCallJob implements ShouldQueue
 
     public function handle()
     {
-        $this->trackingRequest->status->transitionTo(InProgressState::class);
+        if ($this->trackingRequest->status->equals(DormantState::class)) {
+            $this->trackingRequest->status->transitionTo(InProgressState::class);
+        }
+
+        Assert::true($this->trackingRequest->status->equals(InProgressState::class));
+
         $store = $this->trackingRequest->store;
 
         /** @var StoreContract $storeService */

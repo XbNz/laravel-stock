@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Log;
 
 class EnforceDormantStatusIfJobIsNotRetryMiddleware
 {
-    public function __construct(public readonly TrackingRequest $trackingRequest)
+    public function __construct(private readonly TrackingRequest $trackingRequest)
     {
     }
 
@@ -30,5 +30,7 @@ class EnforceDormantStatusIfJobIsNotRetryMiddleware
             $job->delete();
             throw new Exception('Tracking request in non dormant state was attempted to be processed by job');
         }
+
+        $next($job);
     }
 }
