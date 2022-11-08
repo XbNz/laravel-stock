@@ -31,16 +31,19 @@ class DispatchStockHistoryNotificationActionTest extends TestCase
         $oldestHistory = StockHistory::factory()->createQuietly([
             'price' => 100,
             'created_at' => now()->subDays(2),
+            'availability' => true,
         ]);
         $oldHistory = StockHistory::factory()->createQuietly([
             'price' => 200,
             'created_at' => now()->subDays(1),
+            'availability' => true,
         ]);
         $priceThatIsHigherThanOldHistoryAButLowerThanOldHistoryB = 150;
 
         $newestHistoricRecord = StockHistory::factory()->createQuietly([
             'price' => $priceThatIsHigherThanOldHistoryAButLowerThanOldHistoryB,
             'created_at' => now(),
+            'availability' => true,
         ]);
 
         $subjectStock->histories()->saveMany([$oldestHistory, $oldHistory, $newestHistoricRecord]);

@@ -36,7 +36,7 @@ class ProcessStoreServiceCallJobTest extends TestCase
         // Arrange
         $shouldBePutThroughSearchMethod = TrackingRequest::factory()->create([
             'tracking_type' => TrackingRequestEnum::Search,
-            'status' => DormantState::class,
+            'status' => InProgressState::class,
         ]);
 
         $mockStore = $this->mock(StoreContract::class);
@@ -59,7 +59,7 @@ class ProcessStoreServiceCallJobTest extends TestCase
         // Arrange
         $shouldBePutThroughProductMethod = TrackingRequest::factory()->create([
             'tracking_type' => TrackingRequestEnum::SingleProduct,
-            'status' => DormantState::class,
+            'status' => InProgressState::class,
         ]);
 
         $mockStore = $this->mock(StoreContract::class);
@@ -82,7 +82,7 @@ class ProcessStoreServiceCallJobTest extends TestCase
         // Arrange
         $trackingRequest = TrackingRequest::factory()->create([
             'tracking_type' => TrackingRequestEnum::SingleProduct,
-            'status' => DormantState::class,
+            'status' => InProgressState::class,
             'url' => 'https://www.amazon.co.uk/dp/B07ZJZ2Z9Z',
         ]);
 
@@ -118,7 +118,7 @@ class ProcessStoreServiceCallJobTest extends TestCase
 
         $trackingRequest = TrackingRequest::factory()->create([
             'tracking_type' => TrackingRequestEnum::SingleProduct,
-            'status' => DormantState::class,
+            'status' => InProgressState::class,
             'url' => 'https://www.amazon.co.uk/dp/B07ZJZ2Z9Z',
         ]);
 

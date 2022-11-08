@@ -9,9 +9,11 @@ use Domain\TrackingRequests\Actions\FulfillTrackingRequestAction;
 use Domain\TrackingRequests\Jobs\ProcessStoreServiceCallJob;
 use Domain\TrackingRequests\Models\TrackingRequest;
 use Domain\TrackingRequests\States\DormantState;
+use Domain\TrackingRequests\States\InProgressState;
 use Domain\Users\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
+use InvalidArgumentException;
 use Tests\TestCase;
 
 class FulfillTrackingRequestActionTest extends TestCase
@@ -52,5 +54,33 @@ class FulfillTrackingRequestActionTest extends TestCase
 
         // Assert
         Queue::assertPushed(ProcessStoreServiceCallJob::class, 3);
+        $trackingRequests->each(function (TrackingRequest $trackingRequest) {
+            $this->assertTrue($trackingRequest->status->equals(InProgressState::class));
+        });
+    }
+
+    /** @test **/
+    public function if_a_tracking_request_is_not_dormant_it_is_rejected(): void
+    {
+        // Arrange
+        Queue::fake();
+
+        $trackingRequest = TrackingRequest::factory()->create([
+            'store' => Store::AmazonCanada,
+            'url' => 'https://amazon.ca/eowfj-wg-ewweg-weg',
+            'status' => InProgressState::class,
+        ]);
+
+        // Act
+        $action = app(FulfillTrackingRequestAction::class);
+
+        try {
+            $action($trackingRequest);
+        } catch (InvalidArgumentException $e) {
+            Queue::assertNothingPushed();
+            return;
+        }
+
+        $this->fail('Tracking request was not rejected.');
     }
 }
