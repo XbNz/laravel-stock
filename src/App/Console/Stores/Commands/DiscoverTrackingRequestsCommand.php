@@ -19,7 +19,7 @@ class DiscoverTrackingRequestsCommand extends Command
     {
         while (true) {
             TrackingRequest::query()->needsUpdate()->get()
-                ->each(fn (TrackingRequest $trackingRequest) => ($trackingRequestAction)(Collection::make([$trackingRequest])));
+                ->each(fn (TrackingRequest $trackingRequest) => ($trackingRequestAction)($trackingRequest));
             sleep(10);
         }
     }
