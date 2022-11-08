@@ -53,7 +53,7 @@ class ProcessStoreServiceCallJob implements ShouldQueue
     public function middleware(): array
     {
         return [
-            (new WithoutOverlapping($this->trackingRequest->id))->dontRelease()
+            new EnforceDormantStatusIfJobIsNotRetryMiddleware($this->trackingRequest)
         ];
     }
 
