@@ -47,8 +47,7 @@ class ProcessStoreServiceCallJobTest extends TestCase
         // Act
 
         (new ProcessStoreServiceCallJob(
-            Collection::make([$shouldBePutThroughSearchMethod]),
-            $shouldBePutThroughSearchMethod->user,
+            $shouldBePutThroughSearchMethod,
             [$mockStore]
         ))->handle();
     }
@@ -71,8 +70,7 @@ class ProcessStoreServiceCallJobTest extends TestCase
         // Act
 
         (new ProcessStoreServiceCallJob(
-            Collection::make([$shouldBePutThroughProductMethod]),
-            $shouldBePutThroughProductMethod->user,
+            $shouldBePutThroughProductMethod,
             [$mockStore]
         ))->handle();
     }
@@ -100,8 +98,7 @@ class ProcessStoreServiceCallJobTest extends TestCase
         // Act
 
         (new ProcessStoreServiceCallJob(
-            Collection::make([$trackingRequest]),
-            $trackingRequest->user,
+            $trackingRequest,
             [$mockStore]
         ))->handle();
 
@@ -131,8 +128,7 @@ class ProcessStoreServiceCallJobTest extends TestCase
         // Act
 
         (new ProcessStoreServiceCallJob(
-            Collection::make([$trackingRequest]),
-            $trackingRequest->user,
+            $trackingRequest,
             [new FakeStore()]
         ))->failed(new Exception('test'));
 
@@ -151,8 +147,7 @@ class ProcessStoreServiceCallJobTest extends TestCase
 
         // Act
         (new ProcessStoreServiceCallJob(
-            Collection::make([$trackingRequest]),
-            $trackingRequest->user,
+            $trackingRequest,
             [new FakeStore()]
         ))->failed(new Exception('test'));
 
@@ -171,8 +166,7 @@ class ProcessStoreServiceCallJobTest extends TestCase
 
         // Act
         (new ProcessStoreServiceCallJob(
-            Collection::make([$trackingRequest]),
-            $trackingRequest->user,
+            $trackingRequest,
             [new FakeStore()]
         ))->failed(new Exception('test'));
 

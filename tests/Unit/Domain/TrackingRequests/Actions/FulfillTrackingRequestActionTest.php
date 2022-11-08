@@ -23,36 +23,34 @@ class FulfillTrackingRequestActionTest extends TestCase
     {
         // Arrange
         Queue::fake();
-        $userA = User::factory()->create();
-        $userB = User::factory()->create();
 
         $trackingRequests = TrackingRequest::factory()->createMany([
             [
                 'store' => Store::AmazonCanada,
                 'url' => 'https://amazon.ca/eowfj-wg-ewweg-weg',
                 'status' => DormantState::class,
-                'user_id' => $userA->id,
             ],
             [
                 'store' => Store::BestBuyCanada,
                 'url' => 'https://bestbuy.ca/eowfj-wg-ewweg-weg',
                 'status' => DormantState::class,
-                'user_id' => $userA->id,
             ],
             [
                 'store' => Store::NeweggCanada,
                 'url' => 'https://newegg.ca/eowfj-wg-ewweg-weg',
                 'status' => DormantState::class,
-                'user_id' => $userB->id,
             ],
         ]);
 
         $action = app(FulfillTrackingRequestAction::class);
 
         // Act
-        ($action)($trackingRequests);
+
+        foreach ($trackingRequests as $trackingRequest) {
+            $action($trackingRequest);
+        }
 
         // Assert
-        Queue::assertPushed(ProcessStoreServiceCallJob::class, 2);
+        Queue::assertPushed(ProcessStoreServiceCallJob::class, 3);
     }
 }
