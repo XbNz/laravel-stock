@@ -18,21 +18,11 @@ class FulfillTrackingRequestAction
     ) {
     }
 
-    /**
-     * @param EloquentCollection<TrackingRequest> $trackingRequests
-     */
-    public function __invoke(EloquentCollection $trackingRequests): void
+    public function __invoke(TrackingRequest $trackingRequest): void
     {
-        $trackingRequests
-            ->groupBy(fn (TrackingRequest $trackingRequest) => $trackingRequest->user()->first()->id)
-            ->each(function (EloquentCollection $trackingRequests, int $userId) {
-                $user = User::query()->findOrFail($userId);
-
-                $this->dispatcher->dispatch(new ProcessStoreServiceCallJob(
-                    $trackingRequests,
-                    $user,
-                    $this->storeServices,
-                ));
-            });
+        $this->dispatcher->dispatch(new ProcessStoreServiceCallJob(
+            $trackingRequest,
+            $this->storeServices,
+        ));
     }
 }
