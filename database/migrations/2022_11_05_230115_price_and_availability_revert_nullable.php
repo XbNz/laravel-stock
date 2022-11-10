@@ -18,7 +18,8 @@ return new class() extends Migration {
     public function down()
     {
         Schema::table('stocks', function (Blueprint $table) {
-            //
+            $table->integer('price')->nullable(true)->change();
+            $table->boolean('availability')->nullable(true)->change();
         });
     }
 };
