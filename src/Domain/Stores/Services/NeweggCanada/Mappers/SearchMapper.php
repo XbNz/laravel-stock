@@ -35,7 +35,10 @@ class SearchMapper implements MapperContract
                     ->filterXPath('//li[contains(@class, "price-current")]')
                     ->text();
 
-                return Str::of($price)->trim()->length() > 2;
+                return Str::of($price)
+                    ->trim()
+                    ->replaceMatches('/[^0-9]/', '')
+                    ->length() >= 1;
             })
             ->each(function (Crawler $crawler) use ($collection) {
                 $price = $this->price($crawler);
