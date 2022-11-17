@@ -10,7 +10,7 @@ use Domain\Stores\DTOs\StockSearchData;
 use Domain\Stores\Enums\Store;
 use Domain\TrackingRequests\Actions\ConfidenceOfTrackingRequestHealthAction;
 use Domain\TrackingRequests\Enums\TrackingRequest as TrackingRequestEnum;
-use Domain\TrackingRequests\JobMiddleware\EnforceDormantStatusIfJobIsNotRetryMiddleware;
+use Domain\TrackingRequests\JobMiddleware\EnforceInProgressState;
 use Domain\TrackingRequests\Models\TrackingRequest;
 use Domain\TrackingRequests\States\DormantState;
 use Domain\TrackingRequests\States\FailedState;
@@ -53,6 +53,13 @@ class ProcessStoreServiceCallJob implements ShouldQueue
     public function backoff(): array
     {
         return [5, 100, 300, 900, 4500, 7600, 86400];
+    }
+
+    public function middleware(): array
+    {
+        return [
+            new EnforceInProgressState($this->trackingRequest),
+        ];
     }
 
     public function handle()
