@@ -64,18 +64,20 @@ class StockPriceNotification extends Notification implements ShouldQueue
             $this->current->getRawOriginal('price')
         )->value, 0);
 
-        $trimmedStock = Str::of($this->current->stock->title)->limit(30);
+        $title = $this->current->stock->title;
+        $sku = $this->current->stock->sku;
         $store = Str::of($this->current->stock->store->value)->headline();
         $link = $this->current->stock->url;
         $imageUrl = config('app.url') . '/products/' . Str::of($this->current->stock->image)->basename();
 
         return (new DiscordMessage())
             ->from('FreeloadBuddy')
-            ->embed(function (DiscordEmbed $embed) use ($priceChange, $trimmedStock, $store, $link, $imageUrl) {
-                $embed->title("{$trimmedStock} is available with a discount of {$priceChange}% at {$store}!")
-                    ->description($link)
+            ->embed(function (DiscordEmbed $embed) use ($priceChange, $title, $store, $link, $imageUrl, $sku) {
+                $embed->title("Price drop of {$priceChange}% detected at {$store}")
+                    ->description($title . PHP_EOL . PHP_EOL . $link)
                     ->field('Previous price', $this->previous->price)
                     ->field('Current price', $this->current->price)
+                    ->field('SKU', $sku)
                     ->image($imageUrl);
             });
     }

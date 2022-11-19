@@ -57,17 +57,19 @@ class StockAvailabilityNotification extends Notification implements ShouldQueue
 
     public function toDiscord(): DiscordMessage
     {
-        $trimmedStock = Str::of($this->current->stock->title)->limit(30);
+        $title = $this->current->stock->title;
+        $sku = $this->current->stock->sku;
         $store = Str::of($this->current->stock->store->value)->headline();
         $link = $this->current->stock->url;
         $imageUrl = config('app.url') . '/products/' . Str::of($this->current->stock->image)->basename();
 
         return (new DiscordMessage())
             ->from('FreeloadBuddy')
-            ->embed(function (DiscordEmbed $embed) use ($trimmedStock, $store, $link, $imageUrl) {
-                $embed->title("{$trimmedStock} is available at {$store}!")
-                    ->description($link)
+            ->embed(function (DiscordEmbed $embed) use ($title, $store, $link, $imageUrl, $sku) {
+                $embed->title("Item now available at {$store}")
+                    ->description($title . PHP_EOL . PHP_EOL . $link)
                     ->field('Price', $this->current->price)
+                    ->field('SKU', $sku)
                     ->image($imageUrl);
             });
     }
