@@ -1,0 +1,42 @@
+{
+    "source": {
+        "directories": [
+            "src/Domain"
+        ],
+    },
+    "timeout": 10,
+    "logs": {
+        "text": "infection.log",
+        "html": "infection.html",
+        "summary": "summary.log",
+        "json": "infection-log.json",
+        "perMutator": "per-mutator.md",
+        "github": true,
+        "stryker": {
+            "badge": "/^release-.*$/"
+        }
+    },
+    "mutators": {
+        "global-ignore": [
+            "FooClass::__construct"
+        ],
+        "global-ignoreSourceCodeByRegex": [
+            "Assert::.*"
+        ],
+        "@default": true,
+        "@function_signature": false,
+        "TrueValue": {
+            "ignore": [
+                "NameSpace\\*\\Class::method"
+            ],
+            "ignoreSourceCodeByRegex": [
+                "\\$this->logger.*"
+            ]
+        }
+    },
+    "testFramework":"phpunit",
+    "phpUnit": {
+        "configDir": ".",
+    },
+    "testFrameworkOptions": "--filter=Unit --exclude-group=Online",
+}

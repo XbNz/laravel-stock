@@ -15,7 +15,10 @@ trait StoreContractTests
 
     abstract public function randomSearchLinkForStore(): UriInterface;
 
-    /** @test **/
+    /**
+     * @test
+     * @group Online
+     **/
     public function a_random_product_fetches_successfully(): void
     {
         // Arrange
@@ -31,7 +34,10 @@ trait StoreContractTests
         $this->assertSame($result[0]->store->serviceFqcn(), $this->getStoreImplementation());
     }
 
-    /** @test **/
+    /**
+     * @test
+     * @group Online
+     **/
     public function a_product_search_is_successful(): void
     {
         // Arrange
@@ -48,6 +54,10 @@ trait StoreContractTests
         }
     }
 
+    /**
+     * @test
+     * @group Online
+     **/
     public function randomProductUri(): UriInterface
     {
         /** @var StoreContract $service */
