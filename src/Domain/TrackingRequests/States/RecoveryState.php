@@ -12,6 +12,11 @@ class RecoveryState extends TrackingRequestState
         return '#e67e22';
     }
 
+    public function friendlyName(): string
+    {
+        return 'Recovery';
+    }
+
     public function name(): string
     {
         return 'recovery';

@@ -14,6 +14,8 @@ abstract class TrackingRequestState extends State
 
     abstract public function name(): string;
 
+    abstract public function friendlyName(): string;
+
     public static function config(): StateConfig
     {
         return parent::config()

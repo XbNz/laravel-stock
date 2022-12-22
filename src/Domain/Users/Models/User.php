@@ -11,6 +11,7 @@ use Domain\Stocks\Models\Stock;
 use Domain\TrackingRequests\Models\TrackingRequest;
 use Domain\Users\Concerns\HasUuid;
 use Domain\Users\QueryBuilder\UserQueryBuilder;
+use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -21,7 +22,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     use HasUuid;
     use HasApiTokens;
@@ -88,5 +89,10 @@ class User extends Authenticatable
     protected static function newFactory(): UserFactory
     {
         return UserFactory::new();
+    }
+
+    public function canAccessFilament(): bool
+    {
+        return true;
     }
 }

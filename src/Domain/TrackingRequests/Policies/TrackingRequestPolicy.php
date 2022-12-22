@@ -14,6 +14,11 @@ class TrackingRequestPolicy
 {
     use HandlesAuthorization;
 
+    public function viewAny(): bool
+    {
+        return true;
+    }
+
     public function view(User $user, TrackingRequest $trackingRequest): Response
     {
         return $trackingRequest->user->is($user)

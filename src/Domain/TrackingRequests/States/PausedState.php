@@ -12,6 +12,11 @@ class PausedState extends TrackingRequestState
         return '#7f8c8d';
     }
 
+    public function friendlyName(): string
+    {
+        return 'Paused';
+    }
+
     public function name(): string
     {
         return 'paused';

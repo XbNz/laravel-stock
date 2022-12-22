@@ -51,4 +51,15 @@ enum Store: string
             default => throw new InvalidArgumentException('Unknown store'),
         };
     }
+
+    public function friendlyName(): string
+    {
+        return match ($this) {
+            self::AmazonCanada => 'Amazon Canada',
+            self::AmazonUs => 'Amazon US',
+            self::BestBuyCanada => 'Best Buy Canada',
+            self::NeweggCanada => 'Newegg Canada',
+            default => throw new InvalidArgumentException('Unknown store'),
+        };
+    }
 }

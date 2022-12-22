@@ -12,6 +12,11 @@ class FailedState extends TrackingRequestState
         return '#e74c3c';
     }
 
+    public function friendlyName(): string
+    {
+        return 'Failed';
+    }
+
     public function name(): string
     {
         return 'failed';

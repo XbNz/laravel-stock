@@ -12,6 +12,11 @@ class DormantState extends TrackingRequestState
         return '#3498db';
     }
 
+    public function friendlyName(): string
+    {
+        return 'Dormant';
+    }
+
     public function name(): string
     {
         return 'dormant';

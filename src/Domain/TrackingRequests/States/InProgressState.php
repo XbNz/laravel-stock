@@ -12,6 +12,11 @@ class InProgressState extends TrackingRequestState
         return '#f1c40f';
     }
 
+    public function friendlyName(): string
+    {
+        return 'In Progress';
+    }
+
     public function name(): string
     {
         return 'in_progress';
