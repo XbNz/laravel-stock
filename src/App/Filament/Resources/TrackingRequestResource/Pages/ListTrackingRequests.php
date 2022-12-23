@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\TrackingRequestResource\Pages;
 
 use App\Filament\Resources\TrackingRequestResource;
+use Filament\Forms\Components\TextInput;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\ListRecords;
 
@@ -13,7 +14,7 @@ class ListTrackingRequests extends ListRecords
     protected function getActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
         ];
     }
 }

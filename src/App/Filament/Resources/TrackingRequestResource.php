@@ -7,6 +7,7 @@ use App\Filament\Resources\TrackingRequestResource\RelationManagers;
 use Carbon\CarbonInterval;
 use Domain\Stores\Enums\Store;
 use Domain\TrackingRequests\Models\TrackingRequest;
+use Domain\TrackingRequests\Rules\ReasonableUpdateIntervalRule;
 use Domain\TrackingRequests\States\TrackingRequestState;
 use Filament\Forms;
 use Filament\Resources\Form;
@@ -16,6 +17,8 @@ use Filament\Tables;
 use Filament\Tables\Columns\Column;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Pages\Actions\CreateAction;
+use Illuminate\Validation\Rule;
 
 class TrackingRequestResource extends Resource
 {
@@ -27,7 +30,26 @@ class TrackingRequestResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\TextInput::make('name')
+                    ->required()
+                    ->string()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('update_interval')
+                    ->label('Update interval')
+                    ->rules([
+                        'required',
+                        new ReasonableUpdateIntervalRule(),
+                    ]),
+                Forms\Components\TextInput::make('url')
+                    ->label('URL')
+                    // TODO: Continue with Tracking request creation. Grab the action from API controller and use that.
+                    // then move on to relation manager for alerts, channels.
+                    ->rules([
+                        'required',
+                        'active_url',
+                        Rule::unique('tracking_requests')
+                            ->where(fn (Builder $query) => $query->where('user_id', auth()->user()->id)),
+                    ])
             ]);
     }
 
@@ -109,12 +131,24 @@ class TrackingRequestResource extends Resource
                 //
             ])
             ->actions([
-
+                Tables\Actions\EditAction::make('Edit')
+                    ->form([
+                        Forms\Components\TextInput::make('name'),
+                        Forms\Components\TextInput::make('update_interval')
+                            ->formatStateUsing(function (string $state) {
+                                return CarbonInterval::seconds($state)->cascade()->forHumans(short: true);
+                            })
+                            ->label('Update interval')
+                    ])
+                    ->action(function (TrackingRequest $record, array $data) {
+                        dd($data);
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
+
 
     public static function getRelations(): array
     {
