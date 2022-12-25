@@ -5,6 +5,8 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\TrackingRequestResource\Pages;
 use App\Filament\Resources\TrackingRequestResource\RelationManagers;
 use Carbon\CarbonInterval;
+use Closure;
+use Domain\Stores\Actions\ParseStoreByLinkAction;
 use Domain\Stores\Enums\Store;
 use Domain\TrackingRequests\Models\TrackingRequest;
 use Domain\TrackingRequests\Rules\ReasonableUpdateIntervalRule;
@@ -18,6 +20,8 @@ use Filament\Tables\Columns\Column;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Pages\Actions\CreateAction;
+use Illuminate\Database\Query\Builder as DatabaseBuilder;
+use Illuminate\Support\ItemNotFoundException;
 use Illuminate\Validation\Rule;
 
 class TrackingRequestResource extends Resource
@@ -47,8 +51,17 @@ class TrackingRequestResource extends Resource
                     ->rules([
                         'required',
                         'active_url',
-                        Rule::unique('tracking_requests')
-                            ->where(fn (Builder $query) => $query->where('user_id', auth()->user()->id)),
+                        function () {
+                            return function (string $attribute, $value, Closure $fail) {
+                                try {
+                                    app(ParseStoreByLinkAction::class)($value);
+                                } catch (ItemNotFoundException) {
+                                    $fail('Store not found');
+                                }
+                            };
+                        },
+                        Rule::unique('tracking_requests', 'url')
+                            ->where(fn (DatabaseBuilder $query) => $query->where('user_id', auth()->user()->id)),
                     ])
             ]);
     }
